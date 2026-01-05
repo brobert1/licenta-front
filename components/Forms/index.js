@@ -1,0 +1,12 @@
+export { default as AddReviewForm } from './AddReviewForm';
+export { default as AddStudyChapterForm } from './AddStudyChapterForm';
+export { default as AddStudyForm } from './AddStudyForm';
+export { default as ClientChangePasswordForm } from './ClientChangePasswordForm';
+export { default as ClientEditInfoForm } from './ClientEditInfoForm';
+export { default as ContactForm } from './ContactForm';
+export { default as CourseFiltersForm } from './CourseFiltersForm';
+export { default as ForgotForm } from './ForgotForm';
+export { default as GameFiltersForm } from './GameFiltersForm';
+export { default as LoginForm } from './LoginForm';
+export { default as ResetForm } from './ResetForm';
+export { default as SignupForm } from './SignupForm';

@@ -1,0 +1,12 @@
+.ReactChart {
+  min-height: 220px;
+}
+.tickLabel {
+  fill: #6b7280 !important;
+}
+.tooltip-wrap > div > div > div {
+  background-color: #fe4a0b !important;
+}
+.tooltip-wrap > div > div > div > div {
+  border-right-color: #fe4a0b !important;
+}

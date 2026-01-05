@@ -1,0 +1,16 @@
+export { default as AboutLeftSide } from './AboutLeftSide';
+export { default as AboutRightSide } from './AboutRightSide';
+export { default as Accordion } from './Accordion';
+export { default as CTAContact } from './CTAContact';
+export { default as FAQ } from './FAQ';
+export { default as FeatureCards } from './FeatureCards';
+export { default as Header } from './Header';
+export { default as MobileMenu } from './MobileMenu';
+export { default as ProfileButton } from './ProfileButton';
+export { default as ProfileButtonMobile } from './ProfileButtonMobile';
+export { default as ProfileLoading } from './ProfileLoading';
+export { default as ProfileMenu } from './ProfileMenu';
+export { default as ProfileMenuMobile } from './ProfileMenuMobile';
+export { default as ProfileSuccess } from './ProfileSuccess';
+export { default as RequestCourse } from './RequestCourse';
+export { default as TestimonialsCards } from './TestimonialsCards';

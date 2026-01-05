@@ -1,0 +1,84 @@
+.tooltip > .arrow:before {
+  @apply border-b-4 border-primary;
+}
+.tooltip > .tooltip-inner {
+  @apply bg-primary;
+}
+.bs-tooltip-bottom > .arrow:before {
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+}
+
+.first-letter::first-letter {
+  text-transform: uppercase;
+}
+
+.btn-close {
+  display: grid;
+  place-content: center;
+}
+.btn-close:before {
+  font-family: 'Font Awesome 6 Pro';
+  font-weight: 900;
+  content: '\f00d';
+}
+.modal-title {
+  @apply text-lg;
+}
+
+.link {
+  @apply hover:underline hover:text-white;
+}
+.next-chessground input[type='checkbox'] {
+  @apply py-3;
+}
+.next-chessground .text-gray-400 {
+  @apply hidden !important;
+}
+#chess-settings .next-chessground .text-gray-400 {
+  display: flex !important;
+}
+
+#contact .form-label {
+  @apply text-gray-800 !important;
+}
+
+.position-setup .next-chessground > div.flex.flex-col {
+  display: none !important;
+}
+
+.next-chessground .edit-square {
+  background-color: #989898;
+}
+
+/* Tooltip animation */
+@keyframes tooltip-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) translateX(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+.animate-tooltip-appear {
+  animation: tooltip-appear 0.3s ease-out forwards;
+}
+
+@keyframes message-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-message-in {
+  animation: message-in 0.4s ease-out forwards;
+}

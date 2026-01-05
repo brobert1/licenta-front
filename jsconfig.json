@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@auth": ["auth/index"],
+      "@auth/*": ["auth/*"],
+      "@chess": ["chess/index"],
+      "@chess/*": ["chess/*"],
+      "@components": ["components/index"],
+      "@components/*": ["components/*"],
+      "@constants": ["constants/index"],
+      "@constants/*": ["constants/*"],
+      "@contexts": ["contexts/index"],
+      "@contexts/*": ["contexts/*"],
+      "@css": ["css/index"],
+      "@css/*": ["css/*"],
+      "@data": ["data/index"],
+      "@data/*": ["data/*"],
+      "@functions": ["functions/index"],
+      "@functions/*": ["functions/*"],
+      "@hooks": ["hooks/index"],
+      "@hooks/*": ["hooks/*"],
+      "@lib": ["lib/index"],
+      "@lib/*": ["lib/*"],
+      "@models/*": ["models/*"],
+      "@site.config": ["site.config"]
+    }
+  }
+}

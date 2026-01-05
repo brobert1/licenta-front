@@ -1,0 +1,29 @@
+/* Brilliant move (!!) */
+.annotation-brilliant cg-board square.last-move {
+  background-color: rgba(52, 211, 153, 0.5) !important;
+}
+
+/* Good move (!) */
+.annotation-good cg-board square.last-move {
+  background-color: rgba(56, 189, 248, 0.5) !important;
+}
+
+/* Interesting move (!?) */
+.annotation-interesting cg-board square.last-move {
+  background-color: rgba(163, 230, 53, 0.5) !important;
+}
+
+/* Dubious move (?!) */
+.annotation-dubious cg-board square.last-move {
+  background-color: rgba(234, 179, 8, 0.5) !important;
+}
+
+/* Mistake (?) */
+.annotation-mistake cg-board square.last-move {
+  background-color: rgba(249, 115, 22, 0.5) !important;
+}
+
+/* Blunder (??) */
+.annotation-blunder cg-board square.last-move {
+  background-color: rgba(127, 29, 29, 0.5) !important;
+}

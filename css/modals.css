@@ -1,0 +1,21 @@
+.modal-content {
+  @apply bg-secondary border-0 lg:p-6 p-1 rounded-2xl !important;
+}
+
+.modal-title {
+  @apply text-white !important;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  @apply border-0 !important;
+}
+
+.btn-close {
+  @apply text-white !important;
+}
+
+#position-selector-modal .modal-content  {
+  @apply px-2 pt-0 pb-1 !important;
+}

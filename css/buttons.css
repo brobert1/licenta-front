@@ -1,0 +1,125 @@
+.button {
+  @apply relative inline-block cursor-pointer rounded;
+  width: fit-content;
+}
+
+.button:hover {
+  text-decoration: none;
+}
+
+button:focus {
+  outline: 0 !important;
+}
+
+button:active,
+a[role='button']:active {
+  outline: 0 !important;
+  position: relative;
+  top: 1px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  filter: opacity(0.75);
+}
+button:disabled > * {
+  pointer-events: none;
+}
+button:disabled ~ * {
+  cursor: not-allowed;
+}
+
+.button.full,
+.button.square {
+  @apply border-2 py-2 px-6 text-sm font-medium;
+}
+
+.button.mini {
+  @apply border bg-white py-1 px-3 text-sm;
+}
+
+.button.full.primary {
+  @apply border-primary bg-primary text-white hover:bg-primary/90 hover:border-primary/90;
+}
+
+.button.full.secondary {
+  @apply border border-secondary bg-secondary text-white;
+}
+
+.button.full.accent {
+  @apply border-accent bg-accent text-white hover:bg-blue-600 hover:border-blue-600;
+}
+
+.button.tertiary {
+  @apply border-tertiary bg-tertiary text-gray-300;
+}
+
+.button.square.primary,
+.button.mini.primary {
+  @apply border-white bg-transparent text-white;
+}
+
+.button.square.secondary,
+.button.mini.secondary {
+  @apply border-secondary text-secondary;
+}
+
+.button.square.accent,
+.button.mini.accent {
+  @apply border-red-500 text-red-500;
+}
+
+.menu-button {
+  @apply flex items-center gap-2 text-white font-semibold w-full py-1.5 px-2.5 rounded-xl hover:bg-tertiary !important;
+}
+
+#language-dd {
+  @apply cursor-pointer rounded-md border border-gray-300 bg-white px-2 py-1 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  position: relative !important;
+}
+
+#language-dd .input {
+  background-color: transparent !important;
+  border: none !important;
+  color: #50618d !important;
+  width: 80px !important;
+}
+
+#language-dd .dropdown-list {
+  border-radius: 5px !important;
+  border: 1px solid #50618d !important;
+  box-shadow: 1px 1px 2px rgba(141, 141, 141, 0.575) !important;
+  color: rgb(36, 32, 32) !important;
+  margin-top: 10px !important;
+  width: 96px !important;
+  left: 0 !important;
+  top: 36 !important;
+}
+
+.delete {
+  @apply flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-gray-300 bg-gray-200 px-6 py-2 text-sm font-medium text-gray-800 transition duration-150 ease-in-out hover:border-red-200 hover:bg-red-50 hover:text-red-500 lg:w-min !important;
+}
+
+.edit {
+  @apply flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-tertiary bg-tertiary px-6 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:border-white/10 hover:bg-white/10 lg:w-min !important;
+}
+
+#bottom .button {
+  @apply border-0;
+}
+#bottom .button > i {
+  @apply text-lg min-w-4;
+}
+#bottom .button.mini {
+  @apply px-3 py-1;
+}
+#bottom .button.mini.primary {
+  @apply bg-slate-600 text-slate-300;
+}
+#bottom .button.mini.accent {
+  @apply bg-accent text-white;
+}
+
+#engine-settings-button i {
+  color: white !important;
+}

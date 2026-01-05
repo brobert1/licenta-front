@@ -1,0 +1,27 @@
+.table-lessons {
+  @apply w-full !important;
+}
+
+.table-lessons th {
+  @apply border-b pb-2 text-center font-semibold text-white !important;
+}
+
+.table-lessons th:first-child {
+  @apply text-start !important;
+}
+
+.table-lessons tr {
+  @apply even:bg-gray-50 !important;
+}
+
+.table-lessons td {
+  @apply p-2 text-center !important;
+}
+
+.table-lessons td:first-child {
+  @apply pl-0 text-start !important;
+}
+
+.table-lessons td:last-child {
+  @apply pr-0 !important;
+}

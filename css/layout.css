@@ -1,0 +1,329 @@
+/**
+ * @see https://css-tricks.com/perfect-full-page-background-image/
+ * @see https://css-tricks.com/almanac/properties/b/background-blend-mode/
+ */
+.cover,
+.cover-error {
+  background: no-repeat center center / cover fixed;
+  background-image: url('/images/cover.jpg');
+  background-color: #777;
+  background-blend-mode: multiply;
+}
+.cover-error {
+  background-image: url('/images/error.jpg');
+  background-color: #aaa;
+}
+
+.grid-cols-24 {
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+}
+.lg\:grid-cols-24 {
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(24, minmax(0, 1fr));
+  }
+}
+.flex-item {
+  @apply my-1 mr-2;
+}
+.flex-item-lg {
+  @apply my-2 mr-2;
+}
+.max-h-50 {
+  max-height: 50vh;
+}
+
+.max-visitor {
+  @apply max-w-7xl mx-auto;
+}
+
+.max {
+  max-width: 1340px;
+  margin: 0 auto;
+}
+.z-100 {
+  z-index: 100;
+}
+.h-132 {
+  height: 33rem;
+}
+
+/* Custom Scrollbar - Hidden */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* For IE and Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+.custom-gradient {
+  background: linear-gradient(
+    155deg,
+    rgb(0, 0, 0) 0%,
+    rgb(11, 0, 74) 38%,
+    rgb(0, 73, 184) 75%,
+    rgb(48, 131, 236) 100%
+  );
+}
+
+.auth-card {
+  z-index: 50;
+  -moz-box-flex: 1;
+  -moz-box-flex: 1;
+  padding: 40px;
+  box-sizing: border-box;
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  -moz-box-pack: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 20px;
+}
+
+@media (max-width: 460px) {
+  .auth-card {
+    width: 100vw;
+    height: 100vh;
+    max-width: unset;
+    padding: 20px;
+  }
+}
+
+.card {
+  @apply flex w-full flex-col gap-4 bg-secondary p-4 shadow-sm lg:rounded-lg lg:p-6 !important;
+}
+
+.header {
+  @apply border-b pb-1.5 text-lg font-semibold text-white !important;
+}
+
+.prose-description {
+  @apply prose-sm font-heading text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-0 prose-ol:list-decimal prose-ul:list-disc !important;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1536px) {
+  .max-w-chess-board {
+    max-width: 560px !important;
+  }
+}
+
+.prose.no-indent ol {
+  list-style-position: inside;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.prose.no-indent ol > li {
+  display: list-item;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.prose.no-indent ol > li > * {
+  display: inline !important; /* This forces the list content to stay inline with the number */
+}
+
+.prose.tight-p p {
+  margin-top: 0 !important;
+}
+
+.icon-picker-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.icon-picker-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.icon-picker-scrollable.scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 1);
+  border-radius: 9999px;
+}
+
+.icon-picker-scrollable.scrollbar-hidden::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.icon-picker-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: black transparent;
+}
+
+.icon-picker-scrollable.scrollbar-hidden {
+  scrollbar-color: transparent transparent;
+}
+
+.icon-picker-scrollable.scrollbar-visible {
+  scrollbar-color: black transparent;
+}
+
+[tabindex='0'] {
+  outline: none !important;
+}
+
+.hint-mode {
+  @apply -mt-[2.35rem] mb-2 md:mb-0;
+}
+.top-tooltip {
+  @apply border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-secondary;
+}
+.tab-content {
+  @apply overflow-y-auto h-full;
+}
+.tab-content > div {
+  @apply w-full h-full;
+}
+.drill-layout-center {
+  @media (min-width: 768px) and (max-width: 1536px) {
+    max-width: 34rem;
+  }
+}
+.drill-layout-right .tab-content {
+  @apply rounded-md;
+}
+.comment {
+  font-size: 0.75rem !important;
+  line-height: 1.7142857 !important;
+}
+@media (min-width: 1536px) {
+  .comment {
+    font-size: 0.875rem !important;
+    line-height: 1.7142857 !important;
+  }
+}
+
+.pgn-wrapper {
+  @apply flex flex-col md:flex-row gap-4 items-start;
+}
+.pgn-wrapper .chess-board {
+  @apply w-full md:w-1/2 flex flex-col gap-2;
+}
+.pgn-wrapper .pgn-tree {
+  @apply w-full md:w-1/2 flex flex-col relative rounded overflow-hidden;
+}
+
+/* Chess Component Overrides */
+#pgn-tree {
+  color: white !important;
+}
+
+#pgn-comment.text-emerald-400,
+#pgn-comment.text-sky-400,
+#pgn-comment.text-lime-400,
+#pgn-comment.text-yellow-500,
+#pgn-comment.text-orange-500,
+#pgn-comment.text-red-700 {
+  color: inherit !important;
+}
+
+#pgn-comment:not(.text-emerald-400):not(.text-sky-400):not(.text-lime-400):not(
+    .text-yellow-500
+  ):not(.text-orange-500):not(.text-red-700) {
+  color: white !important;
+}
+
+#pgn-move {
+  color: white !important;
+}
+
+#context-menu {
+  color: white !important;
+}
+
+#context-menu .text-tertiary {
+  color: white !important;
+}
+
+#annotation-group h4 {
+  color: white !important;
+}
+
+#annotation-group button {
+  background-color: #2e2e2e !important;
+  border-color: #444 !important;
+  color: white !important;
+}
+
+#annotation-group button:hover {
+  background-color: #404040 !important;
+  border-color: #555 !important;
+}
+
+#annotation-group button.bg-accent {
+  background-color: #2976ff !important;
+  border-color: #2976ff !important;
+  color: white !important;
+}
+
+/* AddCommentModal Component Overrides */
+#comment-modal textarea {
+  background-color: #2e2e2e !important;
+  border-color: #444 !important;
+  color: white !important;
+}
+
+#comment-modal textarea:focus {
+  background-color: #2e2e2e !important;
+  border-color: #2976ff !important;
+  color: white !important;
+}
+
+#comment-modal textarea::placeholder {
+  color: #999 !important;
+}
+
+#game-sheet-move {
+  color: white !important;
+}
+
+#engine-settings-menu {
+  background: #2e2e2e !important;
+  border: 1px solid #444 !important;
+}
+
+#engine-range-slider label {
+  color: white !important;
+}
+
+#engine-range-slider span {
+  color: white !important;
+}
+
+#engine-memory-slider label {
+  color: white !important;
+}
+
+#engine-memory-slider span {
+  color: white !important;
+}
+
+#engine-pv-row {
+  background: #2e2e2e !important;
+  border: 1px solid #ffffff1a !important;
+}
+
+#engine-pv-row span {
+  color: white !important;
+}
+
+#engine-pv-move:hover {
+  color: #2976ff !important;
+}

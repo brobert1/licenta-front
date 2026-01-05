@@ -1,0 +1,32 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-heading !important;
+}
+
+p,
+li,
+a,
+span {
+  @apply font-body !important;
+}
+
+/* Reset extra top/bottom spacing for rendered HTML blocks inside descriptions */
+.prose-description > *:first-child {
+  margin-top: 0 !important;
+}
+.prose-description > *:last-child {
+  margin-bottom: 0 !important;
+}
+/* Extra safety: remove top margin from common first elements */
+.prose-description h1:first-child,
+.prose-description h2:first-child,
+.prose-description h3:first-child,
+.prose-description p:first-child,
+.prose-description ul:first-child,
+.prose-description ol:first-child {
+  margin-top: 0 !important;
+}
