@@ -7,16 +7,19 @@ const OpponentCard = ({ showTimer = false, timerValue }) => {
 
   if (!opponent) return null;
 
-  const generateAvatar = (name) => {
+  const getAvatarSrc = () => {
+    if (opponent?.image?.path) {
+      return opponent.image.path;
+    }
     const avatar = createAvatar(avataaars, {
-      seed: name,
+      seed: opponent.name,
       size: 48,
       backgroundColor: ['404040'],
     });
     return avatar.toDataUri();
   };
 
-  const avatarSrc = generateAvatar(opponent.name);
+  const avatarSrc = getAvatarSrc();
 
   return (
     <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">

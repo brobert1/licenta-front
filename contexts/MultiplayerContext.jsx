@@ -14,6 +14,7 @@ export const MultiplayerProvider = ({ children }) => {
   const [opponent, setOpponent] = useState(null);
   const [playerColor, setPlayerColor] = useState(null);
   const [gameResult, setGameResult] = useState(null);
+  const [matchFound, setMatchFound] = useState(false);
   const socketRef = useRef(null);
   const [token, setToken] = useState(null);
 
@@ -72,14 +73,20 @@ export const MultiplayerProvider = ({ children }) => {
     // Game events
     newSocket.on('gameStart', ({ gameId, color, opponent: opponentData, timeControl, fen }) => {
       setInQueue(false);
-      setActiveGame({
-        _id: gameId,
-        timeControl,
-        fen,
-        status: 'active',
-      });
       setPlayerColor(color);
       setOpponent(opponentData);
+      setMatchFound(true);
+
+      // Play animation for 3 seconds before showing the game board
+      setTimeout(() => {
+        setMatchFound(false);
+        setActiveGame({
+          _id: gameId,
+          timeControl,
+          fen,
+          status: 'active',
+        });
+      }, 3000);
     });
 
     newSocket.on('moveMade', ({ fen, pgn, whiteTime, blackTime, gameOver, result, lastMove }) => {
@@ -187,6 +194,7 @@ export const MultiplayerProvider = ({ children }) => {
     setPlayerColor(null);
     setGameResult(null);
     setInQueue(false);
+    setMatchFound(false);
   }, []);
 
   const value = {
@@ -197,6 +205,7 @@ export const MultiplayerProvider = ({ children }) => {
     opponent,
     playerColor,
     gameResult,
+    matchFound,
     joinQueue,
     leaveQueue,
     makeMove,

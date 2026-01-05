@@ -1,11 +1,15 @@
 import { checkAuth, withAuth } from '@auth';
-import { MultiplayerGame } from '@components/Multiplayer';
+import { MultiplayerGame, MatchFoundAnimation } from '@components/Multiplayer';
 import { Layout } from '@components/Client';
 import { MultiplayerProvider, useMultiplayerContext } from '@contexts/MultiplayerContext';
 import OnlineGameSetup from '@components/Multiplayer/OnlineGameSetup';
 
 const OnlinePlayContent = () => {
-  const { activeGame } = useMultiplayerContext();
+  const { activeGame, matchFound } = useMultiplayerContext();
+
+  if (matchFound) {
+    return <MatchFoundAnimation />;
+  }
 
   if (activeGame) {
     return <MultiplayerGame />;

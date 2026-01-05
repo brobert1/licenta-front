@@ -1,4 +1,6 @@
 import { useQuery } from '@hooks';
+import { createAvatar } from '@dicebear/core';
+import { avataaars } from '@dicebear/collection';
 
 const MultiplayerUserCard = () => {
   const { status, data: accountData } = useQuery('/client/account');
@@ -25,9 +27,15 @@ const MultiplayerUserCard = () => {
               alt="User Avatar"
             />
           ) : (
-            <div className="lg:w-12 lg:h-12 w-10 h-10 flex items-center justify-center rounded-md">
-              <i className="fas fa-user text-xl text-white"></i>
-            </div>
+            <img
+              src={createAvatar(avataaars, {
+                seed: accountData?.name || 'User',
+                size: 48,
+                backgroundColor: ['404040'],
+              }).toDataUri()}
+              className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
+              alt="User Avatar"
+            />
           )}
         </div>
         <div className="flex flex-col">
