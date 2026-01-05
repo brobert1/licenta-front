@@ -57,9 +57,9 @@ const MatchFoundAnimation = () => {
               Play as {playerColor === 'white' ? 'White' : 'Black'}
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center animate-scale-in self-center mt-[-2rem]">
-            <div className="w-16 h-16 md:w-24 md:h-24 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(220,38,38,0.6)] border-4 border-white transform rotate-12">
-              <span className="text-2xl md:text-4xl font-black text-white italic -rotate-12 pt-1 pr-1">
+          <div className="flex flex-col items-center justify-center animate-scale-in self-center mb-12">
+            <div className="w-16 h-16 md:w-24 md:h-24 bg-red-600 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(220,38,38,0.6)] border-4 border-white">
+              <span className="text-2xl md:text-4xl font-black text-white leading-none pb-1">
                 VS
               </span>
             </div>

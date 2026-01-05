@@ -2,6 +2,8 @@ import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { useQuery } from '@hooks';
 import { PgnTree } from '@chess/components/PgnViewer';
 import { usePgnViewer } from '@chess/hooks';
+import { classnames } from '@lib';
+import { NextChessground } from 'next-chessground';
 import LiveChessBoard from './LiveChessBoard';
 import OpponentCard from './OpponentCard';
 import LiveGameActions from './LiveGameActions';
@@ -10,7 +12,10 @@ const MultiplayerGame = () => {
   const { activeGame, playerColor, opponent, reset, gameResult } = useMultiplayerContext();
   const { data: me } = useQuery('/client/account');
 
-  const { tree, current, goToMoment } = usePgnViewer(activeGame?.pgn || '');
+  const { tree, current, goToMoment, lastMoment, goPrevMoment, goNextMoment } = usePgnViewer(
+    activeGame?.pgn || '',
+    { startAtLastMove: true }
+  );
 
   if (!activeGame || !opponent) {
     return (
@@ -29,13 +34,26 @@ const MultiplayerGame = () => {
   }
 
   const isGameOver = activeGame.status === 'completed' || activeGame.gameOver;
+  const isReviewMode = current?.index !== lastMoment?.index && lastMoment?.index > 0;
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
       <div className="md:col-span-3 max-w-chess-board h-min flex flex-col gap-2">
         <OpponentCard />
         <div className="relative">
-          <LiveChessBoard />
+          <div className={classnames(isReviewMode && 'invisible')}>
+            <LiveChessBoard />
+          </div>
+          {isReviewMode && (
+            <div className="absolute inset-0">
+              <NextChessground
+                fen={current.fen}
+                lastMove={current?.from && current?.to ? [current.from, current.to] : null}
+                orientation={playerColor}
+                viewOnly={true}
+              />
+            </div>
+          )}
           {isGameOver && (
             <div className="absolute inset-0 bg-black/70 flex items-center justify-center rounded-lg">
               <div className="text-center">
@@ -98,26 +116,30 @@ const MultiplayerGame = () => {
             </div>
           </div>
         </div>
-        <div className="px-4 py-3 bg-tertiary border-t border-b border-gray-700 flex items-center justify-between">
-          <p className="text-sm text-white">
-            {activeGame.timeControl
-              ? `${Math.floor(activeGame.timeControl.initial / 60)} + ${
-                  activeGame.timeControl.increment
-                }`
-              : 'Untimed'}
-          </p>
-          <i className="fas fa-clock text-white text-sm"></i>
-        </div>
-        {!isGameOver && <LiveGameActions />}
+        {!isGameOver && <LiveGameActions onPrevMove={goPrevMoment} onNextMove={goNextMoment} />}
         {isGameOver && (
-          <div className="p-4 bg-tertiary border-t border-gray-700">
-            <button
-              onClick={reset}
-              className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all"
-            >
-              <i className="fas fa-chess mr-2"></i>
-              Find New Game
-            </button>
+          <div className="flex flex-col bg-secondary gap-4 p-4">
+            <div className="grid grid-cols-4 gap-2">
+              <button
+                onClick={reset}
+                className="col-span-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+              >
+                <i className="fas fa-chess"></i>
+                <span className="text-sm">Find New Game</span>
+              </button>
+              <button
+                className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+                onClick={goPrevMoment}
+              >
+                <i className="fa-solid fa-chevron-left"></i>
+              </button>
+              <button
+                className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+                onClick={goNextMoment}
+              >
+                <i className="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
           </div>
         )}
       </div>
