@@ -1,11 +1,11 @@
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { NextChessground } from 'next-chessground';
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
+import { coffee } from '@functions';
 
 const LiveChessBoard = () => {
   const ref = useRef();
   const { activeGame, playerColor, makeMove } = useMultiplayerContext();
-  const lastProcessedFen = useRef(null);
 
   const fen = activeGame?.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -42,23 +42,30 @@ const LiveChessBoard = () => {
     [makeMove]
   );
 
+  // Execute premove when it becomes our turn
+  useEffect(() => {
+    const executePremove = async () => {
+      if (isMyTurn && ref.current && ref.current.playPremove) {
+        await coffee(100);
+        ref.current.playPremove();
+      }
+    };
+    executePremove();
+  }, [isMyTurn]);
+
   // Get the last move for highlighting
-  const getLastMove = useCallback(() => {
-    if (activeGame?.lastMove) {
-      return [activeGame.lastMove.from, activeGame.lastMove.to];
-    }
-    return undefined;
-  }, [activeGame?.lastMove]);
+  const lastMove = activeGame?.lastMove
+    ? [activeGame.lastMove.from, activeGame.lastMove.to]
+    : undefined;
 
   return (
     <NextChessground
-      key={fen} // Force re-render when FEN changes from server
       ref={ref}
       fen={fen}
       orientation={playerColor || 'white'}
       onMove={handleMove}
-      lastMove={getLastMove()}
-      readOnly={!isMyTurn}
+      lastMove={lastMove}
+      premoves={true}
     />
   );
 };
