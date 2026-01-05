@@ -54,6 +54,12 @@ const MobileLinks = () => {
             </Link>
             <Link
               className="flex items-center px-4 py-3 text-white/80 hover:text-white"
+              href="/client/play/online"
+            >
+              <span>Play Online</span>
+            </Link>
+            <Link
+              className="flex items-center px-4 py-3 text-white/80 hover:text-white"
               href="/client/play/history"
             >
               <span>Game History</span>

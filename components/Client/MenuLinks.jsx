@@ -24,6 +24,13 @@ const MenuLinks = () => {
               <span>Play vs Bot</span>
             </Link>
             <Link
+              href="/client/play/online"
+              className="flex items-center rounded gap-3 px-4 py-2 text-white hover:bg-tertiary transition-colors duration-150"
+            >
+              <i className="fa-regular fa-globe text-sm w-4"></i>
+              <span>Play Online</span>
+            </Link>
+            <Link
               href="/client/play/history"
               className="flex items-center rounded gap-3 px-4 py-2 text-white hover:bg-tertiary transition-colors duration-150"
             >
