@@ -5,30 +5,37 @@ import { NoDataPlaceholder } from '@components';
 const Stats = ({ options }) => {
   const { data, status } = useQuery('/client/play/stats', options);
 
+  if (status === 'loading') {
+    return (
+      <div className="w-full">
+        <StatsCardSkeleton type="loading" />
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="w-full">
+        <StatsCardSkeleton type="error" />
+      </div>
+    );
+  }
+
+  if (status === 'success' && data?.games === 0) {
+    return (
+      <div className="w-full">
+        <NoDataPlaceholder
+          icon="fa-chart-line"
+          message="No stats available yet"
+          extraClass="mt-20 mx-auto"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
-      {status === 'loading' && (
-        <div className="max-w-md">
-          <StatsCardSkeleton type="loading" />
-        </div>
-      )}
-      {status === 'error' && (
-        <div className="max-w-md">
-          <StatsCardSkeleton type="error" />
-        </div>
-      )}
-      {status === 'success' &&
-        (data?.games === 0 ? (
-          <NoDataPlaceholder
-            icon="fa-chart-line"
-            message="No stats available yet"
-            extraClass="mt-20 mx-auto"
-          />
-        ) : (
-          <div className="max-w-md">
-            <StatsCard data={data} />
-          </div>
-        ))}
+      <StatsCard data={data} />
     </div>
   );
 };
