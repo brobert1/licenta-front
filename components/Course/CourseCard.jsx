@@ -1,8 +1,9 @@
 import { Plural } from '@components';
 import { DashboardCardButtons } from '@components/Client';
-import { calculateCoursePricing, stripTags } from '@functions';
+import { calculateCoursePricing } from '@functions';
 import { classnames } from '@lib';
 import { size } from 'lodash';
+import Markdown from 'markdown-to-jsx';
 
 const CourseCard = ({ name, preview, author, tags, content, active, ...props }) => {
   const lessons = content?.filter((i) => i.kind === 'study');
@@ -60,8 +61,8 @@ const CourseCard = ({ name, preview, author, tags, content, active, ...props }) 
               </div>
             </div>
           </div>
-          <div className="line-clamp-3 overflow-hidden">
-            <p className="text-grey font-medium text-sm">{stripTags(preview?.description)}</p>
+          <div className="line-clamp-3 overflow-hidden text-grey font-medium text-sm">
+            <Markdown>{preview?.description || ''}</Markdown>
           </div>
           <div className="hidden lg:flex items-center gap-2">
             <span className="bg-accent text-white text-xs font-bold py-0.5 px-1 rounded-sm">

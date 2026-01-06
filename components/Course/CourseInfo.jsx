@@ -1,5 +1,5 @@
 import { StarRating } from '@components';
-import parse from 'html-react-parser';
+import ReactMarkdown from 'react-markdown';
 
 const CourseInfo = ({ name, description, image, rating, sale, isOwned }) => {
   return (
@@ -20,14 +20,14 @@ const CourseInfo = ({ name, description, image, rating, sale, isOwned }) => {
             </div>
           )}
           <div className="prose-description mb-4 text-gray-300 text-sm lg:text-base line-clamp-9 hidden lg:block">
-            {parse(description)}
+            <ReactMarkdown>{description}</ReactMarkdown>
           </div>
         </div>
       </div>
       <div className="flex flex-col gap-2 lg:hidden bg-secondary overflow-hidden rounded-lg">
         <h4 className="text-white font-semibold p-4 pb-0">Description</h4>
         <div className="prose-description text-gray-300 text-sm lg:text-base line-clamp-9 p-4">
-          {parse(description)}
+          <ReactMarkdown>{description}</ReactMarkdown>
         </div>
       </div>
     </div>
