@@ -1,3 +1,4 @@
+export { default as DrawOfferCard } from './DrawOfferCard';
 export { default as LiveChessBoard } from './LiveChessBoard';
 export { default as LiveGameActions } from './LiveGameActions';
 export { default as MatchFoundAnimation } from './MatchFoundAnimation';

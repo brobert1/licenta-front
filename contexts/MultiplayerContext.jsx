@@ -19,6 +19,9 @@ export const MultiplayerProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [whiteTime, setWhiteTime] = useState(null);
   const [blackTime, setBlackTime] = useState(null);
+  // Draw offer state: 'none' | 'sent' | 'received' | 'declined'
+  const [drawOfferState, setDrawOfferState] = useState('none');
+  const [drawCooldown, setDrawCooldown] = useState(0); // Timestamp when cooldown ends
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -126,7 +129,13 @@ export const MultiplayerProvider = ({ children }) => {
     });
 
     newSocket.on('drawOffered', () => {
-      // Will be handled by UI component
+      setDrawOfferState('received');
+    });
+
+    newSocket.on('drawDeclined', () => {
+      setDrawOfferState('declined');
+      // Auto-clear after 3 seconds
+      setTimeout(() => setDrawOfferState('none'), 3000);
     });
 
     socketRef.current = newSocket;
@@ -186,6 +195,9 @@ export const MultiplayerProvider = ({ children }) => {
         gameId: activeGame._id,
         action: 'offerDraw',
       });
+      setDrawOfferState('sent');
+      // Set cooldown for 60 seconds
+      setDrawCooldown(Date.now() + 60000);
     }
   }, [socket, isConnected, activeGame]);
 
@@ -195,6 +207,17 @@ export const MultiplayerProvider = ({ children }) => {
         gameId: activeGame._id,
         action: 'acceptDraw',
       });
+      setDrawOfferState('none');
+    }
+  }, [socket, isConnected, activeGame]);
+
+  const declineDraw = useCallback(() => {
+    if (socket && isConnected && activeGame) {
+      socket.emit('gameAction', {
+        gameId: activeGame._id,
+        action: 'declineDraw',
+      });
+      setDrawOfferState('none');
     }
   }, [socket, isConnected, activeGame]);
 
@@ -215,6 +238,8 @@ export const MultiplayerProvider = ({ children }) => {
     setMatchFound(false);
     setWhiteTime(null);
     setBlackTime(null);
+    setDrawOfferState('none');
+    setDrawCooldown(0);
   }, []);
 
   const value = {
@@ -234,7 +259,10 @@ export const MultiplayerProvider = ({ children }) => {
     resign,
     offerDraw,
     acceptDraw,
+    declineDraw,
     reportTimeout,
+    drawOfferState,
+    drawCooldown,
     reset,
   };
 
