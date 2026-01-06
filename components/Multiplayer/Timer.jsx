@@ -2,13 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import { classnames } from '@lib';
 
-const Timer = ({
-  initialTime = 180,
-  isActive = false,
-  increment = 0,
-  onTimeOut,
-  serverTime,
-}) => {
+const Timer = ({ initialTime = 180, isActive = false, increment = 0, onTimeOut, serverTime }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const wasActive = useRef(isActive);
   const hasTimedOut = useRef(false);
@@ -79,7 +73,10 @@ const Timer = ({
       className={classnames(
         'flex items-center justify-center py-1.5 px-3 text-base border-2 rounded-md transition-all duration-300 min-w-[80px]',
         isActive && !isLowTime && 'bg-green-500/10 border-green-900 text-white',
-        isActive && isLowTime && !isCriticalTime && 'bg-yellow-500/20 border-yellow-600 text-yellow-200',
+        isActive &&
+          isLowTime &&
+          !isCriticalTime &&
+          'bg-yellow-500/20 border-yellow-600 text-yellow-200',
         isActive && isCriticalTime && 'bg-red-500/20 border-red-600 text-red-200 animate-pulse',
         !isActive && 'bg-black/20 border-neutral-700 text-neutral-400 opacity-60'
       )}

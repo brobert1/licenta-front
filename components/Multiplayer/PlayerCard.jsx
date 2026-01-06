@@ -8,11 +8,11 @@ const PlayerCard = ({ onTimeOut }) => {
 
   // Get player's time based on their color
   const playerTime = playerColor === 'white' ? whiteTime : blackTime;
-  
+
   // Determine whose turn it is from FEN
   const currentTurn = activeGame?.fen?.split(' ')[1] === 'w' ? 'white' : 'black';
   const isPlayerTurn = currentTurn === playerColor;
-  
+
   // Check if time control is enabled (not unlimited)
   const hasTimeControl = activeGame?.timeControl?.initial > 0;
   const isGameActive = activeGame?.status === 'active' && !activeGame?.gameOver;

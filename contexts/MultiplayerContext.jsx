@@ -29,6 +29,9 @@ export const MultiplayerProvider = ({ children }) => {
   const [chatStatus, setChatStatus] = useState('initial'); // initial, pending, active, rejected
   const [chatRequestedBy, setChatRequestedBy] = useState(null);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
+  // Opponent connection state
+  const [opponentDisconnected, setOpponentDisconnected] = useState(false);
+  const [opponentDisconnectTime, setOpponentDisconnectTime] = useState(null); // Timestamp when opponent disconnected
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -59,6 +62,8 @@ export const MultiplayerProvider = ({ children }) => {
 
     newSocket.on('connect', () => {
       setIsConnected(true);
+      // Try to rejoin any active game on connect
+      newSocket.emit('rejoinGame');
     });
 
     newSocket.on('connect_error', () => {
@@ -98,6 +103,7 @@ export const MultiplayerProvider = ({ children }) => {
         setPlayerColor(color);
         setOpponent(opponentData);
         setMatchFound(true);
+        setOpponentDisconnected(false);
 
         // Initialize chat
         setChatStatus(chatStatus || 'initial');
@@ -159,6 +165,63 @@ export const MultiplayerProvider = ({ children }) => {
       setDrawOfferState('declined');
       // Auto-clear after 3 seconds
       setTimeout(() => setDrawOfferState('none'), 3000);
+    });
+
+    // Game rejoin event - when player reconnects to an active game
+    newSocket.on(
+      'gameRejoined',
+      ({
+        gameId,
+        color,
+        opponent: opponentData,
+        timeControl,
+        fen,
+        pgn,
+        whiteTime,
+        blackTime,
+        lastMove,
+        chatStatus: gameChatStatus,
+        chatRequestedBy: gameChatRequestedBy,
+      }) => {
+        setInQueue(false);
+        setMatchFound(false);
+        setPlayerColor(color);
+        setOpponent(opponentData);
+        setOpponentDisconnected(false);
+
+        // Initialize chat state
+        setChatStatus(gameChatStatus || 'initial');
+        setChatRequestedBy(gameChatRequestedBy || null);
+
+        // Set times from server
+        setWhiteTime(whiteTime);
+        setBlackTime(blackTime);
+
+        // Set the active game immediately (no animation for rejoin)
+        setActiveGame({
+          _id: gameId,
+          timeControl,
+          fen,
+          pgn,
+          status: 'active',
+          lastMove,
+        });
+      }
+    );
+
+    // No active game found when trying to rejoin
+    newSocket.on('noActiveGame', () => {});
+
+    // Opponent disconnected notification
+    newSocket.on('opponentDisconnected', ({ gracePeriod }) => {
+      setOpponentDisconnected(true);
+      setOpponentDisconnectTime(Date.now() + gracePeriod);
+    });
+
+    // Opponent reconnected notification
+    newSocket.on('opponentReconnected', () => {
+      setOpponentDisconnected(false);
+      setOpponentDisconnectTime(null);
     });
 
     // Chat events
@@ -331,6 +394,8 @@ export const MultiplayerProvider = ({ children }) => {
     setChatStatus('initial');
     setChatRequestedBy(null);
     setUnreadChatCount(0);
+    setOpponentDisconnected(false);
+    setOpponentDisconnectTime(null);
   }, []);
 
   const markChatRead = useCallback(() => {
@@ -349,6 +414,8 @@ export const MultiplayerProvider = ({ children }) => {
     matchFound,
     whiteTime,
     blackTime,
+    opponentDisconnected,
+    opponentDisconnectTime,
     joinQueue,
     leaveQueue,
     makeMove,
