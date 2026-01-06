@@ -5,3 +5,5 @@ export { default as MultiplayerGame } from './MultiplayerGame';
 export { default as MultiplayerUserCard } from './MultiplayerUserCard';
 export { default as OnlineGameSetup } from './OnlineGameSetup';
 export { default as OpponentCard } from './OpponentCard';
+export { default as PlayerCard } from './PlayerCard';
+export { default as Timer } from './Timer';

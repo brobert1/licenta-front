@@ -1,11 +1,26 @@
 import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
+import Timer from './Timer';
 
-const OpponentCard = ({ showTimer = false, timerValue }) => {
-  const { opponent, playerColor } = useMultiplayerContext();
+const OpponentCard = ({ onTimeOut }) => {
+  const { opponent, playerColor, activeGame, whiteTime, blackTime } = useMultiplayerContext();
 
   if (!opponent) return null;
+
+  // Determine opponent's color (opposite of player's color)
+  const opponentColor = playerColor === 'white' ? 'black' : 'white';
+
+  // Get opponent's time
+  const opponentTime = opponentColor === 'white' ? whiteTime : blackTime;
+
+  // Determine whose turn it is from FEN
+  const currentTurn = activeGame?.fen?.split(' ')[1] === 'w' ? 'white' : 'black';
+  const isOpponentTurn = currentTurn === opponentColor;
+
+  // Check if time control is enabled (not unlimited)
+  const hasTimeControl = activeGame?.timeControl?.initial > 0;
+  const isGameActive = activeGame?.status === 'active' && !activeGame?.gameOver;
 
   const getAvatarSrc = () => {
     if (opponent?.image?.path) {
@@ -27,7 +42,7 @@ const OpponentCard = ({ showTimer = false, timerValue }) => {
         <div className="bg-tertiary rounded">
           <img
             src={avatarSrc}
-            className="lg:w-12 lg:h12 w-10 h-10 object-cover rounded-md"
+            className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
             alt="Opponent Avatar"
           />
         </div>
@@ -36,15 +51,17 @@ const OpponentCard = ({ showTimer = false, timerValue }) => {
             <p className="text-white font-medium text-base">{opponent.name}</p>
             <p className="text-gray-300">({opponent.elo})</p>
           </div>
-          <p className="text-gray-400 text-sm">{playerColor === 'white' ? 'Black' : 'White'}</p>
+          <p className="text-gray-400 text-sm">{opponentColor === 'white' ? 'White' : 'Black'}</p>
         </div>
       </div>
-      {showTimer && timerValue !== undefined && (
-        <div className="bg-tertiary px-4 py-2 rounded-lg">
-          <p className="text-white font-mono text-lg tabular-nums">
-            {Math.floor(timerValue / 60)}:{String(timerValue % 60).padStart(2, '0')}
-          </p>
-        </div>
+      {hasTimeControl && (
+        <Timer
+          initialTime={activeGame?.timeControl?.initial || 180}
+          serverTime={opponentTime}
+          isActive={isOpponentTurn && isGameActive}
+          increment={activeGame?.timeControl?.increment || 0}
+          onTimeOut={onTimeOut}
+        />
       )}
     </div>
   );

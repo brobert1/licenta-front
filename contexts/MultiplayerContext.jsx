@@ -17,6 +17,8 @@ export const MultiplayerProvider = ({ children }) => {
   const [matchFound, setMatchFound] = useState(false);
   const socketRef = useRef(null);
   const [token, setToken] = useState(null);
+  const [whiteTime, setWhiteTime] = useState(null);
+  const [blackTime, setBlackTime] = useState(null);
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -77,6 +79,10 @@ export const MultiplayerProvider = ({ children }) => {
       setOpponent(opponentData);
       setMatchFound(true);
 
+      // Initialize time from time control (initial is in seconds, store as milliseconds)
+      setWhiteTime(timeControl.initial * 1000);
+      setBlackTime(timeControl.initial * 1000);
+
       // Play animation for 3 seconds before showing the game board
       setTimeout(() => {
         setMatchFound(false);
@@ -90,6 +96,10 @@ export const MultiplayerProvider = ({ children }) => {
     });
 
     newSocket.on('moveMade', ({ fen, pgn, whiteTime, blackTime, gameOver, result, lastMove }) => {
+      // Update time from server
+      if (whiteTime !== undefined) setWhiteTime(whiteTime);
+      if (blackTime !== undefined) setBlackTime(blackTime);
+
       setActiveGame((prev) => ({
         ...prev,
         fen,
@@ -188,6 +198,14 @@ export const MultiplayerProvider = ({ children }) => {
     }
   }, [socket, isConnected, activeGame]);
 
+  const reportTimeout = useCallback(() => {
+    if (socket && isConnected && activeGame) {
+      socket.emit('timeout', {
+        gameId: activeGame._id,
+      });
+    }
+  }, [socket, isConnected, activeGame]);
+
   const reset = useCallback(() => {
     setActiveGame(null);
     setOpponent(null);
@@ -195,6 +213,8 @@ export const MultiplayerProvider = ({ children }) => {
     setGameResult(null);
     setInQueue(false);
     setMatchFound(false);
+    setWhiteTime(null);
+    setBlackTime(null);
   }, []);
 
   const value = {
@@ -206,12 +226,15 @@ export const MultiplayerProvider = ({ children }) => {
     playerColor,
     gameResult,
     matchFound,
+    whiteTime,
+    blackTime,
     joinQueue,
     leaveQueue,
     makeMove,
     resign,
     offerDraw,
     acceptDraw,
+    reportTimeout,
     reset,
   };
 

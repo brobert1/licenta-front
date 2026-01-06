@@ -1,16 +1,15 @@
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
-import { useQuery } from '@hooks';
 import { PgnTree } from '@chess/components/PgnViewer';
 import { usePgnViewer } from '@chess/hooks';
 import { classnames } from '@lib';
 import { NextChessground } from 'next-chessground';
 import LiveChessBoard from './LiveChessBoard';
 import OpponentCard from './OpponentCard';
+import PlayerCard from './PlayerCard';
 import LiveGameActions from './LiveGameActions';
 
 const MultiplayerGame = () => {
-  const { activeGame, playerColor, opponent, reset, gameResult } = useMultiplayerContext();
-  const { data: me } = useQuery('/client/account');
+  const { activeGame, playerColor, opponent, reset, gameResult, reportTimeout } = useMultiplayerContext();
 
   const { tree, current, goToMoment, lastMoment, goPrevMoment, goNextMoment } = usePgnViewer(
     activeGame?.pgn || '',
@@ -76,30 +75,7 @@ const MultiplayerGame = () => {
             </div>
           )}
         </div>
-        <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-          <div className="flex items-center gap-4">
-            <div className="bg-tertiary rounded">
-              {me?.image?.path ? (
-                <img
-                  src={me.image.path}
-                  className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
-                  alt="Your Avatar"
-                />
-              ) : (
-                <div className="lg:w-12 lg:h-12 w-10 h-10 flex items-center justify-center rounded-md bg-primary">
-                  <span className="text-white font-bold text-xl">{me?.name?.charAt(0)}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <div className="flex gap-2 items-center">
-                <p className="text-white font-medium text-base">{me?.name}</p>
-                <p className="text-gray-300">({me?.elo || 1200})</p>
-              </div>
-              <p className="text-gray-400 text-sm">{playerColor === 'white' ? 'White' : 'Black'}</p>
-            </div>
-          </div>
-        </div>
+        <PlayerCard onTimeOut={() => reportTimeout()} />
       </div>
       <div className="md:col-span-2 flex rounded-lg overflow-hidden flex-col">
         <div className="flex flex-col bg-secondary py-3 gap-3">
