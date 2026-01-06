@@ -4,7 +4,13 @@ import { time } from '@functions';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 
-const getPlayerResult = (result, player) => {
+const getPlayerResult = (result, player, isWhiteSide) => {
+  // Handle standard chess notation results
+  if (result === '1-0') return isWhiteSide ? '1' : '0';
+  if (result === '0-1') return isWhiteSide ? '0' : '1';
+  if (result === '1/2-1/2') return '½';
+
+  // Handle legacy name-based results
   if (!result || result === 'Draw') return '½';
   return result === player ? '1' : '0';
 };
@@ -15,7 +21,7 @@ const getStatusStyles = (score) => {
   return { bg: 'bg-yellow-400', icon: '' };
 };
 
-const GameHistoryItem = ({ gameIndex, white, black, result, createdAt, isActive }) => {
+const GameHistoryItem = ({ gameIndex, white, black, result, createdAt, isActive, type }) => {
   const { me } = useProfile();
   const router = useRouter();
 
@@ -23,8 +29,8 @@ const GameHistoryItem = ({ gameIndex, white, black, result, createdAt, isActive 
     router.push(`/client/play/history#${gameIndex}`);
   }, [router, gameIndex]);
 
-  const whiteResult = useMemo(() => getPlayerResult(result, white), [result, white]);
-  const blackResult = useMemo(() => getPlayerResult(result, black), [result, black]);
+  const whiteResult = useMemo(() => getPlayerResult(result, white, true), [result, white]);
+  const blackResult = useMemo(() => getPlayerResult(result, black, false), [result, black]);
 
   const isUserWhite = me?.name === white;
   const userScore = isUserWhite ? whiteResult : blackResult;
@@ -33,6 +39,8 @@ const GameHistoryItem = ({ gameIndex, white, black, result, createdAt, isActive 
 
   const whiteWon = whiteResult === '1';
   const blackWon = blackResult === '1';
+
+  const isLive = type === 'live';
 
   return (
     <div
@@ -45,7 +53,12 @@ const GameHistoryItem = ({ gameIndex, white, black, result, createdAt, isActive 
     >
       <div className="flex items-center gap-4">
         <div className="w-5 flex items-center justify-center flex-shrink-0">
-          <i className="fa-regular fa-robot text-white/70 text-base" />
+          <i
+            className={classnames(
+              'text-white/70 text-base',
+              isLive ? 'fa-solid fa-earth-americas' : 'fa-regular fa-robot'
+            )}
+          />
         </div>
         <div className="flex-1 min-w-0 flex items-center gap-4">
           <div className="flex-1 min-w-0">
