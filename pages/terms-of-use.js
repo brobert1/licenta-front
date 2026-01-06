@@ -9,7 +9,7 @@ const Page = () => {
           <h1>Terms of Use</h1>
           <h2>1. Introduction</h2>
           <p>
-            This agreement ("Terms of Use") is between you and Rook'n'Learn ("Company," "We," or
+            This agreement ("Terms of Use") is between you and Rook 'n Learn ("Company," "We," or
             "Us"). It covers your use of and interaction with
             <a href="http://localhost:3000/"> https://rooknlearn.com, </a>
             which includes all content, functionality, and services available on the site
@@ -24,7 +24,7 @@ const Page = () => {
             using the Website.
           </p>
           <p>
-            In other words: You're making a deal with Rook'n'Learn about how you can use
+            In other words: You're making a deal with Rook 'n Learn about how you can use
             <a href="http://localhost:3000/">https://rooknlearn.com/. </a>
             Make sure to read all the rules. If you use the site or click "accept", it means you're
             cool with these rules and our privacy details. If you're not, don't use our site.
@@ -288,7 +288,7 @@ const Page = () => {
           </p>
           <h2>11. Trademark Guidelines</h2>
           <p>
-            The name of our Company, the term 'Rook'n'Learn', our Company logo,
+            The name of our Company, the term 'Rook 'n Learn', our Company logo,
             and any related branding elements, such as product names, designs, and slogans, are the
             exclusive trademarks of the Company or entities associated with or licensed by us. You
             are not allowed to use these trademarks without receiving written consent from the
@@ -297,7 +297,7 @@ const Page = () => {
           </p>
           <p>
             In other words: Our company has specific names and logos that belong to us, like
-            Rook'n'Learn. You can't use them unless you ask us and we say yes. Any other
+            Rook 'n Learn. You can't use them unless you ask us and we say yes. Any other
             company names or logos you see on our site? They belong to those companies, not us.
           </p>
           <h2>12. Course Refund Policy</h2>
@@ -372,19 +372,19 @@ const Page = () => {
           </p>
           <h2>14. Gifting</h2>
           <p>
-            Course Vouchers are a feature on Rook'n'Learn that allows users to purchase a course as a
+            Course Vouchers are a feature on Rook 'n Learn that allows users to purchase a course as a
             gift for others.
           </p>
           <p>Rules:</p>
           <ul>
             <li>
-              Course Vouchers purchased on Rook'n'Learn are non-refundable and cannot be exchanged.
+              Course Vouchers purchased on Rook 'n Learn are non-refundable and cannot be exchanged.
             </li>
             <li>
               Course Vouchers have no monetary value and cannot be redeemed for cash or any other
               currency.
             </li>
-            <li>Course Vouchers are only valid and redeemable on Rook'n'Learn.</li>
+            <li>Course Vouchers are only valid and redeemable on Rook 'n Learn.</li>
             <li>
               Course Vouchers may occasionally be available for purchase at a discounted price.
               However, the price paid for the Course Voucher does not affect its value.
@@ -399,12 +399,12 @@ const Page = () => {
               Course Voucher then the remaining value of the Course Voucher is forfeited.
             </li>
             <li>
-              Course Vouchers issued by Rook'n'Learn do not have an expiry date and can be redeemed
+              Course Vouchers issued by Rook 'n Learn do not have an expiry date and can be redeemed
               at any time.
             </li>
           </ul>
           <p>
-            In other words: Course Vouchers are a feature on Rook'n'Learn that allows users to
+            In other words: Course Vouchers are a feature on Rook 'n Learn that allows users to
             purchase a course as a gift for others. The rules for this feature are:
           </p>
           <ul>
@@ -414,7 +414,7 @@ const Page = () => {
             </li>
             <li>
               Course Vouchers can not be turned into cash or used for anything other than courses on
-              Rook'n'Learn.
+              Rook 'n Learn.
             </li>
             <li>
               Even if Course Vouchers are on sale, their value stays the same. If you buy a USD 80
@@ -432,21 +432,21 @@ const Page = () => {
               from the Course Voucher's value is lost.
             </li>
             <li>
-              Course Vouchers from Rook'n'Learn never expire, so you can use them whenever you want.
+              Course Vouchers from Rook 'n Learn never expire, so you can use them whenever you want.
             </li>
           </ul>
-          <h2>15. Rook'n'Learn Plus Cancellation & Refund Policy</h2>
+          <h2>15. Rook 'n Learn Plus Cancellation & Refund Policy</h2>
           <p>
-            Overview: Rook'n'Learn Plus is a premium subscription service that grants members access
+            Overview: Rook 'n Learn Plus is a premium subscription service that grants members access
             to exclusive lectures, training tools, and additional benefits.
           </p>
           <p>
-            Billing: Subscription fees for Rook'n'Learn Plus are charged upfront and cannot be
+            Billing: Subscription fees for Rook 'n Learn Plus are charged upfront and cannot be
             refunded. This means we don't offer refunds for partial months or for any period that
             you didn't use the service.
           </p>
           <p>
-            Automatic Renewal: Unless you decide to cancel, your Rook'n'Learn Plus subscription will
+            Automatic Renewal: Unless you decide to cancel, your Rook 'n Learn Plus subscription will
             renew automatically. To avoid being charged for the next period, you need to cancel your
             subscription before the current one ends.
           </p>
@@ -455,25 +455,25 @@ const Page = () => {
             time. You can either:
           </p>
           <ul>
-            <li>Log into your Rook'n'Learn account and follow the cancellation steps.</li>
+            <li>Log into your Rook 'n Learn account and follow the cancellation steps.</li>
             <li>Reach out to our customer support team for assistance.</li>
           </ul>
           <p>
-            Even if you cancel, you'll still have access to all Rook'n'Learn Plus features until the
+            Even if you cancel, you'll still have access to all Rook 'n Learn Plus features until the
             end of your current subscription period.
           </p>
           <p>
             Refund Exceptions: Though our policy is to not provide refunds, in some special
             situations and at our own discretion, we may consider refunds. If you are given a
-            refund, your access to Rook'n'Learn Plus will be terminated immediately.
+            refund, your access to Rook 'n Learn Plus will be terminated immediately.
           </p>
           <p>
-            In other words: When you sign up for Rook'n'Learn Plus, you're billed right away and
-            typically, we don't offer refunds. If you decide not to continue with Rook'n'Learn Plus,
+            In other words: When you sign up for Rook 'n Learn Plus, you're billed right away and
+            typically, we don't offer refunds. If you decide not to continue with Rook 'n Learn Plus,
             remember to cancel before your subscription renews to avoid the next charge. You'll
-            still get all the Rook'n'Learn Plus benefits until your current subscription period ends.
+            still get all the Rook 'n Learn Plus benefits until your current subscription period ends.
             In very special cases, we might offer a refund, but that's up to us, and if we do,
-            you'll lose access to Rook'n'Learn Plus right away.
+            you'll lose access to Rook 'n Learn Plus right away.
           </p>
           <h2>16. Prohibited Uses of the Website</h2>
           <p>Basic Rule: You must use this Website lawfully and in line with our Terms of Use.</p>
@@ -701,10 +701,10 @@ const Page = () => {
           <p>
             References within the Website to any products, services, processes, or other
             information, by trade name, trademark, manufacturer, supplier, or otherwise does not
-            necessarily constitute or imply endorsement, sponsorship, or recommendation by Rook'n'Learn.
+            necessarily constitute or imply endorsement, sponsorship, or recommendation by Rook 'n Learn.
             The appearance of third-party trademarks or logos on the Website does not
             imply a partnership, endorsement, or affiliation with the owner of those trademarks or
-            logos unless explicitly stated otherwise. Rook'n'Learn is not responsible for and
+            logos unless explicitly stated otherwise. Rook 'n Learn is not responsible for and
             does not endorse the content of external sources or websites referenced on the Website.
           </p>
           <p>
@@ -849,16 +849,16 @@ const Page = () => {
           <h2>34. Entire Agreement</h2>
           <p>
             These Terms of Use, along with our Privacy Policy, are the complete and only agreement
-            between you and Rook'n'Learn about the Website. They replace any previous
+            between you and Rook 'n Learn about the Website. They replace any previous
             understandings or agreements, whether they were spoken or written.
           </p>
           <p>
-            In other words: All previous agreements or understandings you might have had with Rook'n'Learn
+            In other words: All previous agreements or understandings you might have had with Rook 'n Learn
             about the Website are replaced by these Terms of Use and the Privacy Policy.
             This is the full agreement between you and the company regarding the Website.
           </p>
           <h2>Contact Information</h2>
-          <p>This Website is operated by Rook'n'Learn</p>
+          <p>This Website is operated by Rook 'n Learn</p>
           <a href="business@chessly.freshdesk.com">business@chessly.freshdesk.com</a>
           <p>
             All other feedback, comments, requests for technical support, and other communications

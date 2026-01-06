@@ -4,7 +4,7 @@ const Breadcrumb = ({ title, page, children }) => {
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center text-sm text-grey gap-1.5">
-            <p className="hover:text-white cursor-pointer">Rook'n'Learn</p>
+            <p className="hover:text-white cursor-pointer">Rook 'n Learn</p>
             <i className="fa-solid fa-greater-than text-xs mt-0.5"></i>
             <p className="hover:text-white cursor-pointer">{page}</p>
           </div>

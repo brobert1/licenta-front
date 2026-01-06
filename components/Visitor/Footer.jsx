@@ -8,7 +8,7 @@ const Footer = () => {
           <div className="col-span-2 lg:col-span-2 flex flex-col gap-6">
             <Logo />
             <p className="text-grey lg:text-base text-sm max-w-sm leading-relaxed">
-              Rook'n'Learn is the premier destination for chess improvement. Master the game with
+              Rook 'n Learn is the premier destination for chess improvement. Master the game with
               world-class curriculum and smart training tools.
             </p>
           </div>
@@ -61,7 +61,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-grey text-sm">
-            © {new Date().getFullYear()} Rook'n'Learn. All rights reserved.
+            © {new Date().getFullYear()} Rook 'n Learn. All rights reserved.
           </p>
           <div className="flex gap-6">
             <Link

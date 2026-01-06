@@ -11,7 +11,7 @@ const Page = () => {
         <h2 className="text-2xl font-bold text-white mb-4">Create a new account</h2>
         <SignupForm />
         <div className="text-white text-sm mt-4">
-          <p>By continuing, you agree to Rook'n'Learn's </p>
+          <p>By continuing, you agree to Rook 'n Learn's </p>
           <div className="inline-flex gap-1.5">
             <Link className="underline text-white" href="/terms-of-use">
               Terms of Use

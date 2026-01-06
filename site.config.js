@@ -1,8 +1,8 @@
 const headers = require('./headers');
 
 module.exports = {
-  sitename: "Rook'n'Learn | Checkmate the Ordinary",
-  title: "Rook'n'Learn | Checkmate the Ordinary",
+  sitename: "Rook 'n Learn | Checkmate the Ordinary",
+  title: "Rook 'n Learn | Checkmate the Ordinary",
   description: `
   An e-learning app for chess enthusiasts with a massive library of curated lessons from
   world-class Grandmasters and coaches.
