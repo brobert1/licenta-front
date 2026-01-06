@@ -11,7 +11,7 @@
 }
 
 .table-lessons tr {
-  @apply even:bg-gray-50 !important;
+  @apply even:bg-white/5 !important;
 }
 
 .table-lessons td {

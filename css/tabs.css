@@ -1,12 +1,15 @@
 .nav-tabs {
   @apply flex space-x-2 border-none mb-3;
 }
+
 .nav-tabs .nav-link {
   @apply px-3 py-2 text-white bg-gray-800 rounded-full transition-all duration-300 border-none;
 }
+
 .nav-tabs .nav-link:hover {
   @apply bg-gray-700;
 }
+
 .nav-tabs .nav-link.active {
   @apply bg-blue-500 text-white font-semibold;
 }
@@ -16,11 +19,11 @@
   @apply flex w-full mb-0;
   gap: 0 !important;
   margin: 0 !important;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid #475569;
   background: transparent;
 }
 
-.actions-menu-tabs .nav-tabs > * {
+.actions-menu-tabs .nav-tabs>* {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
@@ -40,14 +43,14 @@
 .actions-menu-tabs .nav-link:hover {
   @apply text-white;
   background: transparent !important;
-  border-bottom-color: #666 !important;
+  border-bottom-color: #94a3b8 !important;
 }
 
 .actions-menu-tabs .nav-link.active {
   @apply text-white font-medium;
   background: transparent !important;
-  border-bottom-color: #2976ff !important;
-  color: #2976ff !important;
+  border-bottom-color: #3b82f6 !important;
+  color: #3b82f6 !important;
 }
 
 .actions-menu-tabs .nav-link i {

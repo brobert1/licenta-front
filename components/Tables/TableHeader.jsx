@@ -2,13 +2,13 @@ import { classnames } from '@lib';
 
 const TableHeader = ({ headers }) => {
   return (
-    <thead className="bg-neutral-900 border-b border-neutral-700">
+    <thead className="bg-black/20 border-b border-white/10">
       <tr>
         {headers.map((column) => (
           <th
             key={column.Header}
             className={classnames(
-              'px-6 py-3 text-left text-xs font-medium text-neutral-300 uppercase tracking-wider',
+              'px-6 py-3 text-left text-xs font-medium text-grey uppercase tracking-wider',
               column?.extraClass
             )}
           >

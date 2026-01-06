@@ -9,11 +9,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#111111',
-        secondary: '#1e1e1e',
-        accent: '#2976ff',
-        tertiary: '#2e2e2e',
-        grey: '#989898',
+        primary: '#020617', // Deep Slate
+        secondary: '#1e293b', // Slate 800
+        accent: '#3b82f6', // Blue 500
+        tertiary: '#334155', // Slate 700
+        grey: '#94a3b8', // Slate 400
       },
       fontFamily: {
         heading: 'Poppins, sans-serif',

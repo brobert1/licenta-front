@@ -6,12 +6,12 @@
 .cover-error {
   background: no-repeat center center / cover fixed;
   background-image: url('/images/cover.jpg');
-  background-color: #777;
+  background-color: #1e293b;
   background-blend-mode: multiply;
 }
 .cover-error {
   background-image: url('/images/error.jpg');
-  background-color: #aaa;
+  background-color: #334155;
 }
 
 .grid-cols-24 {
@@ -76,10 +76,10 @@
 .custom-gradient {
   background: linear-gradient(
     155deg,
-    rgb(0, 0, 0) 0%,
-    rgb(11, 0, 74) 38%,
-    rgb(0, 73, 184) 75%,
-    rgb(48, 131, 236) 100%
+    #020617 0%,
+    #1e293b 38%,
+    #1e40af 75%,
+    #3b82f6 100%
   );
 }
 
@@ -257,32 +257,32 @@
 }
 
 #annotation-group button {
-  background-color: #2e2e2e !important;
-  border-color: #444 !important;
+  background-color: #334155 !important;
+  border-color: #475569 !important;
   color: white !important;
 }
 
 #annotation-group button:hover {
-  background-color: #404040 !important;
-  border-color: #555 !important;
+  background-color: #475569 !important;
+  border-color: #64748b !important;
 }
 
 #annotation-group button.bg-accent {
-  background-color: #2976ff !important;
-  border-color: #2976ff !important;
+  background-color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
   color: white !important;
 }
 
 /* AddCommentModal Component Overrides */
 #comment-modal textarea {
-  background-color: #2e2e2e !important;
-  border-color: #444 !important;
+  background-color: #334155 !important;
+  border-color: #475569 !important;
   color: white !important;
 }
 
 #comment-modal textarea:focus {
-  background-color: #2e2e2e !important;
-  border-color: #2976ff !important;
+  background-color: #334155 !important;
+  border-color: #3b82f6 !important;
   color: white !important;
 }
 
@@ -295,8 +295,8 @@
 }
 
 #engine-settings-menu {
-  background: #2e2e2e !important;
-  border: 1px solid #444 !important;
+  background: #334155 !important;
+  border: 1px solid #475569 !important;
 }
 
 #engine-range-slider label {
@@ -316,7 +316,7 @@
 }
 
 #engine-pv-row {
-  background: #2e2e2e !important;
+  background: #334155 !important;
   border: 1px solid #ffffff1a !important;
 }
 
@@ -325,5 +325,5 @@
 }
 
 #engine-pv-move:hover {
-  color: #2976ff !important;
+  color: #3b82f6 !important;
 }

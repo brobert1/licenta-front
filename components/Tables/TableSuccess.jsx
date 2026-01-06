@@ -12,18 +12,18 @@ const TableSuccess = ({ name, columns, data, dataUpdatedAt, refetch = () => {} }
   const table = useTable(options);
 
   return (
-    <div className="bg-neutral-800 rounded-lg border border-neutral-700 overflow-hidden">
+    <div className="bg-secondary rounded-lg border border-white/10 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full" {...table.getTableProps()}>
           <TableHeader headers={table.visibleColumns} />
-          <tbody className="divide-y divide-neutral-700" {...table.getTableBodyProps()}>
+          <tbody className="divide-y divide-white/10" {...table.getTableBodyProps()}>
             {table.rows.map((row, i) => {
               table.prepareRow(row);
               return <TableRow key={`${name}-row-${i}`} row={row} refetch={refetch} />;
             })}
             {isEmpty(table.rows) && (
               <tr>
-                <td className="px-6 py-4 text-neutral-300" colSpan={size(columns)}>
+                <td className="px-6 py-4 text-grey" colSpan={size(columns)}>
                   Nothing to show
                 </td>
               </tr>

@@ -22,10 +22,12 @@ button:disabled {
   cursor: not-allowed;
   filter: opacity(0.75);
 }
-button:disabled > * {
+
+button:disabled>* {
   pointer-events: none;
 }
-button:disabled ~ * {
+
+button:disabled~* {
   cursor: not-allowed;
 }
 
@@ -107,15 +109,19 @@ button:disabled ~ * {
 #bottom .button {
   @apply border-0;
 }
-#bottom .button > i {
+
+#bottom .button>i {
   @apply text-lg min-w-4;
 }
+
 #bottom .button.mini {
   @apply px-3 py-1;
 }
+
 #bottom .button.mini.primary {
   @apply bg-slate-600 text-slate-300;
 }
+
 #bottom .button.mini.accent {
   @apply bg-accent text-white;
 }
