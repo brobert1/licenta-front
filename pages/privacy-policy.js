@@ -9,9 +9,9 @@ const Page = () => {
           <h1>Privacy Policy</h1>
           <h2>1. Introduction</h2>
           <p>
-            This policy describes the types of information Alex Banzea LLC ("Company" or "We") may
+            This policy describes the types of information Rook'n'Learn ("Company" or "We") may
             collect from you or that you may provide when you visit the website
-            <a href="/"> https://alex-banzea.com </a>
+            <a href="/"> https://rooknlearn.com </a>
             ("Website") and our practices for collecting, using, maintaining, protecting, and
             disclosing that information.
           </p>
@@ -289,7 +289,7 @@ const Page = () => {
                 or any other agreements.
               </li>
               <li>
-                We believe that to safeguard Alex Banzea LLC, our users, or other parties, we need
+                We believe that to safeguard Rook'n'Learn, our users, or other parties, we need
                 to share some data. This might involve swapping data with other firms for things
                 like credit checks or fraud detection.
               </li>

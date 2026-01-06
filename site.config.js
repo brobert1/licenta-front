@@ -1,11 +1,11 @@
 const headers = require('./headers');
 
 module.exports = {
-  sitename: 'MyChessPlace | Checkmate the Ordinary',
-  title: 'MyChessPlace | Checkmate the Ordinary',
+  sitename: "Rook'n'Learn | Checkmate the Ordinary",
+  title: "Rook'n'Learn | Checkmate the Ordinary",
   description: `
   An e-learning app for chess enthusiasts with a massive library of curated lessons from
-  the acclaimed author Alex Banzea.
+  world-class Grandmasters and coaches.
   `,
   baseurl: `${process.env.APP_BASE_URL}`,
   image: `${process.env.APP_BASE_URL}/images/logo.png`,

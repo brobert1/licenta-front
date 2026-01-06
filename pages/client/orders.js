@@ -16,17 +16,17 @@ const Page = () => {
         <div className="hidden lg:flex flex-col gap-4">
           <div className="flex flex-col items-center gap-4">
             <img
-              src="/images/alex-banzea-fundamentals-free.jpg"
+              src="/images/1234861669219094.png"
               alt="course thumbnail"
               className="rounded-lg lg:w-auto w-56"
             />
             <img
-              src="/images/alex-banzea-fundamentals-full.jpg"
+              src="/images/136631734951157.png"
               alt="course thumbnail"
               className="rounded-lg lg:w-auto w-56"
             />
             <img
-              src="/images/alex-banzea-jobava-london-1.jpg"
+              src="/images/1475801681203296.png"
               alt="course thumbnail"
               className="rounded-lg lg:w-auto w-56"
             />

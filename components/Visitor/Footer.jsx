@@ -2,71 +2,87 @@ import { Link, Logo } from '@components';
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-primary lg:pt-16 px-4 py-6 lg:p-8 mt-8">
-      <div className="max-visitor flex flex-col lg:grid lg:grid-cols-3 gap-8 lg:gap-16 max-w-6xl mx-auto">
-        <div className="lg:col-span-2 flex flex-col gap-4">
-          <Logo />
-          <p className="text-grey lg:text-base text-sm max-w-2xl">
-            Alexandru-Bogdan Banzea is a Romanian International Master, growing Twitch streamer,
-            YouTuber, lichess coach, and acclaimed Chessable author. All of that by his early
-            twenties.
-          </p>
-          <div className="flex p-2 w-fit hover:opacity-80 cursor-pointer items-center bg-secondary rounded-lg gap-2">
-            <img src="images/chessable-logo.jpg" className="w-8 h-8 lg:w-6 lg:h-6 rounded" />
-            <p className="text-white lg:text-base text-sm">
-              2023 Chessable Author of the Year and Best Presenter
+    <footer className="w-full bg-primary lg:pt-20 px-4 py-8 lg:px-8 mt-12 border-t border-white/10">
+      <div className="max-visitor mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 mb-16">
+          <div className="col-span-2 lg:col-span-2 flex flex-col gap-6">
+            <Logo />
+            <p className="text-grey lg:text-base text-sm max-w-sm leading-relaxed">
+              Rook'n'Learn is the premier destination for chess improvement. Master the game with
+              world-class curriculum and smart training tools.
             </p>
           </div>
+
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-bold text-lg">Product</h4>
+            <div className="flex flex-col gap-3">
+              <Link href="/courses" className="text-grey hover:text-white transition-colors">
+                Courses
+              </Link>
+              <Link href="/pricing" className="text-grey hover:text-white transition-colors">
+                Pricing
+              </Link>
+              <Link href="/features" className="text-grey hover:text-white transition-colors">
+                Features
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-bold text-lg">Company</h4>
+            <div className="flex flex-col gap-3">
+              <Link href="/about" className="text-grey hover:text-white transition-colors">
+                About Us
+              </Link>
+              <Link href="/careers" className="text-grey hover:text-white transition-colors">
+                Careers
+              </Link>
+              <Link href="/contact" className="text-grey hover:text-white transition-colors">
+                Contact
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <h4 className="text-white font-bold text-lg">Support</h4>
+            <div className="flex flex-col gap-3">
+              <Link href="/help" className="text-grey hover:text-white transition-colors">
+                Help Center
+              </Link>
+              <Link href="/terms-of-use" className="text-grey hover:text-white transition-colors">
+                Terms
+              </Link>
+              <Link href="/privacy-policy" className="text-grey hover:text-white transition-colors">
+                Privacy
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="flex flex-col gap-2">
-            <Link className="text-white font-bold hover:opacity-80" href="/about">
-              <p>About</p>
+
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-grey text-sm">
+            © {new Date().getFullYear()} Rook'n'Learn. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <Link
+              href="/privacy-policy"
+              className="text-sm text-grey hover:text-white transition-colors"
+            >
+              Privacy Policy
             </Link>
-            <Link className="text-white font-bold hover:opacity-80" href="/support">
-              <p>Support</p>
+            <Link
+              href="/terms-of-use"
+              className="text-sm text-grey hover:text-white transition-colors"
+            >
+              Terms of Use
             </Link>
-            <Link className="text-white font-bold hover:opacity-80" href="/contact">
-              <p>Contact</p>
+            <Link
+              href="/cookie-policy"
+              className="text-sm text-grey hover:text-white transition-colors"
+            >
+              Cookie Policy
             </Link>
           </div>
-          <div className="flex flex-col gap-2">
-            <Link
-              className="text-white font-bold hover:opacity-80"
-              href="https://www.youtube.com/c/AlexBanzea"
-              target="_blank"
-            >
-              <p>Youtube</p>
-            </Link>
-            <Link
-              className="text-white font-bold hover:opacity-80"
-              href="https://x.com/alexbanzea"
-              target="_blank"
-            >
-              <p>X(Twitter)</p>
-            </Link>
-            <Link
-              className="text-white font-bold hover:opacity-80"
-              href="https://www.instagram.com/alex.banzea/"
-              target="_blank"
-            >
-              <p>Instagram</p>
-            </Link>
-          </div>
-        </div>
-        <div className="lg:col-span-2">
-          <p className="text-grey text-sm">© MyChessPlace 2024. All rights reserved</p>
-        </div>
-        <div className="grid lg:place-items-center lg:grid-cols-3 gap-4 lg:gap-4">
-          <Link href="/privacy-policy" className="text-sm text-grey hover:text-white">
-            Privacy Policy
-          </Link>
-          <Link href="/terms-of-use" className="text-sm text-grey hover:text-white">
-            Terms of Use
-          </Link>
-          <Link href="/cookie-policy" className="text-sm text-grey hover:text-white">
-            Cookie Policy
-          </Link>
         </div>
       </div>
     </footer>

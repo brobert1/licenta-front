@@ -15,7 +15,7 @@ const Page = () => {
             <div className="flex flex-col gap-3 lg:gap-4">
               <p className="max-w-xl lg:text-xl">
                 An e-learning app for chess enthusiasts with a massive library of curated lessons
-                from the acclaimed author Alex Banzea.
+                from world-class Grandmasters and coaches.
               </p>
               <p className="max-w-xl lg:text-xl">
                 Master your openings, refine your middlegame strategies, and master endgames with
@@ -40,6 +40,8 @@ const Page = () => {
           </div>
         </div>
       </div>
+
+
       <Footer />
     </main>
   );

@@ -21,8 +21,8 @@ const Menu = () => {
         <div className="flex flex-col py-8 h-screen overflow-y-auto lg:sticky lg:top-0">
           <div className="px-8 pb-12">
             <Link href="/" className="flex cursor-pointer items-center text-white text-xl">
-              <img src="/images/logo.png" className="w-10 h-10 mr-3 -ml-1" alt="MyChessPlace" />
-              <p className="font-semibold text-lg md:text-xl">MyChessPlace</p>
+              <img src="/images/logo.png" className="w-10 h-10 mr-3 -ml-1" alt="Rook'n'Learn" />
+              <p className="font-semibold text-lg md:text-xl">Rook'n'Learn</p>
             </Link>
           </div>
           <Pages />
