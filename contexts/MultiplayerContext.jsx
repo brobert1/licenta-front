@@ -24,6 +24,11 @@ export const MultiplayerProvider = ({ children }) => {
   const [drawOfferState, setDrawOfferState] = useState('none');
   const [drawCooldown, setDrawCooldown] = useState(0); // Timestamp when cooldown ends
   const [resignPending, setResignPending] = useState(false);
+  // Chat state
+  const [messages, setMessages] = useState([]);
+  const [chatStatus, setChatStatus] = useState('initial'); // initial, pending, active, rejected
+  const [chatRequestedBy, setChatRequestedBy] = useState(null);
+  const [unreadChatCount, setUnreadChatCount] = useState(0);
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -78,27 +83,42 @@ export const MultiplayerProvider = ({ children }) => {
     });
 
     // Game events
-    newSocket.on('gameStart', ({ gameId, color, opponent: opponentData, timeControl, fen }) => {
-      setInQueue(false);
-      setPlayerColor(color);
-      setOpponent(opponentData);
-      setMatchFound(true);
+    newSocket.on(
+      'gameStart',
+      ({
+        gameId,
+        color,
+        opponent: opponentData,
+        timeControl,
+        fen,
+        chatStatus,
+        chatRequestedBy,
+      }) => {
+        setInQueue(false);
+        setPlayerColor(color);
+        setOpponent(opponentData);
+        setMatchFound(true);
 
-      // Initialize time from time control (initial is in seconds, store as milliseconds)
-      setWhiteTime(timeControl.initial * 1000);
-      setBlackTime(timeControl.initial * 1000);
+        // Initialize chat
+        setChatStatus(chatStatus || 'initial');
+        setChatRequestedBy(chatRequestedBy || null);
 
-      // Play animation for 3 seconds before showing the game board
-      setTimeout(() => {
-        setMatchFound(false);
-        setActiveGame({
-          _id: gameId,
-          timeControl,
-          fen,
-          status: 'active',
-        });
-      }, 3000);
-    });
+        // Initialize time from time control (initial is in seconds, store as milliseconds)
+        setWhiteTime(timeControl.initial * 1000);
+        setBlackTime(timeControl.initial * 1000);
+
+        // Play animation for 3 seconds before showing the game board
+        setTimeout(() => {
+          setMatchFound(false);
+          setActiveGame({
+            _id: gameId,
+            timeControl,
+            fen,
+            status: 'active',
+          });
+        }, 3000);
+      }
+    );
 
     newSocket.on('moveMade', ({ fen, pgn, whiteTime, blackTime, gameOver, result, lastMove }) => {
       // Update time from server
@@ -139,6 +159,25 @@ export const MultiplayerProvider = ({ children }) => {
       setDrawOfferState('declined');
       // Auto-clear after 3 seconds
       setTimeout(() => setDrawOfferState('none'), 3000);
+    });
+
+    // Chat events
+    newSocket.on('messageReceived', (messageData) => {
+      setMessages((prev) => [...prev, messageData]);
+      setUnreadChatCount((prev) => prev + 1);
+    });
+
+    newSocket.on('chatRequest', ({ requestedBy }) => {
+      setChatStatus('pending');
+      setChatRequestedBy(requestedBy);
+    });
+
+    newSocket.on('chatActive', () => {
+      setChatStatus('active');
+    });
+
+    newSocket.on('chatRejected', () => {
+      setChatStatus('rejected');
     });
 
     socketRef.current = newSocket;
@@ -238,6 +277,43 @@ export const MultiplayerProvider = ({ children }) => {
     }
   }, [socket, isConnected, activeGame]);
 
+  const sendMessage = useCallback(
+    (message) => {
+      if (socket && isConnected && activeGame) {
+        socket.emit('sendMessage', {
+          gameId: activeGame._id,
+          message,
+        });
+        // Optimistically update status if this is the first message (triggering request)
+        if (chatStatus === 'initial') {
+          setChatStatus('pending');
+          setChatRequestedBy(playerColor);
+        }
+      }
+    },
+    [socket, isConnected, activeGame, chatStatus, playerColor]
+  );
+
+  const acceptChat = useCallback(() => {
+    if (socket && isConnected && activeGame) {
+      socket.emit('chatAction', {
+        gameId: activeGame._id,
+        action: 'accept',
+      });
+      setChatStatus('active');
+    }
+  }, [socket, isConnected, activeGame]);
+
+  const declineChat = useCallback(() => {
+    if (socket && isConnected && activeGame) {
+      socket.emit('chatAction', {
+        gameId: activeGame._id,
+        action: 'decline',
+      });
+      setChatStatus('rejected');
+    }
+  }, [socket, isConnected, activeGame]);
+
   const reset = useCallback(() => {
     setActiveGame(null);
     setOpponent(null);
@@ -251,6 +327,14 @@ export const MultiplayerProvider = ({ children }) => {
     setDrawCooldown(0);
     setResignPending(false);
     setEloChange(null);
+    setMessages([]);
+    setChatStatus('initial');
+    setChatRequestedBy(null);
+    setUnreadChatCount(0);
+  }, []);
+
+  const markChatRead = useCallback(() => {
+    setUnreadChatCount(0);
   }, []);
 
   const value = {
@@ -279,6 +363,15 @@ export const MultiplayerProvider = ({ children }) => {
     confirmResign,
     cancelResign,
     reset,
+    // Chat
+    messages,
+    sendMessage,
+    chatStatus,
+    chatRequestedBy,
+    acceptChat,
+    declineChat,
+    unreadChatCount,
+    markChatRead,
   };
 
   return <MultiplayerContext.Provider value={value}>{children}</MultiplayerContext.Provider>;

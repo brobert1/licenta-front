@@ -3,14 +3,37 @@ import { PgnTree } from '@chess/components/PgnViewer';
 import { usePgnViewer } from '@chess/hooks';
 import { classnames } from '@lib';
 import { NextChessground } from 'next-chessground';
+import { useState } from 'react';
 import LiveChessBoard from './LiveChessBoard';
 import OpponentCard from './OpponentCard';
 import PlayerCard from './PlayerCard';
 import LiveGameActions from './LiveGameActions';
 import GameOverModal from './GameOverModal';
+import GameChat from './GameChat';
 
 const MultiplayerGame = () => {
-  const { activeGame, playerColor, opponent, reset, reportTimeout } = useMultiplayerContext();
+  const {
+    activeGame,
+    playerColor,
+    opponent,
+    reset,
+    reportTimeout,
+    unreadChatCount,
+    markChatRead,
+    chatStatus,
+    chatRequestedBy,
+  } = useMultiplayerContext();
+  const [activeTab, setActiveTab] = useState('moves'); // 'moves' | 'chat'
+
+  // Check if there's a pending chat request for us (opponent sent request)
+  const hasPendingRequest = chatStatus === 'pending' && chatRequestedBy !== playerColor;
+  // Show badge if unread messages OR pending request
+  const chatBadgeCount = hasPendingRequest ? 1 : activeTab !== 'chat' ? unreadChatCount : 0;
+
+  const handleChatTabClick = () => {
+    setActiveTab('chat');
+    markChatRead();
+  };
 
   const { tree, current, goToMoment, lastMoment, goPrevMoment, goNextMoment } = usePgnViewer(
     activeGame?.pgn || '',
@@ -59,25 +82,57 @@ const MultiplayerGame = () => {
           <PlayerCard onTimeOut={() => reportTimeout()} />
         </div>
         <div className="md:col-span-2 flex rounded-lg overflow-hidden flex-col">
-          <div className="flex flex-col bg-secondary py-3 gap-3">
-            <h3 className="text-white text-lg pt-2 mb-2 font-semibold text-center">
-              Live Game vs {opponent.name}
-            </h3>
+          <div className="flex bg-secondary">
+            <button
+              onClick={() => setActiveTab('moves')}
+              className={classnames(
+                'flex-1 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 relative',
+                activeTab === 'moves' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              <i className="fas fa-chess-knight"></i>
+              Moves
+              {activeTab === 'moves' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary shadow-[0_-2px_8px_rgba(var(--primary-rgb),0.5)]"></div>
+              )}
+            </button>
+            <button
+              onClick={handleChatTabClick}
+              className={classnames(
+                'flex-1 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 relative',
+                activeTab === 'chat' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
+              )}
+            >
+              <i className="fas fa-comments"></i>
+              Chat
+              {chatBadgeCount > 0 && (
+                <span className="absolute top-2 right-4 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 animate-pulse">
+                  {chatBadgeCount > 9 ? '9+' : chatBadgeCount}
+                </span>
+              )}
+              {activeTab === 'chat' && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary shadow-[0_-2px_8px_rgba(var(--primary-rgb),0.5)]"></div>
+              )}
+            </button>
           </div>
-          <div className="flex flex-col h-full overflow-hidden bg-secondary">
-            <div className="relative flex flex-col flex-grow min-h-0">
-              <div className="flex flex-col flex-grow min-h-0">
-                <div className="overflow-y-auto min-h-0 flex-grow">
-                  <PgnTree
-                    tree={tree}
-                    autoScroll={true}
-                    current={current}
-                    onMoveClick={goToMoment}
-                  />
+          {activeTab === 'moves' ? (
+            <div className="flex flex-col h-full overflow-hidden bg-secondary">
+              <div className="relative flex flex-col flex-grow min-h-0">
+                <div className="flex flex-col flex-grow min-h-0">
+                  <div className="overflow-y-auto min-h-0 flex-grow">
+                    <PgnTree
+                      tree={tree}
+                      autoScroll={true}
+                      current={current}
+                      onMoveClick={goToMoment}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <GameChat />
+          )}
           {!isGameOver && <LiveGameActions onPrevMove={goPrevMoment} onNextMove={goNextMoment} />}
           {isGameOver && (
             <div className="flex flex-col bg-secondary gap-4 p-4">

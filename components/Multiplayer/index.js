@@ -1,4 +1,5 @@
 export { default as DrawOfferCard } from './DrawOfferCard';
+export { default as GameChat } from './GameChat';
 export { default as GameOverModal } from './GameOverModal';
 export { default as LiveChessBoard } from './LiveChessBoard';
 export { default as LiveGameActions } from './LiveGameActions';
