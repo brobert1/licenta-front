@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { Button } from '@components';
 import DrawOfferCard from './DrawOfferCard';
+import ResignConfirmCard from './ResignConfirmCard';
 
 const LiveGameActions = ({ onPrevMove, onNextMove }) => {
-  const { resign, offerDraw, drawOfferState, drawCooldown } = useMultiplayerContext();
+  const { setResignPending, offerDraw, drawOfferState, drawCooldown } = useMultiplayerContext();
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
   // Update cooldown timer
@@ -30,6 +31,7 @@ const LiveGameActions = ({ onPrevMove, onNextMove }) => {
   return (
     <div className="flex flex-col bg-secondary p-4 border-t border-gray-700/50">
       <DrawOfferCard />
+      <ResignConfirmCard />
       <div className="flex gap-3">
         <div className="flex flex-1 gap-2">
           <button
@@ -57,7 +59,7 @@ const LiveGameActions = ({ onPrevMove, onNextMove }) => {
             )}
           </button>
           <button
-            onClick={resign}
+            onClick={() => setResignPending(true)}
             className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-2.5 px-3 rounded-lg transition-all flex items-center justify-center gap-2 group border border-red-500/20 hover:border-red-500/30"
             title="Resign"
           >

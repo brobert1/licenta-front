@@ -1,4 +1,5 @@
 export { default as DrawOfferCard } from './DrawOfferCard';
+export { default as GameOverModal } from './GameOverModal';
 export { default as LiveChessBoard } from './LiveChessBoard';
 export { default as LiveGameActions } from './LiveGameActions';
 export { default as MatchFoundAnimation } from './MatchFoundAnimation';
@@ -7,4 +8,5 @@ export { default as MultiplayerUserCard } from './MultiplayerUserCard';
 export { default as OnlineGameSetup } from './OnlineGameSetup';
 export { default as OpponentCard } from './OpponentCard';
 export { default as PlayerCard } from './PlayerCard';
+export { default as ResignConfirmCard } from './ResignConfirmCard';
 export { default as Timer } from './Timer';

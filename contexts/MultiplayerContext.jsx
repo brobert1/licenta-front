@@ -14,6 +14,7 @@ export const MultiplayerProvider = ({ children }) => {
   const [opponent, setOpponent] = useState(null);
   const [playerColor, setPlayerColor] = useState(null);
   const [gameResult, setGameResult] = useState(null);
+  const [eloChange, setEloChange] = useState(null);
   const [matchFound, setMatchFound] = useState(false);
   const socketRef = useRef(null);
   const [token, setToken] = useState(null);
@@ -22,6 +23,7 @@ export const MultiplayerProvider = ({ children }) => {
   // Draw offer state: 'none' | 'sent' | 'received' | 'declined'
   const [drawOfferState, setDrawOfferState] = useState('none');
   const [drawCooldown, setDrawCooldown] = useState(0); // Timestamp when cooldown ends
+  const [resignPending, setResignPending] = useState(false);
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -119,13 +121,14 @@ export const MultiplayerProvider = ({ children }) => {
       }
     });
 
-    newSocket.on('gameOver', ({ result }) => {
+    newSocket.on('gameOver', ({ result, eloChange }) => {
       setActiveGame((prev) => ({
         ...prev,
         status: 'completed',
         result,
       }));
       setGameResult(result);
+      setEloChange(eloChange);
     });
 
     newSocket.on('drawOffered', () => {
@@ -180,14 +183,20 @@ export const MultiplayerProvider = ({ children }) => {
     [socket, isConnected, activeGame]
   );
 
-  const resign = useCallback(() => {
+  // Resign flow: first show confirmation, then actually resign
+  const confirmResign = useCallback(() => {
     if (socket && isConnected && activeGame) {
       socket.emit('gameAction', {
         gameId: activeGame._id,
         action: 'resign',
       });
+      setResignPending(false);
     }
   }, [socket, isConnected, activeGame]);
+
+  const cancelResign = useCallback(() => {
+    setResignPending(false);
+  }, []);
 
   const offerDraw = useCallback(() => {
     if (socket && isConnected && activeGame) {
@@ -240,6 +249,8 @@ export const MultiplayerProvider = ({ children }) => {
     setBlackTime(null);
     setDrawOfferState('none');
     setDrawCooldown(0);
+    setResignPending(false);
+    setEloChange(null);
   }, []);
 
   const value = {
@@ -250,19 +261,23 @@ export const MultiplayerProvider = ({ children }) => {
     opponent,
     playerColor,
     gameResult,
+    eloChange,
     matchFound,
     whiteTime,
     blackTime,
     joinQueue,
     leaveQueue,
     makeMove,
-    resign,
     offerDraw,
     acceptDraw,
     declineDraw,
     reportTimeout,
     drawOfferState,
     drawCooldown,
+    resignPending,
+    setResignPending,
+    confirmResign,
+    cancelResign,
     reset,
   };
 
