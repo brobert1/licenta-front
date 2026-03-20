@@ -1,6 +1,16 @@
 export { default as ClientAccountMenu } from './ClientAccountMenu';
+export { default as ClientMenuButton } from './ClientMenuButton';
+export { default as ClientMobileMenu } from './ClientMobileMenu';
 export { default as DashboardCardButtons } from './DashboardCardButtons';
 export { default as DashboardCourses } from './DashboardCourses';
+export {
+  InProgressStudies,
+  PopularStudies,
+  PuzzleOfTheDay,
+  RecentGames,
+  StatsCards,
+  WelcomeSection,
+} from './Dashboard';
 export { default as EnrolledCoursesList } from './EnrolledCoursesList';
 export { default as Header } from './Header';
 export { default as Layout } from './Layout';
@@ -9,4 +19,5 @@ export { default as Menu } from './Menu';
 export { default as MenuItem } from './MenuItem';
 export { default as MenuLinks } from './MenuLinks';
 export { default as Pages } from './Pages';
+export { default as Sidebar } from './Sidebar';
 export { default as ProfileCourseCard } from './ProfileCourseCard';

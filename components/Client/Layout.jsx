@@ -1,32 +1,28 @@
-import { MenuButton, PreviewBanner } from '@components';
-import { ProfileButton } from '@components/Web';
+import { PreviewBanner } from '@components';
+import { useRouter } from 'next/router';
 import { usePreview } from '@hooks';
 import { classnames } from '@lib';
-import { Logo, MenuLinks } from '.';
+import { ClientMenuButton, Sidebar } from '.';
 
-const Layout = ({ children, type }) => {
+const Layout = ({ children }) => {
   const { isPreview } = usePreview();
+  const router = useRouter();
+  const currentPath = router?.pathname || '';
 
   return (
-    <div className="min-h-screen bg-primary w-full">
+    <div className="min-h-screen bg-surface w-full">
       {isPreview && <PreviewBanner />}
+      <Sidebar currentPath={currentPath} />
       <div
         className={classnames(
-          'max-w-lg md:max-w-6xl mx-auto px-0 text-xs 2xl:text-sm',
-          type === 'large' && '2xl:max-w-9xl'
+          'lg:ml-64 min-h-screen',
+          'px-10 py-6 text-xs 2xl:text-sm'
         )}
       >
-        <header className="w-full px-2 py-2.5 flex items-center justify-between">
-          <nav className="flex items-center gap-6">
-            <Logo />
-            <MenuLinks />
-          </nav>
-          <ProfileButton />
-          <MenuButton />
-        </header>
-        <main className="w-full px-4">
-          <div className="flex items-center justify-center w-full pb-6">{children}</div>
-        </main>
+        <div className="flex justify-end lg:hidden mb-4">
+          <ClientMenuButton />
+        </div>
+        <main className="w-full pb-6">{children}</main>
       </div>
     </div>
   );
