@@ -1,26 +1,25 @@
-import { AuthLayout, Link } from '@components';
+import { AuthCard, AuthLayoutGrandmaster, LichessButton } from '@components/Visitor';
+import { Link } from '@components';
 import { LoginForm } from '@components/Forms';
 
-const Page = () => {
-  return (
-    <AuthLayout className="cover flex min-h-screen flex-col items-center justify-center px-4 py-8">
-      <div className="auth-card bg-gray-900">
-        <h2 className="mb-4 text-2xl font-bold text-white">Login</h2>
-        <LoginForm />
-        <div className="mt-4">
-          <Link href="/forgot" className="text-white/70 hover:underline hover:text-white">
-            Forgot password?
-          </Link>
-          <div className="flex">
-            <p className="mr-1 text-white/70">No account yet?</p>
-            <Link href="/signup" className="hover:underline text-white font-medium">
-              Signup now
-            </Link>
-          </div>
-        </div>
+const Page = () => (
+  <AuthLayoutGrandmaster variant="split" imageOverlay="Every move is intentional.">
+    <AuthCard title="Welcome Back" subtitle="Return to your study" subtitleUppercase>
+      <LoginForm />
+      <div className="mt-4 pt-4 border-t border-outline-variant/30">
+        <p className="text-center text-xs font-landing text-secondary-muted uppercase tracking-widest mb-3">
+          Social Entry
+        </p>
+        <LichessButton />
       </div>
-    </AuthLayout>
-  );
-};
+      <p className="mt-4 text-center font-landing text-xs text-secondary-muted">
+        Not a member?{' '}
+        <Link href="/signup" className="text-tertiaryGold font-semibold hover:underline">
+          Join the Club
+        </Link>
+      </p>
+    </AuthCard>
+  </AuthLayoutGrandmaster>
+);
 
 export default Page;

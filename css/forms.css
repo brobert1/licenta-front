@@ -83,6 +83,33 @@ input::-webkit-inner-spin-button {
   @apply rounded-xl border text-white px-3 py-2 shadow-sm outline-none focus:ring-1 hover:bg-opacity-10 bg-white/10 focus:ring-white/20 !important;
 }
 
+.auth-card-grandmaster .input,
+.auth-card-grandmaster .textarea {
+  @apply rounded-xl border border-outline-variant/50 bg-surface-container-low text-on-surface px-4 py-3 shadow-sm outline-none focus:ring-2 focus:ring-tertiaryGold/30 focus:border-tertiaryGold/50 !important;
+}
+
+.auth-card-grandmaster .form-label {
+  @apply text-on-surface font-landing font-medium text-xs uppercase tracking-widest mb-1.5 !important;
+}
+
+.auth-card-grandmaster .form-help {
+  @apply text-secondary-muted text-sm !important;
+}
+
+.auth-card-grandmaster .has-error .form-label,
+.auth-card-grandmaster .has-error .form-help {
+  @apply text-red-500 !important;
+}
+
+.auth-card-grandmaster .has-error .input {
+  @apply border-red-500 !important;
+}
+
+.auth-card-grandmaster label span,
+.auth-card-grandmaster .checkbox ~ span {
+  @apply text-on-surface !important;
+}
+
 .input {
   @apply rounded-xl border text-white border-white/10 px-3 py-2 shadow-sm outline-none focus:ring-1 bg-tertiary focus:ring-white/20 !important;
 }

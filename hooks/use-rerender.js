@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 
-const useRerender = (initialKey) => {
-  const [key, setKey] = useState(`${initialKey}${Math.random()}`);
+const useRerender = (initialKey = '') => {
+  const id = useId();
+  const [key, setKey] = useState(`${initialKey}-${id}`);
 
   const rerender = () => {
     return setKey(`${initialKey}${Math.random()}`);

@@ -1,18 +1,22 @@
-import { AuthLayout, Link } from '@components';
+import { AuthCard, AuthLayoutGrandmaster } from '@components/Visitor';
+import { Link } from '@components';
 import { ForgotForm } from '@components/Forms';
 
-const Page = () => {
-  return (
-    <AuthLayout className="cover flex min-h-screen flex-col items-center justify-center px-4 py-8">
-      <div className="auth-card bg-gray-900">
-        <Link href="/login" className="text-slate-50 hover:underline">
-          ← back to login
+const Page = () => (
+  <AuthLayoutGrandmaster variant="split" imageOverlay="Every move is intentional.">
+    <AuthCard
+      title="Password Recovery"
+      subtitle="Enter your email and we'll send you a reset link."
+    >
+      <ForgotForm />
+      <p className="mt-4 text-center font-landing text-xs text-secondary-muted">
+        Remember your password?{' '}
+        <Link href="/login" className="text-tertiaryGold font-semibold hover:underline">
+          Log in
         </Link>
-        <h2 className="mb-4 text-2xl font-bold text-white">Password recovery</h2>
-        <ForgotForm />
-      </div>
-    </AuthLayout>
-  );
-};
+      </p>
+    </AuthCard>
+  </AuthLayoutGrandmaster>
+);
 
 export default Page;

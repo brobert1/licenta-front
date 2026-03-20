@@ -35,12 +35,5 @@ module.exports = [
     key: 'Permissions-Policy',
     value: 'geolocation=*', // allow specified policies here
   },
-  {
-    key: 'Cross-Origin-Embedder-Policy',
-    value: 'credentialless',
-  },
-  {
-    key: 'Cross-Origin-Opener-Policy',
-    value: 'same-origin',
-  },
+  // COEP/COOP removed to allow embedding Lichess TV iframe; Stockfish uses workers that work without crossOriginIsolated
 ];

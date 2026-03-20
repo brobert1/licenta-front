@@ -14,11 +14,33 @@ module.exports = {
         accent: '#3b82f6', // Blue 500
         tertiary: '#334155', // Slate 700
         grey: '#94a3b8', // Slate 400
+        // Landing page palette (Grandmaster's Study style)
+        gold: '#b8860b',
+        'gold-light': '#d4a84b',
+        cream: '#f8f6f3',
+        'cream-dark': '#ebe8e4',
+        // Design system tokens (Stitch / Rook'n'Learn landing)
+        surface: '#f7f9fb',
+        'surface-container-low': '#f2f4f6',
+        'surface-container': '#eceef0',
+        'surface-container-high': '#e6e8ea',
+        'surface-container-highest': '#e0e3e5',
+        'surface-container-lowest': '#ffffff',
+        'on-primary': '#ffffff',
+        'on-surface': '#191c1e',
+        'outline-variant': '#c6c6cd',
+        tertiaryGold: '#725c00',
+        'tertiary-container': '#cba829',
+        'secondary-muted': '#505f76',
       },
       fontFamily: {
         heading: 'Poppins, sans-serif',
         body: 'Poppins, sans-serif',
         chess: '"Noto Chess", "Noto Sans", sans-serif',
+        serif: '"Playfair Display", Georgia, serif',
+        sans: '"Source Sans 3", system-ui, sans-serif',
+        headline: '"Newsreader", Georgia, serif',
+        landing: '"Manrope", system-ui, sans-serif',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out forwards',

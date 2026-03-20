@@ -1,5 +1,6 @@
 import { forgot } from '@api/identity';
 import { Email, Recaptcha } from '@components/Fields';
+import { NoSsr } from '@components';
 import { Field, Fieldset, Form, HookForm, Submit } from '@components/HookForm';
 import { initialValues, validationSchema } from '@models/forgot';
 import { useRef } from 'react';
@@ -17,15 +18,17 @@ const ForgotForm = () => {
       onSubmit={handleSubmit}
     >
       <Form className="space-y-4">
-        <Fieldset name="email" label="Your email">
-          <Field id="email" name="email" as={Email} autoFocus={true} />
+        <Fieldset name="email" label="Email Address">
+          <Field id="email" name="email" as={Email} autoFocus />
         </Fieldset>
-        <Submit className="button full accent rounded-full w-full font-semibold text-base">
-          Send password reset email
+        <Submit className="w-full px-6 py-4 bg-black text-on-primary rounded-xl font-bold font-landing hover:opacity-90 transition-all uppercase tracking-wider">
+          Send Reset Link
         </Submit>
-        <div className="hidden">
-          <Recaptcha ref={ref} />
-        </div>
+        <NoSsr>
+          <div className="hidden">
+            <Recaptcha ref={ref} />
+          </div>
+        </NoSsr>
       </Form>
     </HookForm>
   );
