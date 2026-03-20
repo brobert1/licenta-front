@@ -71,7 +71,7 @@ const StudySettingsModal = ({ hide, isOpen, study, onUpdateSuccess }) => {
               className="input"
             />
           </div>
-          {me?.role === 'admin' && (
+          {(me?.role === 'admin' || me?.role === 'professor') && (
             <div className="mt-4">
               <Checkbox value={isActive} onChange={setIsActive}>
                 Published

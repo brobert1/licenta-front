@@ -14,19 +14,24 @@ const isRouteAllowed = (pathname, token, query = {}) => {
       return false;
     }
 
-    // Only admins can use preview mode
-    if (query.preview === 'true' && role !== 'admin') {
+    // Only professors and admins can use preview mode
+    if (query.preview === 'true' && role !== 'professor' && role !== 'admin') {
       return false;
     }
 
-    // Admin in preview mode can access client routes
-    if (role === 'admin' && query.preview === 'true') {
+    // Professor or admin in preview mode can access client routes
+    if ((role === 'professor' || role === 'admin') && query.preview === 'true') {
       return pathname.startsWith('/client');
     }
 
-    // Admin WITHOUT preview mode can only access admin routes (not client routes)
+    // Admin without preview mode can only access admin routes
     if (role === 'admin') {
       return pathname.startsWith('/admin');
+    }
+
+    // Professor without preview mode can only access professor routes
+    if (role === 'professor') {
+      return pathname.startsWith('/professor');
     }
 
     // Client can only access client routes

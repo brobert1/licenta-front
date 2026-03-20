@@ -1,29 +1,23 @@
 import { MenuItem } from '@components';
-import { useQuery } from '@hooks';
+import { useProfile, useQuery } from '@hooks';
 
-const Pages = () => {
-  const { data, status } = useQuery('/admin/reviews/count');
+const ProfessorPages = () => {
+  const { data, status } = useQuery('/professor/reviews/count');
   return (
     <>
-      <MenuItem href="/admin" level="1">
+      <MenuItem href="/professor" level="1">
         <div className="flex items-center gap-3">
           <i className="fa-duotone fa-grid-2 flex w-4 justify-center"></i>
           <p>Dashboard</p>
         </div>
       </MenuItem>
-      <MenuItem href="/admin/courses" level="1">
+      <MenuItem href="/professor/courses" level="1">
         <div className="flex items-center gap-3">
           <i className="fa-duotone fa-graduation-cap flex w-4 justify-center"></i>
           <p>Courses</p>
         </div>
       </MenuItem>
-      <MenuItem href="/admin/clients" level="1">
-        <div className="flex items-center gap-3">
-          <i className="fa-duotone fa-user flex w-4 justify-center"></i>
-          <p>Clients</p>
-        </div>
-      </MenuItem>
-      <MenuItem href="/admin/reviews">
+      <MenuItem href="/professor/reviews">
         <div className="flex items-center gap-3">
           <i className="fa-duotone fa-star flex w-4 justify-center"></i>
           <p className="flex items-center gap-1">
@@ -38,6 +32,25 @@ const Pages = () => {
       </MenuItem>
     </>
   );
+};
+
+const AdminPages = () => (
+  <MenuItem href="/admin" level="1">
+    <div className="flex items-center gap-3">
+      <i className="fa-duotone fa-grid-2 flex w-4 justify-center"></i>
+      <p>Admin</p>
+    </div>
+  </MenuItem>
+);
+
+const Pages = () => {
+  const { me } = useProfile();
+
+  if (me?.role === 'admin') {
+    return <AdminPages />;
+  }
+
+  return <ProfessorPages />;
 };
 
 export default Pages;

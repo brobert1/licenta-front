@@ -30,7 +30,7 @@ const AddStudyForm = ({ courseId, courseName, hide }) => {
 
   return (
     <HookForm
-      validationSchema={me?.role === 'admin' ? validationSchemaAdmin : validationSchema}
+      validationSchema={(me?.role === 'admin' || me?.role === 'professor') ? validationSchemaAdmin : validationSchema}
       initialValues={mergedInitialValues}
       onSubmit={handleSubmit}
     >
@@ -47,7 +47,7 @@ const AddStudyForm = ({ courseId, courseName, hide }) => {
             </Fieldset>
           </div>
         </div>
-        {me?.role === 'admin' && courseId && (
+        {(me?.role === 'admin' || me?.role === 'professor') && courseId && (
           <div className="w-full mt-4">
             <Fieldset name="course" label="Course">
               <Input value={courseName} disabled />

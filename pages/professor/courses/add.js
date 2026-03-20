@@ -1,13 +1,11 @@
 import { checkAuth, withAuth } from '@auth';
 import { Layout } from '@components';
-import ReviewsTable from '@components/Admin/Reviews/ReviewsTable';
+import AddCourseForm from '@components/Forms/Professor/Courses/AddCoursesForm';
 
 const Page = () => {
   return (
-    <Layout title="Reviews">
-      <div className="w-full flex-col gap-4 overflow-x-auto rounded-lg p-4 shadow-sm">
-        <ReviewsTable />
-      </div>
+    <Layout title="Add Course">
+      <AddCourseForm />
     </Layout>
   );
 };

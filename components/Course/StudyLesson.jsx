@@ -2,13 +2,18 @@ import { ChessProvider, PuzzleProvider } from '@chess/contexts';
 import { extractFen } from '@chess/functions';
 import { StudyLayoutProvider } from '@contexts/StudyLayoutContext';
 import { buildLayoutProps } from '@functions';
-import { useQuery } from '@hooks';
+import { useProfile, useQuery } from '@hooks';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import StudyLessonResponsive from './StudyLessonResponsive';
 
 const StudyLesson = ({ id, chapterIndex = 0, isPreview }) => {
-  const endpoint = isPreview ? `/admin/studies` : `/client/studies`;
+  const { me } = useProfile();
+  const endpoint = isPreview
+    ? me?.role === 'professor'
+      ? '/professor/studies'
+      : '/admin/studies'
+    : '/client/studies';
   const { data, status, refetch } = useQuery(`${endpoint}/${id}`);
 
   const router = useRouter();

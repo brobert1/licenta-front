@@ -26,7 +26,7 @@ const StudyDetails = () => {
         <Field as={Dropdown} name="analysis" id="analysis">
           <option value="normal">Normal Analysis</option>
           <option value="interactive">Interactive Lesson</option>
-          {me?.role === 'admin' && <option value="drill">Drill</option>}
+          {(me?.role === 'admin' || me?.role === 'professor') && <option value="drill">Drill</option>}
         </Field>
       </Fieldset>
     </div>

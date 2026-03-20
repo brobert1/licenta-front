@@ -1,11 +1,15 @@
 import { checkAuth, withAuth } from '@auth';
 import { Layout } from '@components';
-import AddClientForm from '@components/Forms/Admin/Clients/AddClientForm';
+import { CoursePage } from '@components/Professor/Courses';
+import { useRouter } from 'next/router';
 
 const Page = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
   return (
-    <Layout title="Add Client">
-      <AddClientForm />
+    <Layout title="Course Details">
+      <CoursePage id={id} />
     </Layout>
   );
 };

@@ -10,8 +10,8 @@ ChartJS.register(...registerables);
 
 const colors = ['#8B8EA5', '#DCE0FA', '#FFFFFF'];
 
-const Line = () => {
-  const { data: salesMonthlyData, status } = useQuery('/admin/monthly-payments');
+const Line = ({ endpoint = '/admin/monthly-payments' }) => {
+  const { data: salesMonthlyData, status } = useQuery(endpoint);
   const [chartData, setChartData] = useState({ datasets: [] });
   const chartRef = useRef(null);
 

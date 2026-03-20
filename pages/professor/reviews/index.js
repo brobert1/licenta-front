@@ -1,15 +1,13 @@
 import { checkAuth, withAuth } from '@auth';
 import { Layout } from '@components';
-import { CoursePage } from '@components/Admin/Courses';
-import { useRouter } from 'next/router';
+import ReviewsTable from '@components/Professor/Reviews/ReviewsTable';
 
 const Page = () => {
-  const router = useRouter();
-  const { id } = router.query;
-
   return (
-    <Layout title="Course Details">
-      <CoursePage id={id} />
+    <Layout title="Reviews">
+      <div className="w-full flex-col gap-4 overflow-x-auto rounded-lg p-4 shadow-sm">
+        <ReviewsTable />
+      </div>
     </Layout>
   );
 };

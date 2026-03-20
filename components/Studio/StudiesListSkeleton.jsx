@@ -16,7 +16,7 @@ const StudiesListSkeleton = ({ type }) => {
       <div
         className={classnames(
           'grid grid-cols-1 sm:grid-cols-2 gap-6',
-          me?.role === 'admin' && 'lg:grid-cols-3'
+          (me?.role === 'admin' || me?.role === 'professor') && 'lg:grid-cols-3'
         )}
       >
         {Array.from({ length: 6 }).map((_, index) => (

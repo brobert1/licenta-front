@@ -56,7 +56,7 @@ const UnderboardTabs = ({ tree, current, setTree, moments }) => {
         >
           <Export />
         </Tab>
-        {me?.role === 'admin' && (
+        {(me?.role === 'admin' || me?.role === 'professor') && (
           <Tab
             eventKey="video"
             title={

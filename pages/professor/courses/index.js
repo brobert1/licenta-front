@@ -1,6 +1,6 @@
 import { checkAuth, withAuth } from '@auth';
 import { Layout, Link } from '@components';
-import { CoursesTable } from '@components/Admin/Courses';
+import { CoursesTable } from '@components/Professor/Courses';
 
 const Page = () => {
   return (
@@ -15,7 +15,7 @@ const Page = () => {
             <p>Preview Client View</p>
           </Link>
           <Link
-            href="/admin/courses/add"
+            href="/professor/courses/add"
             className="button w-full sm:w-max justify-center px-4 flex items-center gap-2 full accent"
           >
             <i className="fa-solid fa-plus"></i>

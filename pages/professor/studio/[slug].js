@@ -10,7 +10,6 @@ const Page = () => {
   const { slug } = router.query;
   const id = extractIdFromSlug(slug);
 
-  // Get active chapter index from fragment URL
   const index = Number(router.asPath.split('#')[1]) || 0;
 
   const { data, status, refetch } = useQuery(`/studies/${id}`);
@@ -21,7 +20,7 @@ const Page = () => {
         <main className="w-full px-4 pt-6">
           <div className="w-full mb-4">
             <Link
-              href={`/admin/courses/${data?.course}`}
+              href={`/professor/courses/${data?.course}`}
               className="inline-flex items-center gap-2 text-white hover:text-accent transition-colors"
             >
               <i className="fas fa-arrow-left"></i>

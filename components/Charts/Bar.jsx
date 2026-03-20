@@ -4,8 +4,8 @@ import { useQuery } from '@hooks';
 import BarChartLoading from './BarChartLoading';
 import BarChartError from './BarChartError';
 
-const BarChart = () => {
-  const { data: newUsersMonthlyData, status } = useQuery('/admin/monthly-clients');
+const BarChart = ({ endpoint = '/admin/monthly-clients' }) => {
+  const { data: newUsersMonthlyData, status } = useQuery(endpoint);
 
   const options = {
     animation: { duration: 0 },

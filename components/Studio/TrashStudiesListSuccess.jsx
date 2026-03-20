@@ -19,7 +19,7 @@ const TrashStudiesListSuccess = ({ data, refetch }) => {
       )}
       <div className={classnames(
         'grid grid-cols-1 sm:grid-cols-2 gap-6',
-        me?.role === 'admin' && 'lg:grid-cols-3'
+        (me?.role === 'admin' || me?.role === 'professor') && 'lg:grid-cols-3'
       )}>
         {studies.map((study, i) => (
           <TrashStudyCard key={`trash-study-${i}`} refetch={refetch} {...study} />

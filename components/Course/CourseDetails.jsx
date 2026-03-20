@@ -1,9 +1,14 @@
-import { useQuery } from '@hooks';
+import { useProfile, useQuery } from '@hooks';
 import CourseDetailsSkeleton from './CourseDetailsSkeleton';
 import CourseDetailsSuccess from './CourseDetailsSuccess';
 
 const CourseDetails = ({ id, showAllReviews = false, success, isPreview }) => {
-  const endpoint = isPreview ? '/admin/courses' : '/client/courses';
+  const { me } = useProfile();
+  const endpoint = isPreview
+    ? me?.role === 'professor'
+      ? '/professor/courses'
+      : '/admin/courses'
+    : '/client/courses';
   const { data, status, refetch } = useQuery(`${endpoint}/${id}`);
 
   // Transform admin response to match client response format
