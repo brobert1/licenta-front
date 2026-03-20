@@ -12,7 +12,7 @@ const StarRating = ({ value = 0, onChange, totalStars = 5, readOnly = false }) =
 
   return (
     <div className="flex flex-row items-center gap-4">
-      {!readOnly && <span className="text-white">Rating</span>}
+      {!readOnly && <span className="text-black">Rating</span>}
       <div className="flex items-center">
         {/* generate the stars here */}
         {[...Array(totalStars)].map((_, index) => {

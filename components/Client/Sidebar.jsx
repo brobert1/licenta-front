@@ -1,4 +1,5 @@
 import { Link } from '@components';
+import logout from '@api/logout';
 import { usePreview, useQuery } from '@hooks';
 import { classnames } from '@lib';
 
@@ -57,9 +58,9 @@ const UserCard = () => {
           <p className="font-landing text-xs text-secondary-muted truncate">{data?.email}</p>
         )}
       </div>
-      <Link href="/client/settings" className="text-secondary-muted hover:text-on-surface transition-colors flex-shrink-0">
-        <i className="fa-regular fa-chevron-down text-xs" />
-      </Link>
+      <button onClick={logout} className="text-secondary-muted hover:text-on-surface transition-colors flex-shrink-0">
+        <i className="fa-regular fa-arrow-right-from-bracket text-sm" />
+      </button>
     </div>
   );
 };

@@ -10,9 +10,9 @@ const CoursesListSkeleton = ({ type }) => {
   }, [type]);
 
   return (
-    <div className="col-span-2 flex flex-col gap-4">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <CourseCardSkeleton key={index} type={type} />
+    <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <CourseCardSkeleton key={i} />
       ))}
     </div>
   );

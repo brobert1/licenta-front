@@ -1,57 +1,40 @@
-import { Pill } from '@components';
+const Shimmer = ({ className }) => (
+  <div className={`animate-pulse bg-surface-container-high rounded ${className}`} />
+);
 
-const CourseCardSkeleton = ({ type }) => {
-  return (
-    <div className="flex lg:flex-row flex-col bg-secondary p-3.5 lg:p-5 rounded-xl gap-4">
-      {/* Image Skeleton */}
-      <div className="lg:block hidden w-40 aspect-square rounded-lg overflow-hidden flex-shrink-0">
-        <Pill type={type} className="h-full w-full" />
+const CourseCardSkeleton = () => (
+  <div className="flex flex-col bg-white rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+    {/* Thumbnail */}
+    <div className="aspect-[16/10] bg-surface-container-high animate-pulse" />
+
+    {/* Content */}
+    <div className="flex flex-col flex-1 p-5 gap-3">
+      {/* Category */}
+      <Shimmer className="h-3 w-1/4" />
+
+      {/* Title — 2 lines */}
+      <div className="flex flex-col gap-2">
+        <Shimmer className="h-5 w-full" />
+        <Shimmer className="h-5 w-3/4" />
       </div>
 
-      {/* Content Skeleton */}
-      <div className="flex flex-col justify-between gap-4 w-full">
-        {/* Top Section */}
-        <div className="flex flex-col gap-2">
-          {/* Header */}
-          <div className="flex gap-3 items-center">
-            {/* Small Image for Mobile */}
-            <div className="lg:hidden w-16 aspect-square rounded-lg overflow-hidden flex-shrink-0">
-              <Pill type={type} className="h-full w-full" />
-            </div>
-            <div className="flex flex-col gap-2 w-full">
-              <Pill type={type} className="h-6 w-1/2 rounded-full" />
-              <div className="lg:hidden flex items-center gap-2">
-                <Pill type={type} className="h-4 w-4 rounded-sm" />
-                <Pill type={type} className="h-4 w-1/3 rounded" />
-              </div>
-            </div>
-          </div>
+      {/* Description — 3 lines */}
+      <div className="flex flex-col gap-1.5 mt-1">
+        <Shimmer className="h-3.5 w-full" />
+        <Shimmer className="h-3.5 w-full" />
+        <Shimmer className="h-3.5 w-2/3" />
+      </div>
 
-          {/* Description */}
-          <div className="flex flex-col gap-2">
-            <Pill type={type} className="h-4 w-full rounded" />
-            <Pill type={type} className="h-4 w-3/4 rounded" />
-          </div>
-
-          {/* Author (Desktop Only) */}
-          <div className="hidden lg:flex items-center gap-2">
-            <Pill type={type} className="h-4 w-4 rounded-sm" />
-            <Pill type={type} className="h-4 w-1/4 rounded" />
-          </div>
+      {/* Author row */}
+      <div className="flex items-center justify-between pt-3.5 border-t border-outline-variant/20 mt-auto">
+        <div className="flex items-center gap-2.5">
+          <Shimmer className="w-7 h-7 rounded-full flex-shrink-0" />
+          <Shimmer className="h-3.5 w-28" />
         </div>
-
-        {/* Metadata */}
-        <div className="flex gap-4 items-center">
-          <div className="flex items-center gap-2 text-sm">
-            <Pill type={type} className="h-4 w-16 rounded" />
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Pill type={type} className="h-4 w-24 rounded" />
-          </div>
-        </div>
+        <Shimmer className="h-3.5 w-8" />
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default CourseCardSkeleton;

@@ -2,14 +2,14 @@ import { LoadMoreOnClick } from '@components/Buttons';
 import { useProfile, useInfiniteQuery } from '@hooks';
 import { CoursesListSkeleton, CoursesListSuccess } from '.';
 
-const CoursesList = ({ isPreview }) => {
+const CoursesList = ({ isPreview, options = {} }) => {
   const { me } = useProfile();
   const endpoint = isPreview
     ? me?.role === 'professor'
       ? '/professor/courses'
       : '/admin/courses'
     : '/client/courses';
-  const { data, status, ...props } = useInfiniteQuery(endpoint);
+  const { data, status, ...props } = useInfiniteQuery(endpoint, options);
 
   return (
     <>

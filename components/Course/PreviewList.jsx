@@ -1,27 +1,37 @@
 import { NoDataPlaceholder } from '@components';
-import { isEmpty } from 'lodash';
+import { useState } from 'react';
 import LessonCard from './LessonCard';
 
+const INITIAL_SHOWN = 3;
+
 const PreviewList = ({ content = [], user, isPreview }) => {
+  const [showAll, setShowAll] = useState(false);
+
   const sortedContent = [...content]
-    .filter((item) => item.kind === 'study' && !isEmpty(item.chapters))
+    .filter((item) => item.kind === 'study')
     .sort((a, b) => a.index - b.index);
 
+  const visible = showAll ? sortedContent : sortedContent.slice(0, INITIAL_SHOWN);
+  const hiddenCount = sortedContent.length - INITIAL_SHOWN;
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-5">
-        {sortedContent.length === 0 && (
-          <NoDataPlaceholder
-            icon="fa-light fa-chess"
-            message="No content available at the moment"
-            extraClass="col-span-3"
-          />
-        )}
-        {sortedContent.map((data) => (
+    <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6">
+      <h2 className="font-headline text-xl text-on-surface mb-5">Course Curriculum</h2>
+
+      {sortedContent.length === 0 && (
+        <NoDataPlaceholder
+          icon="fa-light fa-chess"
+          message="No content available at the moment"
+        />
+      )}
+
+      <div className="flex flex-col gap-3">
+        {visible.map((data, i) => (
           <LessonCard
             key={data._id}
             _id={data._id}
             name={data.name}
+            index={data.index ?? i}
             chapters={data.chapters}
             completedChapters={data.completedChapters}
             user={user}
@@ -31,6 +41,19 @@ const PreviewList = ({ content = [], user, isPreview }) => {
           />
         ))}
       </div>
+
+      {sortedContent.length > INITIAL_SHOWN && (
+        <button
+          onClick={() => setShowAll((v) => !v)}
+          className="mt-5 flex items-center gap-2 text-sm font-landing font-semibold text-on-surface hover:text-tertiaryGold transition-colors"
+        >
+          {showAll ? (
+            <>Show less <i className="fa-regular fa-chevron-up text-xs" /></>
+          ) : (
+            <>View all {sortedContent.length} lessons <i className="fa-regular fa-arrow-right text-xs" /></>
+          )}
+        </button>
+      )}
     </div>
   );
 };

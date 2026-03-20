@@ -3,49 +3,67 @@ import { calculateCoursePricing } from '@functions';
 import { useStripe } from '@hooks';
 import SaleCountdown from './SaleCountdown';
 
-const PurchaseButton = ({ course, isPreview }) => {
+const PurchaseButton = ({ course, isPreview, embedded }) => {
   const { handlePurchase, isLoading } = useStripe(course);
   const { displayPrice, percentOff } = calculateCoursePricing(course);
 
-  return (
-    <div className="flex flex-col space-y-2">
-      {course?.isPaid && (
-        <div className="flex flex-col items-center gap-2">
-          {!course?.sale?.isActive && (
-            <span className="text-white text-2xl font-bold">
-              {course?.currency} <Price value={course?.price} precision={2} />
-            </span>
-          )}
+  const inner = (
+    <>
+      {course?.sale?.isActive ? (
+        <div className="bg-tertiaryGold px-5 py-2.5">
+          <p className="text-white text-[10px] font-bold uppercase tracking-widest">
+            Limited Time Offer
+          </p>
+        </div>
+      ) : null}
+
+      <div className="p-5 flex flex-col gap-4">
+        {/* Pricing */}
+        <div className="flex items-baseline gap-3">
+          <span className="font-headline text-3xl text-on-surface">
+            {course?.currency?.toUpperCase()} <Price value={displayPrice} precision={2} />
+          </span>
           {course?.sale?.isActive && (
             <>
-              <span className="text-white text-2xl font-bold">
-                {course?.currency} <Price value={displayPrice} precision={2} />
+              <span className="font-landing text-base text-secondary-muted line-through">
+                <Price value={course?.price} precision={2} />
               </span>
-              <div className="flex items-center gap-2">
-                <span className="line-through text-gray-400">
-                  {course?.currency} <Price value={course?.price} precision={2} />
-                </span>
-                <span className="text-xs rounded-full bg-red-600/20 text-red-400 border border-red-600/40 px-2 py-1">
-                  Save {percentOff}%
-                </span>
-              </div>
+              <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+                -{percentOff}%
+              </span>
             </>
           )}
         </div>
-      )}
-      {course?.sale?.isActive && course?.sale?.endsAt && (
-        <SaleCountdown endAt={course?.sale?.endsAt} />
-      )}
-      <form onSubmit={handlePurchase}>
-        <Button
-          type="submit"
-          className="w-full bg-accent bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors gap-2 flex items-center justify-center"
-          disabled={isLoading || isPreview}
-        >
-          <i className="fa-solid fa-cart-shopping"></i>
-          {isLoading ? 'Processing...' : 'Buy now'}
-        </Button>
-      </form>
+
+        {/* Countdown */}
+        {course?.sale?.isActive && course?.sale?.endsAt && (
+          <SaleCountdown endAt={course.sale.endsAt} />
+        )}
+
+        {/* CTA */}
+        <form onSubmit={handlePurchase}>
+          <Button
+            type="submit"
+            className="w-full py-3 bg-tertiaryGold text-white font-landing font-semibold text-sm rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+            disabled={isLoading || isPreview}
+          >
+            <i className="fa-solid fa-lock-open text-sm" />
+            {isLoading ? 'Processing...' : 'Unlock Full Course'}
+          </Button>
+        </form>
+
+        <p className="text-center text-xs font-landing text-secondary-muted">
+          30-day money-back guarantee
+        </p>
+      </div>
+    </>
+  );
+
+  if (embedded) return <div>{inner}</div>;
+
+  return (
+    <div className="rounded-2xl border border-tertiaryGold/40 bg-tertiaryGold/5 overflow-hidden">
+      {inner}
     </div>
   );
 };

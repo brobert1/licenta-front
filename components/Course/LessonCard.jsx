@@ -1,70 +1,99 @@
 import { Link } from '@components';
 import { slugify } from '@functions';
 import { classnames } from '@lib';
-import ProgressBar from './ProgressBar';
+
+const RADIUS = 20;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+const CircleProgress = ({ percent, isComplete }) => {
+  const offset = CIRCUMFERENCE - (percent / 100) * CIRCUMFERENCE;
+  return (
+    <div className="relative flex-shrink-0 w-14 h-14">
+      <svg width="56" height="56" viewBox="0 0 56 56" className="-rotate-90">
+        <circle cx="28" cy="28" r={RADIUS} fill="none" strokeWidth="3.5" className="stroke-outline-variant/20" />
+        <circle
+          cx="28" cy="28" r={RADIUS} fill="none" strokeWidth="3.5"
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className={isComplete ? 'stroke-green-500' : 'stroke-tertiaryGold'}
+          style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        {isComplete
+          ? <i className="fa-solid fa-check text-green-500 text-sm" />
+          : <span className="text-[11px] font-landing font-bold text-on-surface">{percent}%</span>
+        }
+      </div>
+    </div>
+  );
+};
 
 const LessonCard = ({
   _id: uuid,
   name,
   chapters,
   completedChapters,
+  index,
   isOwned,
   isPreview,
   active,
 }) => {
   const isLocked = isPreview ? false : !isOwned;
   const isInactive = isPreview && active === false;
+  const chapterLabel = `CHAPTER${String((index ?? 0) + 1).padStart(2, '0')}`;
+  const chapterCount = chapters?.length ?? 0;
+  const completedCount = Math.min(completedChapters || 0, chapterCount);
+  const progressPercent = chapterCount > 0 ? Math.round((completedCount / chapterCount) * 100) : 0;
+  const isComplete = chapterCount > 0 && completedCount === chapterCount;
+
+  const cardContent = (
+    <div className="flex items-center justify-between gap-4">
+      {/* Left: label + title */}
+      <div className="flex flex-col gap-1.5 min-w-0">
+        <span className="text-[10px] font-landing font-extrabold text-tertiaryGold uppercase tracking-[0.15em]">
+          {chapterLabel}
+        </span>
+        <h5 className="font-headline text-base text-on-surface leading-snug flex items-center gap-2">
+          <span className="truncate">{name}</span>
+          {isLocked && <i className="fa-regular fa-lock text-xs text-secondary-muted flex-shrink-0" />}
+        </h5>
+        <span className="text-xs font-landing text-secondary-muted">
+          {chapterCount} {chapterCount === 1 ? 'chapter' : 'chapters'}
+        </span>
+      </div>
+
+      {/* Right: circle progress or lock */}
+      {!isLocked ? (
+        <CircleProgress percent={progressPercent} isComplete={isComplete} />
+      ) : (
+        <div className="flex-shrink-0 w-14 h-14 rounded-full border border-outline-variant/20 flex items-center justify-center bg-surface-container">
+          <i className="fa-regular fa-lock text-secondary-muted text-sm" />
+        </div>
+      )}
+    </div>
+  );
+
+  const sharedClass = classnames(
+    'block w-full p-5 rounded-2xl border transition-all text-left',
+    isInactive
+      ? 'border-dashed border-outline-variant/30 opacity-50 bg-surface-container-lowest cursor-default'
+      : isLocked
+        ? 'border-outline-variant/20 bg-surface-container-lowest cursor-default'
+        : isComplete
+          ? 'border-green-200/60 bg-surface-container-lowest hover:shadow-sm cursor-pointer'
+          : 'border-outline-variant/20 bg-surface-container-lowest hover:border-tertiaryGold/40 hover:shadow-sm cursor-pointer'
+  );
+
+  if (isLocked || isInactive) {
+    return <div className={sharedClass}>{cardContent}</div>;
+  }
 
   return (
-    <div
-      className={classnames(
-        'relative flex flex-col bg-secondary p-4 rounded-lg h-full justify-between border',
-        isInactive ? 'border-dashed border-gray-500 opacity-60' : 'border-white'
-      )}
-    >
-      {isLocked && (
-        <div className="absolute top-4 right-4 w-8 h-8 bg-red-900 rounded-full flex items-center justify-center">
-          <i className="fa-solid fa-lock text-red-400"></i>
-        </div>
-      )}
-      <div className={classnames('flex items-center gap-2', isLocked && 'pr-12')}
-      >
-        <div className="flex lg:hidden justify-center items-center border border-gray-700 bg-gradient-to-t from-blue-950 to-secondary p-4 w-12 lg:w-16 h-12 lg:h-16 rounded-lg">
-          <i className="fa-solid fa-circle-play text-accent text-2xl lg:text-3xl"></i>
-        </div>
-        <div className="flex flex-col w-full gap-2">
-          <div className="flex items-center justify-between">
-            <h5 className="font-semibold text-white truncate flex items-center gap-2" title={name}>
-              <i className="fa-solid fa-circle-play text-blue-400"></i>
-              {name}
-            </h5>
-          </div>
-        </div>
-      </div>
-      <div className="flex mt-4 flex-col gap-4 items-center">
-        <ProgressBar
-          completedCount={completedChapters}
-          totalCount={chapters?.length}
-          one="chapter"
-          many="chapters"
-        />
-        {isLocked ? (
-          <button
-            disabled
-            className="w-full py-2 text-center rounded bg-gray-800 text-gray-500 cursor-not-allowed"
-          >
-            Locked
-          </button>
-        ) : (
-          <Link
-            href={`/client/study/${slugify(name, uuid)}`}
-            className="button full w-full accent py-1.5 text-center"
-          >
-            Continue
-          </Link>
-        )}
-      </div>
-    </div>
+    <Link href={`/client/study/${slugify(name, uuid)}`} className={sharedClass}>
+      {cardContent}
+    </Link>
   );
 };
 
