@@ -40,6 +40,7 @@
     "@tiptap/pm": "^2.10.4",
     "@tiptap/react": "^2.10.4",
     "@tiptap/starter-kit": "^2.10.4",
+    "@vimeo/player": "^2.30.3",
     "accounting": "^0.4.1",
     "autoprefixer": "10.4.5",
     "axios": "^1.6.2",

@@ -20,7 +20,7 @@ const PurchaseButton = ({ course, isPreview, embedded }) => {
       <div className="p-5 flex flex-col gap-4">
         {/* Pricing */}
         <div className="flex items-baseline gap-3">
-          <span className="font-headline text-3xl text-on-surface">
+          <span className="font-landing font-bold text-3xl text-on-surface tracking-tight">
             {course?.currency?.toUpperCase()} <Price value={displayPrice} precision={2} />
           </span>
           {course?.sale?.isActive && (

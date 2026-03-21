@@ -12,6 +12,7 @@ import PreviewList from './PreviewList';
 import PurchaseButton from './PurchaseButton';
 import ReviewCard from './ReviewCard';
 import Reviews from './Reviews';
+import VimeoPlayer from './VimeoPlayer';
 
 const getVimeoId = (value) => {
   if (!value || typeof value !== 'string') return null;
@@ -37,7 +38,7 @@ const COURSE_INCLUDES = [
   { icon: 'fa-certificate', text: 'Certificate of Completion' },
 ];
 
-const SidebarPanel = ({ course, user, isPreview }) => {
+const SidebarPanel = ({ course, user, isPreview, hideReviewsCard }) => {
   const previewReviews = course.reviews?.slice(0, 2) ?? [];
   const items = course?.hasMoveTrainer
     ? [...COURSE_INCLUDES, { icon: 'fa-chess-knight', text: 'Move Trainer exercises' }]
@@ -61,15 +62,15 @@ const SidebarPanel = ({ course, user, isPreview }) => {
         </ul>
       </div>
 
-      {/* User Reviews */}
-      <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6">
-        <h3 className="font-headline text-base text-on-surface mb-4">User Reviews</h3>
-        {user?.isReviewer ? (
-          <ReviewCard review={user.review} awaitReview={!user.review?.approved} />
-        ) : user?.isOwned ? (
-          <AddReviewForm course={course} />
-        ) : (
-          previewReviews.length === 0 ? (
+      {/* User Reviews (hidden on full reviews page — see main column there) */}
+      {!hideReviewsCard && (
+        <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6">
+          <h3 className="font-headline text-base text-on-surface mb-4">User Reviews</h3>
+          {user?.isReviewer ? (
+            <ReviewCard review={user.review} awaitReview={!user.review?.approved} />
+          ) : user?.isOwned ? (
+            <AddReviewForm course={course} />
+          ) : previewReviews.length === 0 ? (
             <p className="text-sm font-landing text-secondary-muted italic">
               No reviews yet. Be the first to share your experience!
             </p>
@@ -91,9 +92,9 @@ const SidebarPanel = ({ course, user, isPreview }) => {
                 </Link>
               )}
             </>
-          )
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Purchase / Claim section */}
       {!user?.isOwned && (
@@ -176,17 +177,25 @@ const CourseDetailsSuccess = ({ data, showAllReviews, success, isPreview }) => {
     || '';
 
   const vimeoId = getVimeoId(previewVideoCandidate);
-  const vimeoEmbedSrc = vimeoId
-    ? `https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0`
-    : null;
+  const [vimeoThumbnail, setVimeoThumbnail] = useState(null);
 
   const openPreviewVideo = () => {
-    if (vimeoEmbedSrc) setIsPreviewVideoPlaying(true);
+    if (vimeoId) setIsPreviewVideoPlaying(true);
   };
 
   useEffect(() => {
     handlePaymentSuccess({ success, router, toastShownRef: toastShown });
   }, [success, router]);
+
+  useEffect(() => {
+    if (!vimeoId) return;
+    fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${vimeoId}&width=1280`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.thumbnail_url) setVimeoThumbnail(data.thumbnail_url);
+      })
+      .catch(() => {});
+  }, [vimeoId]);
 
   const lessonsCount = course?.content?.filter((i) => i.kind === 'study').length;
 
@@ -239,7 +248,7 @@ const CourseDetailsSuccess = ({ data, showAllReviews, success, isPreview }) => {
               <button
                 type="button"
                 onClick={openPreviewVideo}
-                disabled={!vimeoEmbedSrc}
+                disabled={!vimeoId}
                 className="px-6 py-3 border border-outline-variant/40 text-on-surface font-landing font-semibold text-sm rounded-xl hover:bg-surface-container-high transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Preview Lessons
@@ -249,29 +258,23 @@ const CourseDetailsSuccess = ({ data, showAllReviews, success, isPreview }) => {
 
           {/* Right: course preview media */}
           <div className="relative rounded-2xl overflow-hidden aspect-video bg-surface-container-high shadow-lg">
-            {isPreviewVideoPlaying && vimeoEmbedSrc ? (
-              <iframe
-                src={vimeoEmbedSrc}
-                title={`${course?.name} preview`}
-                className="w-full h-full"
-                frameBorder="0"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
+            {isPreviewVideoPlaying && vimeoId ? (
+              <VimeoPlayer vimeoId={vimeoId} title={course?.name} autoplay />
             ) : (
               <button
                 type="button"
                 onClick={openPreviewVideo}
-                disabled={!vimeoEmbedSrc}
+                disabled={!vimeoId}
                 className="group relative w-full h-full text-left disabled:cursor-not-allowed"
               >
-                {(course.preview?.image?.path || course.image?.path) && (
-                  <img
-                    src={course.preview?.image?.path ?? course.image?.path}
-                    alt={course.name}
-                    className="w-full h-full object-cover"
-                  />
-                )}
+                {(() => {
+                  const src = vimeoId
+                    ? vimeoThumbnail
+                    : (course.preview?.image?.path ?? course.image?.path);
+                  return src ? (
+                    <img src={src} alt={course.name} className="w-full h-full object-cover" />
+                  ) : null;
+                })()}
                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                   <div className="w-16 h-16 rounded-full bg-white/90 shadow-lg flex items-center justify-center transition-transform group-hover:scale-105">
                     <i className="fa-solid fa-play text-xl text-on-surface pl-1" />
@@ -287,7 +290,41 @@ const CourseDetailsSuccess = ({ data, showAllReviews, success, isPreview }) => {
           {/* Left column: curriculum + author */}
           <div className="lg:col-span-2 space-y-10">
             {showAllReviews ? (
-              <Reviews reviews={course.reviews} showAllReviews />
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <Link
+                    href={`/client/courses/${slugify(course.name, course._id)}`}
+                    className="inline-flex items-center gap-2 text-sm font-landing font-semibold text-secondary-muted hover:text-tertiaryGold transition-colors"
+                  >
+                    <i className="fa-regular fa-arrow-left text-xs" />
+                    Back to course
+                  </Link>
+                  <h2 className="font-headline text-2xl sm:text-3xl text-on-surface">
+                    Reviews for {course.name}
+                  </h2>
+                  <p className="font-landing text-sm text-secondary-muted">
+                    {(course.reviews?.length ?? 0) === 0
+                      ? 'No published reviews yet.'
+                      : `${course.reviews.length} review${course.reviews.length === 1 ? '' : 's'} · average rating ${course.rating ?? '—'} / 5`}
+                  </p>
+                </div>
+
+                {user?.isOwned && !user?.isReviewer && (
+                  <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-low p-6 sm:p-8">
+                    <h3 className="font-headline text-lg text-on-surface mb-4">Write a review</h3>
+                    <AddReviewForm course={course} />
+                  </div>
+                )}
+
+                {user?.isReviewer && user?.review && (
+                  <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-low p-6 sm:p-8">
+                    <h3 className="font-headline text-lg text-on-surface mb-4">Your review</h3>
+                    <ReviewCard review={user.review} awaitReview={!user.review?.approved} />
+                  </div>
+                )}
+
+                <Reviews reviews={course.reviews} showAllReviews />
+              </div>
             ) : (
               <>
                 <PreviewList content={course.content} user={user} isPreview={isPreview} />
@@ -298,7 +335,12 @@ const CourseDetailsSuccess = ({ data, showAllReviews, success, isPreview }) => {
 
           {/* Right sidebar */}
           <div>
-            <SidebarPanel course={course} user={user} isPreview={isPreview} />
+            <SidebarPanel
+              course={course}
+              hideReviewsCard={showAllReviews}
+              isPreview={isPreview}
+              user={user}
+            />
           </div>
         </div>
       </div>

@@ -1,23 +1,24 @@
 import { checkAuth, withAuth } from '@auth';
-import { GamePlay, GameSetup } from '@components/Bot';
+import { MultiplayerGame, MatchFoundAnimation } from '@components/Multiplayer';
 import { Layout } from '@components/Client';
-import { BotProvider } from '@contexts/BotContext';
-import { ChessProvider } from '@chess/contexts/ChessContext';
-import { useGameDisclosure } from '@chess/hooks';
+import { MultiplayerProvider, useMultiplayerContext } from '@contexts/MultiplayerContext';
+import OnlineGameSetup from '@components/Multiplayer/OnlineGameSetup';
 
-const Page = () => {
-  const { isPlaying, startGame, endGame } = useGameDisclosure();
+const PlayContent = () => {
+  const { activeGame, matchFound } = useMultiplayerContext();
 
-  return (
-    <Layout>
-      <ChessProvider>
-        <BotProvider>
-          {isPlaying ? <GamePlay onEndGame={endGame} /> : <GameSetup onStartGame={startGame} />}
-        </BotProvider>
-      </ChessProvider>
-    </Layout>
-  );
+  if (matchFound) return <MatchFoundAnimation />;
+  if (activeGame) return <MultiplayerGame />;
+  return <OnlineGameSetup />;
 };
+
+const Page = () => (
+  <Layout>
+    <MultiplayerProvider>
+      <PlayContent />
+    </MultiplayerProvider>
+  </Layout>
+);
 
 export async function getServerSideProps(context) {
   return await checkAuth(context);

@@ -22,7 +22,7 @@ const ClaimCourseButton = ({ course, isPreview, embedded }) => {
   const inner = (
     <div className="p-5 flex flex-col gap-4">
       <div className="flex items-baseline gap-2">
-        <span className="font-headline text-3xl text-on-surface">Free</span>
+        <span className="font-landing font-bold text-3xl text-on-surface tracking-tight">Free</span>
         <span className="text-xs font-landing text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
           No cost
         </span>

@@ -42,35 +42,29 @@ const LessonCard = ({
 }) => {
   const isLocked = isPreview ? false : !isOwned;
   const isInactive = isPreview && active === false;
-  const chapterLabel = `CHAPTER${String((index ?? 0) + 1).padStart(2, '0')}`;
+  const lessonLabel = `LESSON${String((index ?? 0) + 1).padStart(2, '0')}`;
   const chapterCount = chapters?.length ?? 0;
   const completedCount = Math.min(completedChapters || 0, chapterCount);
   const progressPercent = chapterCount > 0 ? Math.round((completedCount / chapterCount) * 100) : 0;
   const isComplete = chapterCount > 0 && completedCount === chapterCount;
 
   const cardContent = (
-    <div className="flex items-center justify-between gap-4">
-      {/* Left: label + title */}
-      <div className="flex flex-col gap-1.5 min-w-0">
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-1.5 min-w-0 flex-1">
         <span className="text-[10px] font-landing font-extrabold text-tertiaryGold uppercase tracking-[0.15em]">
-          {chapterLabel}
+          {lessonLabel}
         </span>
         <h5 className="font-headline text-base text-on-surface leading-snug flex items-center gap-2">
           <span className="truncate">{name}</span>
           {isLocked && <i className="fa-regular fa-lock text-xs text-secondary-muted flex-shrink-0" />}
         </h5>
         <span className="text-xs font-landing text-secondary-muted">
-          {chapterCount} {chapterCount === 1 ? 'chapter' : 'chapters'}
+          {chapterCount} {chapterCount === 1 ? 'lesson' : 'lessons'}
         </span>
       </div>
 
-      {/* Right: circle progress or lock */}
-      {!isLocked ? (
-        <CircleProgress percent={progressPercent} isComplete={isComplete} />
-      ) : (
-        <div className="flex-shrink-0 w-14 h-14 rounded-full border border-outline-variant/20 flex items-center justify-center bg-surface-container">
-          <i className="fa-regular fa-lock text-secondary-muted text-sm" />
-        </div>
+      {!isLocked && (
+        <CircleProgress isComplete={isComplete} percent={progressPercent} />
       )}
     </div>
   );
