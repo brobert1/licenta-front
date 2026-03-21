@@ -6,12 +6,13 @@ import { Timer } from '.';
 
 const UserCard = ({ showTimer = false, show, mutation, timerKey, onTimeChange }) => {
   const { status, data: accountData } = useQuery('/client/account');
-  const { gameSettings, handleGameOver } = useBotContext();
+  const { gameSettings, handleGameOver, matchPlayerColor } = useBotContext();
   const { currentFen } = useChessContext();
 
   const currentTurn = parseFen(currentFen)?.activeColor || 'w';
-  const playerColor = gameSettings.playerColor;
-  const isUserTurn = currentTurn === (playerColor === 'white' ? 'w' : 'b');
+  const playerColor = matchPlayerColor || gameSettings.playerColor;
+  const safePlayerColor = playerColor === 'random' ? 'white' : playerColor;
+  const isUserTurn = currentTurn === (safePlayerColor === 'white' ? 'w' : 'b');
 
   const handleUserTimeout = () => {
     handleGameOver(null, mutation, show, true);

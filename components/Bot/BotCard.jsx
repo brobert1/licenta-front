@@ -6,12 +6,13 @@ import { parseFen } from '@chess/functions';
 import Timer from './Timer';
 
 const BotCard = ({ showTimer = false, show, mutation, timerKey, onTimeChange }) => {
-  const { selectedBot, gameSettings, handleGameOver } = useBotContext();
+  const { matchPlayerColor, selectedBot, gameSettings, handleGameOver } = useBotContext();
   const { currentFen } = useChessContext();
 
   const currentTurn = parseFen(currentFen)?.activeColor || 'w';
-  const playerColor = gameSettings.playerColor;
-  const isBotTurn = currentTurn !== (playerColor === 'white' ? 'w' : 'b');
+  const playerColor = matchPlayerColor || gameSettings.playerColor;
+  const safePlayerColor = playerColor === 'random' ? 'white' : playerColor;
+  const isBotTurn = currentTurn !== (safePlayerColor === 'white' ? 'w' : 'b');
 
   const handleBotTimeout = () => {
     handleGameOver(null, mutation, show, false);

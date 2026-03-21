@@ -89,6 +89,3 @@
   overflow: hidden;
 }
 
-.bot-gameplay-board .next-chessground .cg-wrap cg-board {
-  filter: hue-rotate(18deg) saturate(0.8) brightness(0.94);
-}

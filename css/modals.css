@@ -16,6 +16,71 @@
   @apply text-white !important;
 }
 
-#position-selector-modal .modal-content  {
-  @apply px-2 pt-0 pb-1 !important;
+/*
+ * Position selector: re-center in viewport.
+ * RB/Bootstrap can apply asymmetric padding (scrollbar); nested max-width on
+ * .modal-content also fights .modal-dialog sizing — center via flex on .modal.
+ */
+#position-selector-modal.modal.show {
+  @apply flex items-center justify-center py-6;
+  /* Symmetric gutters; overrides RB inline padding used for scrollbar math */
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+#position-selector-modal.modal.show .modal-dialog {
+  @apply m-0 flex min-h-0 w-full max-w-2xl items-center justify-center;
+}
+
+#position-selector-modal.modal.show .modal-dialog-centered {
+  min-height: unset !important;
+}
+
+/* Light panel — matches bot / Play Bots setup (overrides global .modal-content) */
+#position-selector-modal .modal-content {
+  @apply w-full max-w-none !rounded-2xl !border !border-outline-variant/20 !bg-surface-container-lowest !p-0 !shadow-xl;
+}
+
+#position-selector-modal .modal-title,
+#position-selector-modal .modal-header h3 {
+  @apply !mb-0 !text-on-surface;
+}
+
+#position-selector-modal .modal-header {
+  @apply !border-b !border-outline-variant/20 !pb-4 !pt-5 !px-5;
+}
+
+#position-selector-modal .modal-body {
+  @apply !px-5 !py-4;
+}
+
+#position-selector-modal .modal-footer {
+  @apply !border-t !border-outline-variant/20 !gap-3 !px-5 !py-4;
+}
+
+/* Game over (bot) — light panel + viewport centering */
+#game-over-modal.modal.show {
+  @apply flex items-center justify-center py-6;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+#game-over-modal.modal.show .modal-dialog {
+  @apply m-0 flex min-h-0 w-full max-w-lg items-center justify-center;
+}
+
+#game-over-modal.modal.show .modal-dialog-centered {
+  min-height: unset !important;
+}
+
+#game-over-modal .modal-content {
+  @apply w-full max-w-none !rounded-2xl !border !border-outline-variant/20 !bg-surface-container-lowest !p-0 !shadow-xl;
+}
+
+#game-over-modal .modal-header {
+  @apply !border-b !border-outline-variant/20;
+}
+
+#game-over-modal .modal-body {
+  @apply !text-on-surface;
 }

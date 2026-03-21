@@ -16,7 +16,8 @@ const GamePlay = ({ onEndGame }) => {
   const [boardKey, rerender] = useRerender('game-board');
   const { ref: boardTrackRef, width: boardTrackWidth } = useElementWidth();
 
-  const { selectedBot, gameSettings, handleGameOver, reset, setSavedGame } = useBotContext();
+  const { matchPlayerColor, selectedBot, gameSettings, handleGameOver, reset, setSavedGame } =
+    useBotContext();
   const { pgn, history } = useChessContext();
 
   const {
@@ -32,7 +33,8 @@ const GamePlay = ({ onEndGame }) => {
   const { currentOpening } = useOpeningDetector();
 
   const { name: botName, elo: botElo, openingLine } = selectedBot;
-  const { selectedPosition, playerColor } = gameSettings;
+  const { selectedPosition } = gameSettings;
+  const playerColor = matchPlayerColor || 'white';
 
   // Time tracking state (lifted from Timer components)
   const initialSeconds = (gameSettings?.timeControl?.minutes || 10) * 60;

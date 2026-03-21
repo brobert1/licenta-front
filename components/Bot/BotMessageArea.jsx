@@ -6,13 +6,15 @@ import { SelectedBot } from '.';
 
 const BotMessageArea = () => {
   const { history, isUserTurn } = useChessContext();
-  const { gameWinner } = useBotContext();
-  const { gameSettings } = useBotContext();
+  const { gameSettings, gameWinner, matchPlayerColor } = useBotContext();
+
+  const colorForChat = matchPlayerColor || gameSettings.playerColor;
+  const safeColorForChat = colorForChat === 'random' ? 'white' : colorForChat;
 
   // isolated to prevent main component re-renders
   const { currentMessage } = useBotChat({
     history,
-    playerColor: gameSettings.playerColor,
+    playerColor: safeColorForChat,
     gameWinner,
     isUserTurn,
   });

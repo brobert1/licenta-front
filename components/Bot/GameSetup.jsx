@@ -7,7 +7,7 @@ import { useChessContext } from '@chess/contexts/ChessContext';
 import { TIME_CONTROL_OPTIONS } from '@constants/time-controls';
 import { bots } from '@data/bots';
 import { useDisclosure, useElementWidth, useQuery, useRerender } from '@hooks';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { NextChessground } from 'next-chessground';
 
@@ -16,10 +16,13 @@ const getAvatar = (name, size = 48) =>
 
 const ALL_BOTS = Object.values(bots).flatMap((cat) => cat.bots);
 
+const TIER_KEYS = ['beginner', 'intermediate', 'advanced', 'master'];
+
 const GameSetup = ({ onStartGame }) => {
-  const { gameSettings, updateGameSettings, selectBot, selectedBot } = useBotContext();
+  const { beginBotMatch, gameSettings, updateGameSettings, selectBot, selectedBot } = useBotContext();
   const { setHistory } = useChessContext();
   const { isOpen, show, hide } = useDisclosure();
+  const [tierKey, setTierKey] = useState('intermediate');
   const [selectedTimeValue, setSelectedTimeValue] = useState('10|0');
   const [boardKey, rerender] = useRerender('board');
   const { ref: boardTrackRef, width: boardTrackWidth } = useElementWidth();
@@ -35,10 +38,20 @@ const GameSetup = ({ onStartGame }) => {
   }, [query.bot, query.elo]);
 
   useEffect(() => {
+    const key = TIER_KEYS.find((k) =>
+      bots[k].bots.some(
+        (b) => b.name === selectedBot.name && String(b.elo) === String(selectedBot.elo)
+      )
+    );
+    if (key) setTierKey(key);
+  }, [selectedBot.name, selectedBot.elo]);
+
+  useEffect(() => {
     rerender();
   }, [gameSettings.playerColor, gameSettings.selectedPosition]);
 
   const handlePlayClick = () => {
+    beginBotMatch(gameSettings.playerColor);
     setHistory([]);
     if (onStartGame) onStartGame();
   };
@@ -61,6 +74,15 @@ const GameSetup = ({ onStartGame }) => {
   };
 
   const handleColorChange = (color) => updateGameSettings({ playerColor: color });
+
+  const handleTierChange = (key) => {
+    if (key === tierKey) return;
+    setTierKey(key);
+    selectBot(bots[key].bots[0]);
+  };
+
+  const boardOrientation =
+    gameSettings.playerColor === 'random' ? 'white' : gameSettings.playerColor;
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 h-full overflow-hidden p-6">
@@ -96,7 +118,7 @@ const GameSetup = ({ onStartGame }) => {
                   key={boardKey}
                   readOnly
                   fen={gameSettings.selectedPosition?.fen}
-                  orientation={gameSettings.playerColor}
+                  orientation={boardOrientation}
                 />
               </NoSsr>
             </div>
@@ -122,184 +144,218 @@ const GameSetup = ({ onStartGame }) => {
         </div>
       </div>
 
-      {/* RIGHT: settings panel */}
-      <div
-        className="md:col-span-2 h-full flex flex-col rounded-xl overflow-hidden border border-outline-variant/20 bg-surface-container-lowest"
-      >
-        {/* Panel header */}
-        <div className="px-5 py-4 border-b border-outline-variant/20 flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <i className="fa-regular fa-robot text-tertiaryGold" />
-            <h2 className="font-headline text-xl text-on-surface">Play Bots</h2>
+      {/* RIGHT: tier tabs, list, divided settings */}
+      <aside className="md:col-span-2 flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest shadow-sm">
+        <header className="flex-shrink-0 px-5 pt-5 pb-4">
+          <h2 className="font-headline text-2xl tracking-tight text-on-surface">Bot game</h2>
+          <p className="mt-1 font-landing text-sm text-secondary-muted">
+            Choose a level, opponent, and rules — then play.
+          </p>
+        </header>
+
+        <div className="flex-shrink-0 px-5 pb-4">
+          <div
+            className="flex rounded-lg bg-surface-container p-1"
+            role="tablist"
+            aria-label="Difficulty"
+          >
+            {TIER_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={tierKey === key}
+                onClick={() => handleTierChange(key)}
+                className={`flex-1 rounded-md py-2 font-landing text-xs font-semibold transition-all ${
+                  tierKey === key
+                    ? 'bg-surface-container-lowest text-on-surface shadow-sm'
+                    : 'text-secondary-muted hover:text-on-surface'
+                }`}
+              >
+                {bots[key].title}
+              </button>
+            ))}
           </div>
+          <p className="mt-2 font-landing text-xs text-secondary-muted">{bots[tierKey].eloRange}</p>
         </div>
 
-        {/* Selected bot preview */}
-        <div className="px-5 py-4 border-b border-outline-variant/20 flex-shrink-0">
-          <div className="flex gap-3">
-            <img
-              src={getAvatar(selectedBot.name, 56)}
-              className="w-14 h-14 rounded-xl flex-shrink-0"
-              alt=""
-            />
-            <div className="flex-1 min-w-0">
-              <div className="bg-surface-container rounded-xl rounded-tl-none px-3 py-2.5 mb-2">
-                <p className="font-landing text-xs text-secondary-muted italic line-clamp-2">
-                  &ldquo;{selectedBot.message}&rdquo;
+        {/* Bot message — fixed above list so it stays visible */}
+        <div className="flex-shrink-0 px-5 pb-4">
+          <div className="rounded-xl border-2 border-tertiaryGold/45 bg-tertiaryGold/12 p-4 shadow-sm">
+            <div className="mb-3 flex items-start gap-3">
+              <img
+                src={getAvatar(selectedBot.name, 48)}
+                className="h-12 w-12 shrink-0 rounded-xl ring-2 ring-surface-container-lowest shadow-sm"
+                alt=""
+              />
+              <div className="min-w-0 pt-0.5">
+                <p className="font-landing text-xs font-bold uppercase tracking-widest text-tertiaryGold">
+                  What they say
                 </p>
+                <p className="font-headline text-lg leading-tight text-on-surface">{selectedBot.name}</p>
+                <p className="font-landing text-xs text-secondary-muted">ELO {selectedBot.elo}</p>
               </div>
-              <p className="font-landing text-sm font-semibold text-on-surface">
-                {selectedBot.name}
-                <span className="text-secondary-muted font-normal ml-2">{selectedBot.elo}</span>
-              </p>
             </div>
+            <p className="font-landing text-base font-medium leading-relaxed text-on-surface">
+              &ldquo;{selectedBot.message}&rdquo;
+            </p>
           </div>
         </div>
 
-        {/* Scrollable bot list */}
-        <div className="flex-1 overflow-y-auto min-h-0">
-          {Object.values(bots).map((category) => (
-            <div key={category.title}>
-              <div className="px-5 py-2 bg-surface-container-low sticky top-0 z-10">
-                <p className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted">
-                  {category.title}{' '}
-                  <span className="font-normal normal-case tracking-normal">· {category.eloRange}</span>
-                </p>
-              </div>
-              {category.bots.map((bot) => {
-                const isSelected =
-                  selectedBot.name === bot.name && String(selectedBot.elo) === String(bot.elo);
-                return (
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-4">
+          <p className="mb-2 font-landing text-xs font-semibold uppercase tracking-widest text-secondary-muted">
+            Opponents in this tier
+          </p>
+          <div className="flex flex-col gap-1">
+            {bots[tierKey].bots.map((bot) => {
+              const isSelected =
+                selectedBot.name === bot.name && String(selectedBot.elo) === String(bot.elo);
+              return (
+                <button
+                  key={`${bot.name}-${bot.elo}`}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => selectBot(bot)}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${
+                    isSelected
+                      ? 'bg-tertiaryGold/10 ring-1 ring-tertiaryGold/40'
+                      : 'hover:bg-surface-container'
+                  }`}
+                >
+                  <img
+                    src={getAvatar(bot.name, 40)}
+                    className="h-10 w-10 shrink-0 rounded-lg"
+                    alt=""
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-landing text-sm font-semibold text-on-surface">{bot.name}</p>
+                    <p className="font-landing text-xs text-secondary-muted">ELO {bot.elo}</p>
+                  </div>
+                  <span
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                      isSelected
+                        ? 'border-tertiaryGold bg-tertiaryGold'
+                        : 'border-outline-variant/50 bg-transparent'
+                    }`}
+                    aria-hidden
+                  >
+                    {isSelected && <i className="fa-solid fa-check text-xs text-white" />}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <footer className="flex flex-shrink-0 flex-col gap-3 border-t border-outline-variant/15 bg-surface-container-low px-5 py-4">
+          <div className="overflow-hidden rounded-xl border border-outline-variant/20 bg-surface-container-lowest divide-y divide-outline-variant/15">
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+              <span className="font-landing text-sm text-on-surface">Time</span>
+              <div className="flex gap-1 rounded-lg bg-surface-container p-0.5">
+                {['unlimited', 'realtime'].map((mode) => (
                   <button
-                    key={bot.name}
-                    onClick={() => selectBot(bot)}
-                    className={`w-full flex items-center gap-3 px-5 py-3 transition-colors text-left border-b border-outline-variant/10 last:border-0 ${
-                      isSelected ? 'bg-on-surface' : 'hover:bg-surface-container'
+                    key={mode}
+                    type="button"
+                    onClick={() => handleTimeModeChange(mode)}
+                    className={`rounded-md px-3 py-1.5 font-landing text-xs font-semibold transition-all ${
+                      gameSettings.timeControl.mode === mode
+                        ? 'bg-on-surface text-white'
+                        : 'text-secondary-muted hover:text-on-surface'
                     }`}
                   >
-                    <img
-                      src={getAvatar(bot.name, 36)}
-                      className="w-9 h-9 rounded-lg flex-shrink-0"
-                      alt=""
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`font-landing text-sm font-semibold ${
-                          isSelected ? 'text-white' : 'text-on-surface'
-                        }`}
-                      >
-                        {bot.name}
-                      </p>
-                      <p
-                        className={`font-landing text-xs ${
-                          isSelected ? 'text-white/60' : 'text-secondary-muted'
-                        }`}
-                      >
-                        ELO {bot.elo}
-                      </p>
-                    </div>
-                    {isSelected && (
-                      <i className="fa-solid fa-check text-tertiaryGold text-xs flex-shrink-0" />
-                    )}
+                    {mode === 'unlimited' ? 'Unlimited' : 'Timed'}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
 
-        {/* Settings + Play button */}
-        <div className="border-t border-outline-variant/20 px-5 py-4 flex flex-col gap-4 flex-shrink-0">
-          {/* Time control */}
-          <div className="flex items-center justify-between">
-            <span className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted">
-              Time Control
-            </span>
-            <div className="flex gap-1.5">
-              {['unlimited', 'realtime'].map((mode) => (
+            {gameSettings.timeControl.mode === 'realtime' && (
+              <div className="px-4 py-3">
+                <label className="sr-only" htmlFor="bot-setup-time-preset">
+                  Clock preset
+                </label>
+                <select
+                  id="bot-setup-time-preset"
+                  value={selectedTimeValue}
+                  onChange={(e) => handleTimeValueChange(e.target.value)}
+                  className="w-full rounded-lg border-0 bg-surface-container py-2 px-3 font-landing text-sm text-on-surface outline-none focus:ring-2 focus:ring-tertiaryGold"
+                >
+                  {TIME_CONTROL_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+              <span className="font-landing text-sm text-on-surface">Your color</span>
+              <div className="flex flex-wrap items-center justify-end gap-1">
+                {[
+                  {
+                    color: 'white',
+                    icon: 'fa-chess-king',
+                    bg: 'bg-white border border-outline-variant/30',
+                    text: 'text-on-surface',
+                  },
+                  { color: 'black', icon: 'fa-chess-king', bg: 'bg-on-surface', text: 'text-white' },
+                ].map(({ color, icon, bg, text }) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => handleColorChange(color)}
+                    title={color === 'white' ? 'White' : 'Black'}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${bg} ${
+                      gameSettings.playerColor === color
+                        ? 'ring-2 ring-tertiaryGold ring-offset-2 ring-offset-surface-container-lowest'
+                        : 'opacity-40 hover:opacity-100'
+                    }`}
+                  >
+                    <i className={`fa-solid ${icon} text-sm ${text}`} />
+                  </button>
+                ))}
                 <button
-                  key={mode}
-                  onClick={() => handleTimeModeChange(mode)}
-                  className={`font-landing text-xs px-3 py-1.5 rounded-lg transition-all ${
-                    gameSettings.timeControl.mode === mode
-                      ? 'bg-on-surface text-white'
-                      : 'bg-surface-container text-secondary-muted hover:bg-surface-container-high'
+                  type="button"
+                  onClick={() => handleColorChange('random')}
+                  title="Random — revealed when the game starts"
+                  className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 font-landing text-xs font-semibold transition-all ${
+                    gameSettings.playerColor === 'random'
+                      ? 'border-tertiaryGold bg-tertiaryGold/10 text-on-surface ring-2 ring-tertiaryGold ring-offset-2 ring-offset-surface-container-lowest'
+                      : 'border-outline-variant/30 bg-surface-container text-on-surface hover:bg-surface-container-high'
                   }`}
                 >
-                  {mode === 'unlimited' ? 'Unlimited' : 'Timed'}
+                  <i className="fa-solid fa-shuffle text-sm" />
+                  <span className="hidden sm:inline">Random</span>
                 </button>
-              ))}
+              </div>
             </div>
-          </div>
 
-          {gameSettings.timeControl.mode === 'realtime' && (
-            <select
-              value={selectedTimeValue}
-              onChange={(e) => handleTimeValueChange(e.target.value)}
-              className="w-full bg-surface-container border-0 rounded-lg px-3 py-2 font-landing text-sm text-on-surface focus:ring-2 focus:ring-tertiaryGold outline-none"
+            <button
+              type="button"
+              onClick={show}
+              className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-container/60"
             >
-              {TIME_CONTROL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Color selector */}
-          <div className="flex items-center justify-between">
-            <span className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted">
-              Play as
-            </span>
-            <div className="flex gap-1.5">
-              {[
-                {
-                  color: 'white',
-                  icon: 'fa-chess-king',
-                  bg: 'bg-white border border-outline-variant/30',
-                  text: 'text-on-surface',
-                },
-                { color: 'black', icon: 'fa-chess-king', bg: 'bg-on-surface', text: 'text-white' },
-              ].map(({ color, icon, bg, text }) => (
-                <button
-                  key={color}
-                  onClick={() => handleColorChange(color)}
-                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${bg} ${
-                    gameSettings.playerColor === color
-                      ? 'ring-2 ring-tertiaryGold'
-                      : 'opacity-50 hover:opacity-80'
-                  }`}
-                >
-                  <i className={`fa-solid ${icon} text-sm ${text}`} />
-                </button>
-              ))}
-            </div>
+              <span className="font-landing text-sm text-on-surface">Starting position</span>
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="truncate font-landing text-sm font-medium text-secondary-muted">
+                  {gameSettings.selectedPosition?.name || 'Standard'}
+                </span>
+                <i className="fa-regular fa-chevron-right shrink-0 text-secondary-muted text-xs" />
+              </span>
+            </button>
           </div>
 
-          {/* Position selector */}
           <button
-            onClick={show}
-            className="w-full flex items-center justify-between px-4 py-2.5 bg-surface-container hover:bg-surface-container-high rounded-lg transition-all"
-          >
-            <div className="flex items-center gap-2">
-              <i className="fa-regular fa-chess-board text-secondary-muted text-sm" />
-              <span className="font-landing text-sm text-on-surface">
-                {gameSettings.selectedPosition?.name || 'Starting Position'}
-              </span>
-            </div>
-            <i className="fa-regular fa-chevron-right text-secondary-muted text-xs" />
-          </button>
-
-          {/* Play button */}
-          <button
+            type="button"
             onClick={handlePlayClick}
-            className="w-full bg-tertiary-container hover:opacity-90 text-white font-landing font-bold text-base py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-tertiary-container py-3.5 font-landing text-base font-bold text-white transition-all hover:opacity-90"
           >
             <i className="fa-regular fa-chess-knight" />
             Play vs {selectedBot.name}
           </button>
-        </div>
-      </div>
+        </footer>
+      </aside>
 
       <PositionSelectorModal isOpen={isOpen} hide={hide} onPositionSelect={handlePositionSelect} />
     </div>

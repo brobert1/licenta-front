@@ -7,7 +7,7 @@ import { useDisclosure } from '@hooks';
 
 const GameSettings = ({ onStartGame }) => {
   const { isOpen, show, hide } = useDisclosure();
-  const { gameSettings, updateGameSettings } = useBotContext();
+  const { beginBotMatch, gameSettings, updateGameSettings } = useBotContext();
   const { setHistory } = useChessContext();
 
   const handlePositionSelect = (position) => {
@@ -36,7 +36,7 @@ const GameSettings = ({ onStartGame }) => {
   };
 
   const handlePlayClick = () => {
-    // Clear chess history when starting game, keep selected bot
+    beginBotMatch(gameSettings.playerColor);
     setHistory([]);
     if (onStartGame) {
       onStartGame();

@@ -2,20 +2,29 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-secondary rounded-lg p-6 max-w-sm w-full mx-4">
-        <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-        <p className="text-neutral-300 mb-6">{message}</p>
-        <div className="grid grid-cols-2 gap-3">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
+        className="w-full max-w-sm rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-6 shadow-xl"
+      >
+        <h3 id="confirm-modal-title" className="font-headline text-xl text-on-surface">
+          {title}
+        </h3>
+        <p className="mt-2 font-landing text-sm leading-relaxed text-secondary-muted">{message}</p>
+        <div className="mt-6 grid grid-cols-2 gap-3">
           <button
+            type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-tertiary text-neutral-400 rounded hover:text-white transition-colors"
+            className="rounded-xl border border-outline-variant/30 bg-surface-container py-3 font-landing text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container-high"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+            className="rounded-xl bg-red-600 py-3 font-landing text-sm font-bold text-white transition-colors hover:bg-red-700"
           >
             Confirm
           </button>

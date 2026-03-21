@@ -1,8 +1,7 @@
-import { Button } from '@components';
-import startingPositions from '@constants/starting-positions';
-import { Modal } from 'react-bootstrap';
-import { useState } from 'react';
 import ChessBoardPreview from '@chess/components/ChessboardPreview';
+import startingPositions from '@constants/starting-positions';
+import { useState } from 'react';
+import { Modal } from 'react-bootstrap';
 
 const PositionSelectorModal = ({ hide, isOpen, onPositionSelect }) => {
   const [selectedPosition, setSelectedPosition] = useState(null);
@@ -41,53 +40,71 @@ const PositionSelectorModal = ({ hide, isOpen, onPositionSelect }) => {
       show={isOpen}
       onHide={handleCancel}
       backdrop="static"
-      keyboard={false}
       centered
+      keyboard={false}
+      size="lg"
     >
-      <Modal.Header className="flex items-center w-full justify-between">
-        <Modal.Title>
-          <h3 className="font-heading first-letter:uppercase text-lg font-semibold">
+      <Modal.Header className="flex w-full items-start justify-between gap-3">
+        <Modal.Title as="div" className="min-w-0 flex-1">
+          <h3 className="font-headline text-xl font-semibold text-on-surface first-letter:uppercase">
             Select Position
           </h3>
         </Modal.Title>
-        <Button
-          className="-mr-2 flex h-8 w-8 items-center p-2 hover:bg-tertiary rounded justify-center"
+        <button
+          type="button"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiaryGold"
           onClick={handleCancel}
+          aria-label="Close"
         >
-          <i className="fa-solid fa-close text-xl text-white"></i>
-        </Button>
+          <i className="fa-solid fa-xmark text-lg" />
+        </button>
       </Modal.Header>
       <Modal.Body>
-        <div className="flex flex-col gap-3">
-          <p className="text-white text-sm">
+        <div className="flex flex-col gap-4">
+          <p className="font-landing text-sm text-secondary-muted">
             Choose a thematic opening position to start your game:
           </p>
-          <div className="grid gap-2 max-h-96 px-1 overflow-y-auto">
-            {startingPositions.map((position, index) => (
-              <div
-                key={index}
-                className={`p-2 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                  selectedPosition?.fen === position.fen
-                    ? 'border-accent bg-accent/10 text-white'
-                    : 'border-white/10 bg-tertiary text-gray-300 hover:border-accent hover:bg-accent/5'
-                }`}
-                onClick={() => handlePositionSelect(position)}
-              >
-                <div className="flex gap-3 items-center">
-                  <ChessBoardPreview fen={position.fen} size={110} />
-                  <div className="flex flex-col gap-1 flex-1">
-                    <h4 className="font-semibold text-white">{position.name}</h4>
-                    <p className="text-xs text-gray-400">{position.description}</p>
+          <div className="grid max-h-96 gap-2 overflow-y-auto pr-1">
+            {startingPositions.map((position) => {
+              const isSelected = selectedPosition?.fen === position.fen;
+              return (
+                <button
+                  key={position.fen}
+                  type="button"
+                  onClick={() => handlePositionSelect(position)}
+                  className={`w-full rounded-xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiaryGold ${
+                    isSelected
+                      ? 'border-tertiaryGold bg-tertiaryGold/10 shadow-sm'
+                      : 'border-outline-variant/20 bg-surface-container/50 hover:border-outline-variant/40 hover:bg-surface-container'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="shrink-0 overflow-hidden rounded-lg border border-outline-variant/20">
+                      <ChessBoardPreview fen={position.fen} size={110} />
+                    </div>
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      <h4 className="font-landing text-sm font-semibold text-on-surface">
+                        {position.name}
+                      </h4>
+                      <p className="font-landing text-xs text-secondary-muted">{position.description}</p>
+                    </div>
+                    {isSelected && (
+                      <i className="fa-solid fa-circle-check shrink-0 text-lg text-tertiaryGold" aria-hidden />
+                    )}
                   </div>
-                </div>
-              </div>
-            ))}
+                </button>
+              );
+            })}
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-white text-sm font-medium">
+            <label
+              htmlFor="position-selector-fen"
+              className="font-landing text-sm font-medium text-on-surface"
+            >
               Or enter a custom FEN position:
             </label>
             <input
+              id="position-selector-fen"
               type="text"
               value={customFen}
               onChange={(e) => {
@@ -97,25 +114,27 @@ const PositionSelectorModal = ({ hide, isOpen, onPositionSelect }) => {
                 }
               }}
               placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-              className="w-full p-3 rounded-lg border border-white/10 bg-tertiary text-white placeholder-gray-400 focus:border-accent focus:outline-none transition-colors"
+              className="w-full rounded-lg border-0 bg-surface-container px-3 py-2.5 font-landing text-sm text-on-surface placeholder:text-secondary-muted focus:ring-2 focus:ring-tertiaryGold/40 focus:outline-none"
             />
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer className="grid w-full grid-cols-3 gap-4">
-        <Button
-          className="button full w-full border border-tertiary bg-tertiary text-white hover:border-white/10"
+      <Modal.Footer className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
+        <button
+          type="button"
           onClick={handleCancel}
+          className="w-full rounded-xl border border-outline-variant/30 bg-surface-container py-3 font-landing text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiaryGold sm:col-span-1"
         >
           Cancel
-        </Button>
-        <Button
-          className="button full w-full col-span-2 accent"
+        </button>
+        <button
+          type="button"
           onClick={handleConfirm}
           disabled={!selectedPosition && !customFen.trim()}
+          className="w-full rounded-xl bg-tertiary-container py-3 font-landing text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tertiaryGold focus-visible:ring-offset-2 focus-visible:ring-offset-surface-container-lowest disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2"
         >
           Select Position
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );

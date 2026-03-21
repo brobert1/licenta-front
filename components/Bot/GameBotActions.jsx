@@ -8,7 +8,7 @@ import { useDisclosure, useQuery } from '@hooks';
 
 const GameBotActions = ({ show, mutation, onPrevMove, onNextMove, currentOpening }) => {
   const { isOpen, show: showModal, hide } = useDisclosure();
-  const { selectedBot, gameSettings, setWinner } = useBotContext();
+  const { matchPlayerColor, selectedBot, gameSettings, setWinner } = useBotContext();
   const { history } = useChessContext();
   const { data: me } = useQuery('/client/account');
 
@@ -21,7 +21,9 @@ const GameBotActions = ({ show, mutation, onPrevMove, onNextMove, currentOpening
     setWinner(selectedBot.name);
 
     // Determine white and black players
-    const { white, black } = getGamePlayers(gameSettings.playerColor, me.name, selectedBot.name);
+    const colorForPgn = matchPlayerColor || gameSettings.playerColor;
+    const safeColor = colorForPgn === 'random' ? 'white' : colorForPgn;
+    const { white, black } = getGamePlayers(safeColor, me.name, selectedBot.name);
 
     mutation.mutate({
       pgn: createGamePgn(

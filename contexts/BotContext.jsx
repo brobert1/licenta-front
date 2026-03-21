@@ -16,6 +16,7 @@ export const BotProvider = ({ children }) => {
 
   const [selectedBot, setSelectedBot] = useState(DEFAULT_BOT);
   const [gameSettings, setGameSettings] = useState(DEFAULT_GAME_SETTINGS);
+  const [matchPlayerColor, setMatchPlayerColor] = useState(null);
   const [gameWinner, setGameWinner] = useState(null);
   const [savedGameId, setSavedGameId] = useState(null);
 
@@ -32,6 +33,12 @@ export const BotProvider = ({ children }) => {
     setGameSettings((prevSettings) => ({ ...prevSettings, ...newSettings }));
   }, []);
 
+  const beginBotMatch = useCallback((playerColor) => {
+    const resolved =
+      playerColor === 'random' ? (Math.random() < 0.5 ? 'white' : 'black') : playerColor;
+    setMatchPlayerColor(resolved);
+  }, []);
+
   const setWinner = useCallback((winner) => {
     setGameWinner(winner);
   }, []);
@@ -46,13 +53,17 @@ export const BotProvider = ({ children }) => {
       if (isUserTimeout !== undefined && chess === null) {
         winner = isUserTimeout ? selectedBot.name : me.name;
       } else {
-        winner = determineGameWinner(chess, selectedBot.name, me.name, gameSettings.playerColor);
+        const colorForResult = matchPlayerColor || gameSettings.playerColor;
+        const safeColor = colorForResult === 'random' ? 'white' : colorForResult;
+        winner = determineGameWinner(chess, selectedBot.name, me.name, safeColor);
       }
 
       await coffee(500);
       setGameWinner(winner);
 
-      const { white, black } = getGamePlayers(gameSettings.playerColor, me.name, selectedBot.name);
+      const colorForPgn = matchPlayerColor || gameSettings.playerColor;
+      const safeColorForPgn = colorForPgn === 'random' ? 'white' : colorForPgn;
+      const { white, black } = getGamePlayers(safeColorForPgn, me.name, selectedBot.name);
 
       // Get move history directly from chess object to avoid stale state
       const moveHistory = chess ? chess.history({ verbose: true }) : history;
@@ -74,7 +85,7 @@ export const BotProvider = ({ children }) => {
       // Show the game over modal
       show();
     },
-    [selectedBot, gameSettings, history, me]
+    [selectedBot, gameSettings, history, me, matchPlayerColor, currentOpening]
   );
 
   const reset = useCallback(
@@ -90,6 +101,7 @@ export const BotProvider = ({ children }) => {
         }
       }
       if (toDefaults) {
+        setMatchPlayerColor(null);
         setSelectedBot(DEFAULT_BOT);
         setGameSettings(DEFAULT_GAME_SETTINGS);
       }
@@ -98,17 +110,18 @@ export const BotProvider = ({ children }) => {
   );
 
   const value = {
-    selectedBot,
+    beginBotMatch,
     gameSettings,
     gameWinner,
-    savedGameId,
-
-    selectBot,
-    updateGameSettings,
-    setWinner,
-    setSavedGame,
     handleGameOver,
+    matchPlayerColor,
     reset,
+    savedGameId,
+    selectBot,
+    selectedBot,
+    setSavedGame,
+    setWinner,
+    updateGameSettings,
   };
 
   return <BotContext.Provider value={value}>{children}</BotContext.Provider>;
