@@ -82,3 +82,13 @@
 .animate-message-in {
   animation: message-in 0.4s ease-out forwards;
 }
+
+/* Bot live play: board tone closer to navy/slate UI (chessground default green) */
+.bot-gameplay-board .next-chessground .cg-wrap {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.bot-gameplay-board .next-chessground .cg-wrap cg-board {
+  filter: hue-rotate(18deg) saturate(0.8) brightness(0.94);
+}

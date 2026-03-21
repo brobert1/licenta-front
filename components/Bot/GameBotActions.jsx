@@ -42,25 +42,25 @@ const GameBotActions = ({ show, mutation, onPrevMove, onNextMove, currentOpening
 
   return (
     <>
-      <div className="flex flex-col bg-secondary gap-4 p-4">
+      <div className="flex flex-col bg-gameplay gap-3 p-4 border-t border-black/10">
         <div className="grid grid-cols-4 gap-2">
           <div className="col-span-2">
             <Button
-              className="hover:bg-neutral-700 w-full rounded-md text-neutral-400 hover:text-neutral-300 p-3.5 flex items-center justify-center gap-2 cursor-pointer bg-tertiary transition-colors"
+              className="w-full rounded-lg bg-gameplay-control hover:bg-gameplay-elevated text-on-surface font-landing text-sm font-semibold p-3 flex items-center justify-center gap-2 cursor-pointer transition-colors border border-black/10"
               onClick={handleResignClick}
             >
-              <i className="fa-solid fa-flag"></i>
-              <span className="text-sm">Resign</span>
+              <i className="fa-solid fa-flag text-tertiary-container"></i>
+              <span>Resign</span>
             </Button>
           </div>
           <Button
-            className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+            className="rounded-lg bg-gameplay-control hover:bg-gameplay-elevated text-on-surface border border-black/10 text-lg w-full p-3 flex items-center justify-center transition-colors"
             onClick={onPrevMove}
           >
             <i className="fa-solid fa-chevron-left"></i>
           </Button>
           <Button
-            className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+            className="rounded-lg bg-gameplay-control hover:bg-gameplay-elevated text-on-surface border border-black/10 text-lg w-full p-3 flex items-center justify-center transition-colors"
             onClick={onNextMove}
           >
             <i className="fa-solid fa-chevron-right"></i>

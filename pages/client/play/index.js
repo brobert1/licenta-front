@@ -1,7 +1,7 @@
 import { checkAuth, withAuth } from '@auth';
 import { MultiplayerGame, MatchFoundAnimation } from '@components/Multiplayer';
 import { Layout } from '@components/Client';
-import { MultiplayerProvider, useMultiplayerContext } from '@contexts/MultiplayerContext';
+import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import OnlineGameSetup from '@components/Multiplayer/OnlineGameSetup';
 
 const PlayContent = () => {
@@ -14,9 +14,7 @@ const PlayContent = () => {
 
 const Page = () => (
   <Layout>
-    <MultiplayerProvider>
-      <PlayContent />
-    </MultiplayerProvider>
+    <PlayContent />
   </Layout>
 );
 

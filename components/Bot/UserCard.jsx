@@ -19,19 +19,19 @@ const UserCard = ({ showTimer = false, show, mutation, timerKey, onTimeChange })
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-        <div className="bg-tertiary lg:w-12 lg:h-12 w-10 h-10 rounded-md animate-pulse"></div>
-        <div className="flex flex-col gap-1">
-          <div className="w-16 h-4 bg-tertiary rounded animate-pulse"></div>
+      <div className="flex items-center gap-3 px-4 py-3 bg-gameplay rounded-xl border border-black/10">
+        <div className="bg-gameplay-elevated lg:w-12 lg:h-12 w-10 h-10 rounded-lg animate-pulse shrink-0" />
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="w-24 h-4 bg-gameplay-elevated rounded animate-pulse" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-      <div className="flex items-center gap-4">
-        <div className="bg-tertiary rounded">
+    <div className="flex items-center justify-between gap-3 px-4 py-3 bg-gameplay rounded-xl border border-black/10">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="bg-gameplay-elevated rounded-lg p-0.5 shrink-0">
           {accountData?.image?.path ? (
             <img
               src={accountData.image?.path}
@@ -40,12 +40,14 @@ const UserCard = ({ showTimer = false, show, mutation, timerKey, onTimeChange })
             />
           ) : (
             <div className="lg:w-12 lg:h-12 w-10 h-10 flex items-center justify-center rounded-md">
-              <i className="fas fa-user text-xl text-white"></i>
+              <i className="fas fa-user text-xl text-on-surface"></i>
             </div>
           )}
         </div>
-        <div className="flex flex-col">
-          <p className="text-white font-semibold text-base">{accountData?.name || 'User'}</p>
+        <div className="flex flex-col min-w-0">
+          <p className="font-landing font-semibold text-sm text-on-surface truncate">
+            {accountData?.name || 'User'}
+          </p>
         </div>
       </div>
       {showTimer && (

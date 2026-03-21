@@ -15,6 +15,27 @@ const annotationTextColors = {
   '??': 'text-red-700',
 };
 
+const chromePalettes = {
+  default: {
+    emptyHint: '',
+    fillerRow: 'bg-secondary',
+    moveNoBar: 'bg-primary border border-gray-600',
+    moveRowActive: 'bg-accent text-white font-bold',
+    moveRowBase: 'bg-secondary',
+    moveRowHover: 'hover:bg-accent hover:text-white',
+    root: 'bg-secondary text-tertiary',
+  },
+  gameplay: {
+    emptyHint: 'text-grey',
+    fillerRow: 'bg-gameplay-elevated text-grey',
+    moveNoBar: 'bg-gameplay-control border border-white/10 text-white',
+    moveRowActive: 'bg-tertiary-container text-white font-bold',
+    moveRowBase: 'bg-gameplay-elevated text-grey',
+    moveRowHover: 'hover:bg-gameplay-control hover:text-white',
+    root: 'bg-gameplay text-grey',
+  },
+};
+
 const PgnTree = ({
   tree,
   current,
@@ -22,7 +43,9 @@ const PgnTree = ({
   onRightClick,
   autoScroll = true,
   analysis = false,
+  chrome = 'default',
 }) => {
+  const palette = chromePalettes[chrome] ?? chromePalettes.default;
   const containerRef = useRef();
   const momentsDictionaryRef = useRef({});
 
@@ -99,20 +122,27 @@ const PgnTree = ({
         {move && (
           <>
             {shouldShowMoveNumber && (
-              <div className="col-span-2 flex items-center justify-center bg-primary border-gray-600">
+              <div
+                className={classnames(
+                  'col-span-2 flex items-center justify-center',
+                  palette.moveNoBar
+                )}
+              >
                 <p>{getMoveNumber(fen)}.</p>
               </div>
             )}
             {!isWhiteMove && shouldShowAddOn && (
-              <div className="col-span-5 flex items-center px-3 py-1 bg-secondary">
+              <div className={classnames('col-span-5 flex items-center px-3 py-1', palette.fillerRow)}>
                 <p>...</p>
               </div>
             )}
             <div
               ref={(el) => (momentsDictionaryRef.current[moment.index] = el)}
               className={classnames(
-                'col-span-5 flex items-center px-3 py-1 cursor-pointer hover:bg-accent hover:text-white',
-                isActive ? 'bg-accent text-white font-bold' : 'bg-secondary',
+                'col-span-5 flex items-center px-3 py-1 cursor-pointer',
+                isActive
+                  ? palette.moveRowActive
+                  : classnames(palette.moveRowBase, palette.moveRowHover),
                 annotationColor
               )}
               onClick={() => onMoveClick(moment)}
@@ -135,7 +165,7 @@ const PgnTree = ({
               {shapes && <Shape extraClass="ml-2" />}
             </div>
             {isWhiteMove && shouldShowAddOn && moment.fen !== lastMoment?.fen && (
-              <div className="col-span-5 flex items-center px-3 py-1 bg-secondary">
+              <div className={classnames('col-span-5 flex items-center px-3 py-1', palette.fillerRow)}>
                 <p>...</p>
               </div>
             )}
@@ -224,12 +254,15 @@ const PgnTree = ({
     <div
       ref={containerRef}
       id="pgn-tree"
-      className="flex-1 bg-secondary text-tertiary text-sm leading-relaxed min-h-0"
+      className={classnames(
+        'flex-1 text-sm leading-relaxed min-h-0',
+        palette.root
+      )}
     >
       <div className="h-full flex flex-col">
         {tree.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center p-4">
-            <p>No moves to display yet</p>
+            <p className={classnames(palette.emptyHint)}>No moves to display yet</p>
           </div>
         ) : (
           tree.map(showBlock)

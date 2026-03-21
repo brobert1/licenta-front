@@ -1,4 +1,4 @@
-export { AuthCard, AuthLayoutGrandmaster, LichessButton } from './Auth';
+export { AuthCard, AuthFlowTransition, AuthLayoutGrandmaster, LichessButton } from './Auth';
 export { default as ErrorLayout } from './ErrorLayout';
 export { default as FancyCourses } from './FancyCourses';
 export { default as Footer } from './Footer';

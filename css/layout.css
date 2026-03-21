@@ -225,6 +225,10 @@
   color: white !important;
 }
 
+.bot-gameplay #pgn-tree {
+  color: inherit !important;
+}
+
 #pgn-comment.text-emerald-400,
 #pgn-comment.text-sky-400,
 #pgn-comment.text-lime-400,
@@ -242,6 +246,10 @@
 
 #pgn-move {
   color: white !important;
+}
+
+.bot-gameplay #pgn-move {
+  color: inherit !important;
 }
 
 #context-menu {

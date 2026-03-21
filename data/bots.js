@@ -1,10 +1,10 @@
 import { banzeusOpening } from './openings/bot-openings';
 
 export const DEFAULT_BOT = {
-  name: 'Charlotte',
+  name: 'Mira',
   elo: 1200,
   skillLevel: 11,
-  message: "I'm getting into intermediate territory, let's battle!",
+  message: "Middlegame ideas over opening memorization—let's see what sticks.",
 };
 
 export const DEFAULT_GAME_SETTINGS = {
@@ -24,19 +24,19 @@ export const bots = {
     eloColor: 'text-green-400',
     bots: [
       {
-        name: 'Noah',
+        name: 'Rae',
         elo: '500',
-        message: "I'll do my best and try not to make too many mistakes!",
+        message: "Rule one: don't get Scholar's Mated. Rule two: still working on rule one.",
       },
       {
-        name: 'Sophia',
+        name: 'Sienna',
         elo: '700',
-        message: "I'm getting better at chess, this should be a good game!",
+        message: "I finally guard my queen like it owes me rent—everything else is negotiable.",
       },
       {
-        name: 'Vaynh',
+        name: 'Felix',
         elo: '900',
-        message: "I've been practicing a lot lately, let's see how I do!",
+        message: "Fewer hanging pieces, more half-baked plans—perfect time for a sparring round.",
       },
     ],
   },
@@ -46,19 +46,19 @@ export const bots = {
     eloColor: 'text-white',
     bots: [
       {
-        name: 'Ethan',
+        name: 'Dante',
         elo: '1000',
-        message: "I'm comfortable with basic tactics, this should be fun!",
+        message: "Openings from muscle memory; middlegames from stubbornness.",
       },
       {
-        name: 'Charlotte',
+        name: 'Mira',
         elo: '1200',
-        message: "I'm getting into intermediate territory, let's battle!",
+        message: "Middlegame ideas over opening memorization—let's see what sticks.",
       },
       {
-        name: 'Mason',
+        name: 'Gideon',
         elo: '1400',
-        message: 'I can spot most tactical patterns now!',
+        message: "Tactics on autopilot—now I'm nagging myself about plans, not just tricks.",
       },
     ],
   },
@@ -68,19 +68,19 @@ export const bots = {
     eloColor: 'text-red-400',
     bots: [
       {
-        name: 'Benjamin',
+        name: 'Elise',
         elo: '1500',
-        message: 'I have a solid understanding of chess strategy!',
+        message: "Love a tidy structure—until the position begs for chaos. Then we adapt.",
       },
       {
-        name: 'Luna',
+        name: 'Roman',
         elo: '1700',
-        message: 'My endgame technique is quite strong, be prepared!',
+        message: "Endgames don't need fireworks; they need one fewer mistake than you.",
       },
       {
-        name: 'Sebastian',
+        name: 'Aria',
         elo: '1900',
-        message: "I'm approaching expert level, you'll need to play well!",
+        message: "One lazy tempo and the eval tilts—no free passes from here on.",
       },
     ],
   },
@@ -90,19 +90,19 @@ export const bots = {
     eloColor: 'text-blue-400',
     bots: [
       {
-        name: 'Vicky',
+        name: 'Kade',
         elo: '2000',
-        message: 'I play at expert level - expect a serious challenge!',
+        message: "Serious chess, zero theatrics—bring your best clock discipline.",
       },
       {
-        name: 'Pose',
+        name: 'Soren',
         elo: '2200',
-        message: 'My chess knowledge is deep and comprehensive!',
+        message: "Deep prep, quiet improvements—this is the tier where patience hurts.",
       },
       {
-        name: 'Banzeus',
+        name: 'Zenith',
         elo: '2400',
-        message: "I'm at near-master strength, this will be intense!",
+        message: "Every tempo carries master-level weight—treat the board like it's listening.",
         openingLine: banzeusOpening,
       },
     ],

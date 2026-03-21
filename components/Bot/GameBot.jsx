@@ -6,7 +6,9 @@ const GameBot = () => {
       <h3 className="text-white text-lg pt-2 px-3 font-semibold text-center">
         Play Chess Against a Bot
       </h3>
-      <SelectedBot />
+      <div className="px-3">
+        <SelectedBot chrome="gameplay" />
+      </div>
       <BotSelector />
     </div>
   );

@@ -9,7 +9,7 @@ const Page = () => {
   const { isPlaying, startGame, endGame } = useGameDisclosure();
 
   return (
-    <Layout>
+    <Layout type="small">
       <ChessProvider>
         <BotProvider>
           {isPlaying ? <GamePlay onEndGame={endGame} /> : <GameSetup onStartGame={startGame} />}

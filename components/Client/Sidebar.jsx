@@ -2,6 +2,7 @@ import { Link } from '@components';
 import logout from '@api/logout';
 import { usePreview, useQuery } from '@hooks';
 import { classnames } from '@lib';
+import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 
 const SidebarNavLink = ({ href, icon, children, active }) => (
   <Link
@@ -67,6 +68,7 @@ const UserCard = () => {
 
 const Sidebar = ({ currentPath = '' }) => {
   const { isPreview } = usePreview();
+  const { playersOnline } = useMultiplayerContext();
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:w-64 bg-surface-container-low border-r border-outline-variant/20">
@@ -126,7 +128,7 @@ const Sidebar = ({ currentPath = '' }) => {
               Global Lobby
             </p>
             <div className="flex items-baseline gap-2">
-              <span className="font-headline text-2xl text-on-surface">12,402</span>
+              <span className="font-headline text-2xl text-on-surface">{playersOnline.toLocaleString()}</span>
               <span className="font-landing text-sm text-secondary-muted">Players Active</span>
             </div>
           </div>

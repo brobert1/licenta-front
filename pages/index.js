@@ -1,23 +1,5 @@
-import {
-  CTASection,
-  CoursesSection,
-  Footer,
-  Header,
-  Hero,
-  RefineSection,
-  StatsSection,
-} from '@components/Visitor';
+import HomeLandingExperience from '@components/Visitor/Landing/HomeLandingExperience';
 
-const Page = () => (
-  <main className="flex flex-col min-h-screen bg-surface text-on-surface">
-    <Header />
-    <Hero />
-    <RefineSection />
-    <CoursesSection />
-    <StatsSection />
-    <CTASection />
-    <Footer />
-  </main>
-);
+const Page = () => <HomeLandingExperience />;
 
 export default Page;

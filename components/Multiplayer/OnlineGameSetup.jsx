@@ -15,10 +15,10 @@ const TIER_FENS = {
 };
 
 const TIER_META = {
-  beginner:     { label: 'Beginner',     style: 'Calm & Positional',      winRate: '78%', activeTier: 0 },
-  intermediate: { label: 'Intermediate', style: 'Balanced & Developing',  winRate: '51%', activeTier: 1 },
-  advanced:     { label: 'Advanced',     style: 'Sharp & Tactical',       winRate: '28%', activeTier: 2 },
-  master:       { label: 'Master',       style: 'Tactical & Aggressive',  winRate: '12%', activeTier: 3 },
+  beginner:     { label: 'Beginner',     style: 'Calm & Positional',      activeTier: 0 },
+  intermediate: { label: 'Intermediate', style: 'Balanced & Developing',  activeTier: 1 },
+  advanced:     { label: 'Advanced',     style: 'Sharp & Tactical',       activeTier: 2 },
+  master:       { label: 'Master',       style: 'Tactical & Aggressive',  activeTier: 3 },
 };
 
 const ALL_BOTS = Object.entries(bots).flatMap(([tierKey, category]) =>
@@ -60,17 +60,36 @@ const TIME_CATEGORIES = [
 
 const DEFAULT_TIME_CONTROL = TIME_CATEGORIES[1].controls[0];
 
-const RECENT_GAMES = [
-  { result: 'win',  opponent: 'Magnus_K',   rating: 2481, change: '+8',  mode: 'Blitz 3+2',   ago: '2h ago' },
-  { result: 'loss', opponent: 'Anatoly_V',  rating: 2310, change: '-14', mode: 'Rapid 10+0',  ago: 'Yesterday' },
-  { result: 'win',  opponent: 'Judit_H',    rating: 2195, change: '+6',  mode: 'Bullet 1+0',  ago: '2d ago' },
-  { result: 'draw', opponent: 'Fischer_R',  rating: 2402, change: '+0',  mode: 'Blitz 5+0',   ago: '3d ago' },
-  { result: 'win',  opponent: 'Tal_M',      rating: 2250, change: '+12', mode: 'Rapid 15+10', ago: '4d ago' },
-];
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+const timeAgo = (dateStr) => {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (mins < 2) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days === 1) return 'Yesterday';
+  return `${days}d ago`;
+};
+
+const formatTimeControl = (timeControl) => {
+  if (!timeControl?.initial) return '—';
+  const { initial, increment } = timeControl;
+  const mins = Math.round(initial / 60);
+  const category = initial < 180 ? 'Bullet' : initial < 600 ? 'Blitz' : 'Rapid';
+  return increment ? `${category} ${mins}+${increment}` : `${category} ${mins}min`;
+};
+
+// ── component ─────────────────────────────────────────────────────────────────
 
 const OnlineGameSetup = () => {
-  const { joinQueue, leaveQueue, inQueue, isConnected } = useMultiplayerContext();
+  const { joinQueue, leaveQueue, inQueue, isConnected, playersOnline } = useMultiplayerContext();
   const { data: me } = useQuery('/client/account');
+  const { data: games, status: gamesStatus } = useQuery('/client/play/history');
+  const { data: dailyStats } = useQuery('/client/play/stats/daily');
+
   const [selectedCategory, setSelectedCategory] = useState(1); // Blitz default
   const [selectedTimeControl, setSelectedTimeControl] = useState(DEFAULT_TIME_CONTROL);
 
@@ -85,11 +104,65 @@ const OnlineGameSetup = () => {
       tierKey: bot.tierKey,
       message: bot.message,
       style: meta.style,
-      winRate: meta.winRate,
       activeTier: meta.activeTier,
       fen: TIER_FENS[bot.tierKey],
     };
   }, []);
+
+  // Win rate for the featured bot (computed from real game history)
+  const botWinRate = useMemo(() => {
+    if (!games?.length || !me) return null;
+    const botGames = games.filter(
+      (g) => g.type === 'bot' && (g.white === featuredBot.name || g.black === featuredBot.name)
+    );
+    if (!botGames.length) return null;
+    const wins = botGames.filter((g) => {
+      const isWhite = g.white === me.name;
+      return (g.result === '1-0' && isWhite) || (g.result === '0-1' && !isWhite);
+    }).length;
+    return Math.round((wins / botGames.length) * 100);
+  }, [games, me, featuredBot]);
+
+  // Best win streak across all games (chronological order)
+  const bestWinStreak = useMemo(() => {
+    if (!games?.length || !me) return 0;
+    let best = 0;
+    let current = 0;
+    // games is sorted newest-first; reverse to go chronological
+    [...games].reverse().forEach((game) => {
+      const isWhite = game.white === me.name;
+      const won = (game.result === '1-0' && isWhite) || (game.result === '0-1' && !isWhite);
+      if (won) {
+        current += 1;
+        if (current > best) best = current;
+      } else {
+        current = 0;
+      }
+    });
+    return best;
+  }, [games, me]);
+
+  // Last 5 completed games for the recent games table
+  const recentGames = useMemo(() => {
+    if (!games?.length || !me) return [];
+    return games.slice(0, 5).map((game) => {
+      const isWhite = game.white === me.name;
+      let result = 'draw';
+      if (game.result === '1-0') result = isWhite ? 'win' : 'loss';
+      else if (game.result === '0-1') result = isWhite ? 'loss' : 'win';
+      const opponent = isWhite ? game.black : game.white;
+      return {
+        result,
+        opponent,
+        mode: formatTimeControl(game.timeControl),
+        ago: timeAgo(game.createdAt),
+        type: game.type, // 'bot' | 'live'
+        id: game._id,
+      };
+    });
+  }, [games, me]);
+
+  const gamesPlayed = games?.length ?? '—';
 
   const handleCategoryClick = (categoryIndex, firstControl) => {
     if (inQueue) return;
@@ -111,22 +184,16 @@ const OnlineGameSetup = () => {
     }
   };
 
-  const getResultColor = (result) => {
+  const getResultDot = (result) => {
     if (result === 'win') return 'bg-green-500';
     if (result === 'loss') return 'bg-red-500';
     return 'bg-surface-container-highest';
   };
 
   const getResultLabel = (result) => {
-    if (result === 'win') return { text: 'Win', cls: 'text-green-600' };
-    if (result === 'loss') return { text: 'Loss', cls: 'text-red-600' };
+    if (result === 'win') return { text: 'Win', cls: 'text-green-500' };
+    if (result === 'loss') return { text: 'Loss', cls: 'text-red-500' };
     return { text: 'Draw', cls: 'text-secondary-muted' };
-  };
-
-  const getChangeColor = (change) => {
-    if (change.startsWith('+') && change !== '+0') return 'text-green-600';
-    if (change.startsWith('-')) return 'text-red-600';
-    return 'text-secondary-muted';
   };
 
   return (
@@ -143,11 +210,10 @@ const OnlineGameSetup = () => {
                 Challenge a live opponent or test your skills against a bot
               </p>
             </div>
-            {/* Connection status */}
             {isConnected ? (
               <span className="font-landing text-xs text-tertiaryGold bg-tertiaryGold/10 px-3 py-1.5 rounded-full flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 bg-tertiaryGold rounded-full" />
-                12,402 online
+                {playersOnline.toLocaleString()} online
               </span>
             ) : (
               <span className="font-landing text-xs text-secondary-muted bg-surface-container px-3 py-1.5 rounded-full flex items-center gap-1.5">
@@ -197,7 +263,6 @@ const OnlineGameSetup = () => {
                   >
                     {cat.description}
                   </p>
-                  {/* Time control pills */}
                   <div className="flex flex-wrap gap-1.5">
                     {cat.controls.map((tc) => {
                       const isPillActive = selectedTimeControl?.label === tc.label && isSelected;
@@ -225,7 +290,7 @@ const OnlineGameSetup = () => {
           </div>
         </div>
 
-        {/* Preparation Lab — bot practice featured card */}
+        {/* Preparation Lab */}
         <div>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <div className="flex items-center gap-3">
@@ -237,124 +302,166 @@ const OnlineGameSetup = () => {
             <span className="font-landing text-xs text-secondary-muted">12 opponents · ELO 500–2400</span>
           </div>
 
-          {/* NoSsr prevents hydration mismatch from Math.random() */}
           <NoSsr>
-          {/* Outer wrapper — board and card are siblings, same height */}
-          <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+            <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+              <div className="flex-shrink-0 rounded-xl overflow-hidden self-stretch relative" style={{ width: '300px' }}>
+                <NoSsr>
+                  <NextChessground
+                    readOnly
+                    fen={featuredBot.fen}
+                    orientation="white"
+                    style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '300px', height: '300px', display: 'block' }}
+                  />
+                </NoSsr>
+              </div>
 
-            {/* Board — fixed width, self-stretch so it fills the card height */}
-            <div className="flex-shrink-0 rounded-xl overflow-hidden self-stretch relative" style={{ width: '300px' }}>
-              <NoSsr>
-                <NextChessground
-                  readOnly
-                  fen={featuredBot.fen}
-                  orientation="white"
-                  style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '300px', height: '300px', display: 'block' }}
-                />
-              </NoSsr>
-            </div>
-
-            {/* Info card — sibling to the board */}
-            <div className="bg-surface-container-lowest rounded-xl flex-1 min-w-0 flex flex-col justify-between p-5">
-              <div>
-                {/* Tier badge + ELO */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="font-landing text-xs font-bold uppercase tracking-widest text-tertiaryGold">
-                    {featuredBot.tier}
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-outline-variant" />
-                  <span className="font-landing text-xs text-secondary-muted">ELO {featuredBot.elo} · {featuredBot.style}</span>
-                </div>
-
-                {/* Bot name */}
-                <p className="font-headline text-2xl text-on-surface leading-tight mb-0.5">{featuredBot.name}</p>
-                <p className="font-landing text-xs text-secondary-muted mb-3">{featuredBot.style}</p>
-
-                {/* Quote */}
-                <p className="font-landing text-xs text-secondary-muted italic leading-relaxed mb-4 line-clamp-2">
-                  "{featuredBot.message}"
-                </p>
-
-                {/* Difficulty tier row */}
-                <div className="flex items-center gap-1.5 mb-4">
-                  {[
-                    { label: 'Beginner',     color: 'bg-green-500',  idx: 0 },
-                    { label: 'Intermediate', color: 'bg-blue-400',   idx: 1 },
-                    { label: 'Advanced',     color: 'bg-orange-400', idx: 2 },
-                    { label: 'Master',       color: 'bg-red-500',    idx: 3 },
-                  ].map((tier) => (
-                    <span
-                      key={tier.label}
-                      className={`font-landing text-xs px-2.5 py-1 rounded-full transition-all ${
-                        tier.idx === featuredBot.activeTier
-                          ? `${tier.color} text-white font-semibold`
-                          : 'bg-surface-container text-secondary-muted'
-                      }`}
-                    >
-                      {tier.label}
+              <div className="bg-surface-container-lowest rounded-xl flex-1 min-w-0 flex flex-col justify-between p-5">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="font-landing text-xs font-bold uppercase tracking-widest text-tertiaryGold">
+                      {featuredBot.tier}
                     </span>
-                  ))}
+                    <span className="w-1 h-1 rounded-full bg-outline-variant" />
+                    <span className="font-landing text-xs text-secondary-muted">ELO {featuredBot.elo} · {featuredBot.style}</span>
+                  </div>
+
+                  <p className="font-headline text-2xl text-on-surface leading-tight mb-0.5">{featuredBot.name}</p>
+                  <p className="font-landing text-xs text-secondary-muted mb-3">{featuredBot.style}</p>
+
+                  <p className="font-landing text-xs text-secondary-muted italic leading-relaxed mb-4 line-clamp-2">
+                    "{featuredBot.message}"
+                  </p>
+
+                  <div className="flex items-center gap-1.5 mb-4">
+                    {[
+                      { label: 'Beginner',     color: 'bg-green-500',  idx: 0 },
+                      { label: 'Intermediate', color: 'bg-blue-400',   idx: 1 },
+                      { label: 'Advanced',     color: 'bg-orange-400', idx: 2 },
+                      { label: 'Master',       color: 'bg-red-500',    idx: 3 },
+                    ].map((tier) => (
+                      <span
+                        key={tier.label}
+                        className={`font-landing text-xs px-2.5 py-1 rounded-full transition-all ${
+                          tier.idx === featuredBot.activeTier
+                            ? `${tier.color} text-white font-semibold`
+                            : 'bg-surface-container text-secondary-muted'
+                        }`}
+                      >
+                        {tier.label}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Win rate vs this bot */}
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="font-landing text-xs text-secondary-muted">
+                      Win rate vs {featuredBot.name}
+                    </span>
+                    {botWinRate === null ? (
+                      <span className="font-landing text-xs text-secondary-muted italic">No games yet</span>
+                    ) : (
+                      <span className={`font-landing text-xs font-semibold ${
+                        botWinRate >= 50 ? 'text-green-500' : 'text-red-500'
+                      }`}>
+                        {botWinRate}%
+                      </span>
+                    )}
+                  </div>
+                  <div className="h-1 bg-surface-container rounded-full overflow-hidden">
+                    {botWinRate !== null && (
+                      <div
+                        className={`h-full rounded-full ${botWinRate >= 50 ? 'bg-green-500' : 'bg-red-400'}`}
+                        style={{ width: `${botWinRate}%` }}
+                      />
+                    )}
+                  </div>
                 </div>
 
-                {/* Win rate */}
-                <div className="mb-1 flex items-center justify-between">
-                  <span className="font-landing text-xs text-secondary-muted">Win rate vs {featuredBot.name}</span>
-                  <span className="font-landing text-xs font-semibold text-red-500">{featuredBot.winRate}</span>
+                <div className="flex gap-2 mt-4">
+                  <Link href={`/client/play/bot?bot=${encodeURIComponent(featuredBot.name)}&elo=${featuredBot.elo}`} className="flex-1">
+                    <div className="w-full bg-on-surface hover:opacity-90 text-white font-landing font-bold text-sm py-2.5 rounded-lg transition-all text-center cursor-pointer">
+                      Challenge Bot
+                    </div>
+                  </Link>
+                  <Link href="/client/play/bot">
+                    <div className="bg-surface-container hover:bg-surface-container-high text-on-surface font-landing font-semibold text-sm py-2.5 px-4 rounded-lg transition-all text-center cursor-pointer whitespace-nowrap">
+                      View All
+                    </div>
+                  </Link>
                 </div>
-                <div className="h-1 bg-surface-container rounded-full overflow-hidden">
-                  <div className="h-full bg-red-400 rounded-full" style={{ width: featuredBot.winRate }} />
-                </div>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex gap-2 mt-4">
-                <Link href={`/client/play/bot?bot=${encodeURIComponent(featuredBot.name)}&elo=${featuredBot.elo}`} className="flex-1">
-                  <div className="w-full bg-on-surface hover:opacity-90 text-white font-landing font-bold text-sm py-2.5 rounded-lg transition-all text-center cursor-pointer">
-                    Challenge Bot
-                  </div>
-                </Link>
-                <Link href="/client/play/bot">
-                  <div className="bg-surface-container hover:bg-surface-container-high text-on-surface font-landing font-semibold text-sm py-2.5 px-4 rounded-lg transition-all text-center cursor-pointer whitespace-nowrap">
-                    View All
-                  </div>
-                </Link>
               </div>
             </div>
-            {/* end info card */}
-          </div>
-          {/* end outer wrapper */}
           </NoSsr>
         </div>
 
         {/* Recent Games */}
         <div>
-          <p className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted mb-3">
-            Recent Games
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted">
+              Recent Games
+            </p>
+            <Link href="/client/play/history" className="font-landing text-xs text-tertiaryGold hover:underline">
+              View all
+            </Link>
+          </div>
+
           <div className="bg-surface-container-lowest rounded-xl overflow-hidden">
-            {RECENT_GAMES.map((game, i) => {
+            {gamesStatus === 'loading' && (
+              <div className="flex flex-col">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center justify-between px-5 py-3.5 ${i < 4 ? 'border-b border-outline-variant/20' : ''}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-surface-container-high animate-pulse" />
+                      <div className="h-3 w-10 bg-surface-container-high rounded animate-pulse" />
+                      <div className="h-3 w-24 bg-surface-container-high rounded animate-pulse" />
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="h-3 w-16 bg-surface-container-high rounded animate-pulse hidden sm:block" />
+                      <div className="h-3 w-12 bg-surface-container-high rounded animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {gamesStatus === 'success' && recentGames.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-10 gap-2">
+                <i className="fa-regular fa-chess text-3xl text-secondary-muted/40" />
+                <p className="font-landing text-sm text-secondary-muted">No games played yet</p>
+                <p className="font-landing text-xs text-secondary-muted/60">Play a game to see your history here</p>
+              </div>
+            )}
+
+            {gamesStatus === 'success' && recentGames.length > 0 && recentGames.map((game, i) => {
               const { text, cls } = getResultLabel(game.result);
               return (
                 <div
-                  key={i}
-                  className={`flex items-center justify-between px-5 py-3 hover:bg-surface-container transition-colors ${
-                    i < RECENT_GAMES.length - 1 ? 'border-b border-outline-variant/20' : ''
+                  key={game.id || i}
+                  className={`flex items-center justify-between px-5 py-3.5 hover:bg-surface-container transition-colors ${
+                    i < recentGames.length - 1 ? 'border-b border-outline-variant/20' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getResultColor(game.result)}`} />
-                    <span className={`font-landing text-sm font-semibold ${cls}`}>{text}</span>
+                  {/* Left: result + opponent */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${getResultDot(game.result)}`} />
+                    <span className={`font-landing text-sm font-semibold w-9 flex-shrink-0 ${cls}`}>{text}</span>
                     <span className="font-landing text-xs text-secondary-muted">vs</span>
-                    <span className="font-landing text-sm text-on-surface">
-                      {game.opponent}
-                      <span className="text-secondary-muted text-xs ml-1">({game.rating})</span>
-                    </span>
+                    <span className="font-landing text-sm text-on-surface truncate">{game.opponent}</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="font-landing text-xs text-secondary-muted hidden sm:block">{game.mode}</span>
-                    <span className={`font-landing text-sm font-semibold ${getChangeColor(game.change)}`}>
-                      {game.change}
+
+                  {/* Right: type badge + mode + time */}
+                  <div className="flex items-center gap-3 flex-shrink-0 ml-3">
+                    <span className={`font-landing text-xs px-2 py-0.5 rounded-md font-medium hidden sm:block ${
+                      game.type === 'live'
+                        ? 'bg-blue-500/15 text-blue-400'
+                        : 'bg-surface-container text-secondary-muted'
+                    }`}>
+                      {game.type === 'live' ? 'Live' : 'Bot'}
                     </span>
+                    <span className="font-landing text-xs text-secondary-muted hidden md:block">{game.mode}</span>
                     <span className="font-landing text-xs text-secondary-muted w-16 text-right">{game.ago}</span>
                   </div>
                 </div>
@@ -412,29 +519,48 @@ const OnlineGameSetup = () => {
           <p className="font-landing text-xs font-bold uppercase tracking-widest text-secondary-muted mb-4">
             Daily Performance
           </p>
-          <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-baseline">
-              <span className="font-landing text-sm text-secondary-muted">Wins Today</span>
-              <span className="font-headline text-2xl text-on-surface">14</span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="font-landing text-sm text-secondary-muted">ELO Gained</span>
-              <span className="font-headline text-2xl text-green-600">+22</span>
-            </div>
-            <div className="flex justify-between items-baseline">
-              <span className="font-landing text-sm text-secondary-muted">Win Rate</span>
-              <span className="font-headline text-2xl text-on-surface">74%</span>
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="flex justify-between mb-1">
-              <span className="font-landing text-xs text-secondary-muted">Progress to Next Tier</span>
-              <span className="font-landing text-xs text-tertiaryGold">75%</span>
-            </div>
-            <div className="h-1.5 bg-surface-container rounded-full overflow-hidden">
-              <div className="h-full bg-tertiary-container rounded-full" style={{ width: '75%' }} />
-            </div>
-          </div>
+          {(() => {
+            const wins = dailyStats?.wins ?? 0;
+            const losses = dailyStats?.losses ?? 0;
+            const draws = dailyStats?.draws ?? 0;
+            const total = wins + losses + draws;
+            const winRate = total > 0 ? Math.round((wins / total) * 100) : null;
+            const eloGained = dailyStats?.eloGained ?? 0;
+            const winRatePct = winRate ?? 0;
+            return (
+              <>
+                <div className="flex flex-col gap-3">
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-landing text-sm text-secondary-muted">Wins Today</span>
+                    <span className="font-headline text-2xl text-on-surface">{wins}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-landing text-sm text-secondary-muted">ELO Gained</span>
+                    <span className={`font-headline text-2xl ${eloGained > 0 ? 'text-green-500' : eloGained < 0 ? 'text-red-500' : 'text-secondary-muted'}`}>
+                      {eloGained > 0 ? `+${eloGained}` : eloGained === 0 ? '—' : eloGained}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-baseline">
+                    <span className="font-landing text-sm text-secondary-muted">Win Rate</span>
+                    <span className="font-headline text-2xl text-on-surface">
+                      {winRate !== null ? `${winRate}%` : '—'}
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="flex justify-between mb-1">
+                    <span className="font-landing text-xs text-secondary-muted">
+                      {total > 0 ? `${total} game${total !== 1 ? 's' : ''} today` : 'No games today'}
+                    </span>
+                    <span className="font-landing text-xs text-tertiaryGold">{winRatePct}%</span>
+                  </div>
+                  <div className="h-1.5 bg-surface-container rounded-full overflow-hidden">
+                    <div className="h-full bg-tertiary-container rounded-full transition-all" style={{ width: `${winRatePct}%` }} />
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </div>
 
         {/* Your Stats */}
@@ -449,11 +575,23 @@ const OnlineGameSetup = () => {
             </div>
             <div className="flex justify-between items-center border-t border-outline-variant/20 pt-3">
               <span className="font-landing text-sm text-secondary-muted">Games Played</span>
-              <span className="font-landing text-sm font-semibold text-on-surface">248</span>
+              <span className="font-landing text-sm font-semibold text-on-surface">
+                {gamesStatus === 'loading' ? (
+                  <span className="inline-block w-8 h-3 bg-surface-container-high rounded animate-pulse" />
+                ) : (
+                  gamesPlayed
+                )}
+              </span>
             </div>
             <div className="flex justify-between items-center border-t border-outline-variant/20 pt-3">
               <span className="font-landing text-sm text-secondary-muted">Best Win Streak</span>
-              <span className="font-landing text-sm font-semibold text-on-surface">7</span>
+              <span className="font-landing text-sm font-semibold text-on-surface">
+                {gamesStatus === 'loading' ? (
+                  <span className="inline-block w-4 h-3 bg-surface-container-high rounded animate-pulse" />
+                ) : (
+                  bestWinStreak
+                )}
+              </span>
             </div>
           </div>
         </div>

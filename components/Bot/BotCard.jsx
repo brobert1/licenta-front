@@ -30,19 +30,19 @@ const BotCard = ({ showTimer = false, show, mutation, timerKey, onTimeChange }) 
   const botAvatarSrc = generateBotAvatar(selectedBot.name);
 
   return (
-    <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-      <div className="flex items-center gap-4">
-        <div className="bg-tertiary rounded">
+    <div className="flex items-center justify-between gap-3 px-4 py-3 bg-gameplay rounded-xl border border-black/10">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="bg-gameplay-elevated rounded-lg p-0.5 shrink-0">
           <img
             src={botAvatarSrc}
             className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
             alt="Bot Avatar"
           />
         </div>
-        <div className="flex flex-col">
-          <div className="flex gap-2 items-center">
-            <p className="text-white font-medium text-base">{selectedBot.name}</p>
-            <p className="text-gray-300">({selectedBot.elo})</p>
+        <div className="flex flex-col min-w-0">
+          <div className="flex flex-wrap gap-x-2 gap-y-0 items-baseline">
+            <p className="font-landing font-semibold text-sm text-on-surface truncate">{selectedBot.name}</p>
+            <p className="font-landing text-xs text-grey shrink-0">({selectedBot.elo})</p>
           </div>
         </div>
       </div>

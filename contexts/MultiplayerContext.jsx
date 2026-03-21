@@ -32,6 +32,8 @@ export const MultiplayerProvider = ({ children }) => {
   // Opponent connection state
   const [opponentDisconnected, setOpponentDisconnected] = useState(false);
   const [opponentDisconnectTime, setOpponentDisconnectTime] = useState(null); // Timestamp when opponent disconnected
+  // Global lobby
+  const [playersOnline, setPlayersOnline] = useState(0);
 
   // Subscribe to store changes to get token when it becomes available
   useEffect(() => {
@@ -211,6 +213,11 @@ export const MultiplayerProvider = ({ children }) => {
 
     // No active game found when trying to rejoin
     newSocket.on('noActiveGame', () => {});
+
+    // Global lobby player count
+    newSocket.on('playersOnline', (count) => {
+      setPlayersOnline(count);
+    });
 
     // Opponent disconnected notification
     newSocket.on('opponentDisconnected', ({ gracePeriod }) => {
@@ -405,6 +412,7 @@ export const MultiplayerProvider = ({ children }) => {
   const value = {
     socket,
     isConnected,
+    playersOnline,
     inQueue,
     activeGame,
     opponent,

@@ -58,9 +58,9 @@ const Timer = ({ initialTime = 180, isActive = false, increment = 0, onTimeOut, 
   return (
     <div
       className={classnames(
-        'flex items-center justify-center py-1.5 px-3 text-base border-2 rounded-md transition-all duration-300 w-24',
-        isActive && 'bg-green-500/10 border-green-900 text-white',
-        !isActive && 'bg-black/20 border-neutral-700 text-neutral-400 opacity-60'
+        'flex items-center justify-center py-1.5 px-3 border-2 rounded-lg transition-all duration-300 w-24 font-mono text-sm',
+        isActive && 'bg-tertiary-container/15 border-tertiary-container text-on-surface',
+        !isActive && 'bg-gameplay-elevated border-gameplay-control text-grey opacity-70'
       )}
     >
       <p className="font-mono">{formatTime(timeLeft)}</p>

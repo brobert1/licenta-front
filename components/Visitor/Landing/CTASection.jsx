@@ -1,9 +1,11 @@
 import { Button } from '@components';
 
 const CTASection = () => (
-  <section className="py-24 px-4 lg:px-24">
+  <section className="py-24 px-4 lg:px-24 cta-scroll-root">
     <div className="max-w-5xl mx-auto bg-surface-container-highest rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-tertiaryGold/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="pointer-events-none absolute top-0 right-0 h-64 w-64 -translate-y-1/2 translate-x-1/2">
+        <div className="cta-blob h-full w-full rounded-full bg-tertiaryGold/5 blur-3xl" />
+      </div>
       <div className="relative z-10">
         <h2 className="text-4xl md:text-6xl font-headline text-black mb-8">
           Ready to make your move?

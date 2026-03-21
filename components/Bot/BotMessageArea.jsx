@@ -17,7 +17,7 @@ const BotMessageArea = () => {
     isUserTurn,
   });
 
-  return <SelectedBot showInfo={false} message={currentMessage} />;
+  return <SelectedBot chrome="gameplay" message={currentMessage} showInfo={false} />;
 };
 
 export default memo(BotMessageArea);

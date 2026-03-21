@@ -1,4 +1,5 @@
 import { ErrorBoundary, ScreenSizeInfo, Toaster } from '@components';
+import { AuthFlowTransition } from '@components/Visitor';
 import { AnalysisEngineProvider } from '@contexts';
 import { sitename } from '@site.config';
 import Head from 'next/head';
@@ -18,7 +19,9 @@ const Root = (props) => {
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
           <AnalysisEngineProvider>
-            <Component {...pageProps} />
+            <AuthFlowTransition>
+              <Component {...pageProps} />
+            </AuthFlowTransition>
             <Toaster />
             <ScreenSizeInfo />
           </AnalysisEngineProvider>

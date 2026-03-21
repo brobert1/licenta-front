@@ -32,6 +32,12 @@ module.exports = {
         tertiaryGold: '#725c00',
         'tertiary-container': '#cba829',
         'secondary-muted': '#505f76',
+        // Light panels (bot live play sidebar + player bars)
+        gameplay: {
+          DEFAULT: '#f7f9fb',
+          elevated: '#eceef0',
+          control: '#e6e8ea',
+        },
       },
       fontFamily: {
         heading: 'Poppins, sans-serif',
