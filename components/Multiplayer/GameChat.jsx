@@ -1,16 +1,16 @@
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { useQuery } from '@hooks';
-import { useEffect, useRef, useState } from 'react';
 import { classnames } from '@lib';
+import { useEffect, useRef, useState } from 'react';
 
 const GameChat = () => {
   const {
     messages,
     sendMessage,
     activeGame,
-    chatStatus, // 'initial', 'pending', 'active', 'rejected'
-    chatRequestedBy, // 'white' or 'black'
-    playerColor, // 'white' or 'black'
+    chatStatus,
+    chatRequestedBy,
+    playerColor,
     acceptChat,
     declineChat,
   } = useMultiplayerContext();
@@ -20,14 +20,13 @@ const GameChat = () => {
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll logic
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, chatStatus]); // Also scroll when status changes (e.g., chat becomes active showing history)
+  }, [messages, chatStatus]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +34,6 @@ const GameChat = () => {
     if (trimmed && trimmed.length <= 200) {
       sendMessage(trimmed);
       setInputValue('');
-      // If status was initial, it will switch to pending, handled by context update
     }
   };
 
@@ -57,120 +55,123 @@ const GameChat = () => {
 
   if (!activeGame) return null;
 
-  // Render content based on chatStatus
   const renderContent = () => {
-    // 1. Initial State: Empty state encouraging to start chat
     if (chatStatus === 'initial') {
       return (
-        <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3 opacity-60">
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-2">
-            <i className="fas fa-comments text-2xl text-white/50"></i>
+        <div className="flex h-full flex-col items-center justify-center space-y-3 p-6 text-center">
+          <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gameplay-elevated border border-black/10">
+            <i className="fas fa-comments text-2xl text-secondary-muted"></i>
           </div>
-          <p className="text-sm text-neutral-300">Start a conversation with your opponent.</p>
-          <p className="text-xs text-neutral-500">
+          <p className="font-landing text-sm text-on-surface">Start a conversation with your opponent.</p>
+          <p className="font-landing text-xs text-secondary-muted">
             They will need to accept your request to reply.
           </p>
         </div>
       );
     }
 
-    // 2. Pending State
     if (chatStatus === 'pending') {
       const isMyRequest = chatRequestedBy === playerColor;
 
       if (isMyRequest) {
         return (
-          <div className="flex flex-col h-full">
-            <div className="flex-1 overflow-y-auto p-3 space-y-4">
+          <div className="flex h-full flex-col">
+            <div className="flex-1 space-y-4 overflow-y-auto p-3">
               {messages.map((msg, index) => (
-                <div key={index} className="flex flex-col items-end opacity-70">
-                  <div className="max-w-[85%] rounded-2xl rounded-tr-sm px-4 py-2 bg-white/10 text-white backdrop-blur-md border border-white/5">
-                    <p className="text-sm">{msg.content}</p>
+                <div key={index} className="flex flex-col items-end opacity-90">
+                  <div className="max-w-sm rounded-2xl rounded-tr-sm border border-tertiary-container/40 bg-tertiary-container/15 px-4 py-2">
+                    <p className="font-landing text-sm text-on-surface">{msg.content}</p>
                   </div>
-                  <span className="text-[10px] text-neutral-400 mt-1 mr-1">Request Pending...</span>
+                  <span className="mt-1 mr-1 font-landing text-xs text-secondary-muted">
+                    Request Pending...
+                  </span>
                 </div>
               ))}
-              <div className="flex flex-col items-center justify-center mt-8 space-y-2 animate-pulse">
-                <div className="w-8 h-8 rounded-full border-2 border-primary/30 border-t-primary animate-spin"></div>
-                <p className="text-xs text-primary/80 font-medium">
+              <div className="mt-8 flex flex-col items-center justify-center space-y-2">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-gameplay-control border-t-tertiary-container"></div>
+                <p className="font-landing text-xs font-medium text-secondary-muted">
                   Waiting for opponent to accept...
                 </p>
               </div>
             </div>
           </div>
         );
-      } else {
-        return (
-          <div className="flex flex-col items-center justify-center h-full p-6 text-center space-y-6 animate-fade-in">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full animate-pulse-slow"></div>
-              <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center border border-white/10">
-                <i className="fas fa-comment-dots text-2xl text-white"></i>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-white font-bold text-lg tracking-wide">Chat Request</h3>
-              <p className="text-sm text-neutral-400 mt-2 max-w-[200px] mx-auto leading-relaxed">
-                Your opponent would like to start a conversation.
-              </p>
-            </div>
-            <div className="flex gap-3 w-full max-w-xs pt-2">
-              <button
-                onClick={declineChat}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white text-sm font-semibold transition-all border border-neutral-700/50 hover:border-neutral-600"
-              >
-                Decline
-              </button>
-              <button
-                onClick={acceptChat}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-sm font-bold transition-all hover:scale-[1.02] border border-white/10"
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        );
       }
-    }
-    if (chatStatus === 'rejected') {
-      const isMyRequest = chatRequestedBy === playerColor;
+
       return (
-        <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3">
-          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-2">
-            <i className="fas fa-comment-slash text-2xl text-red-400/50"></i>
+        <div className="flex h-full flex-col items-center justify-center space-y-6 p-6 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full border border-black/10 bg-gameplay-elevated">
+            <i className="fas fa-comment-dots text-2xl text-tertiary-container"></i>
           </div>
-          <p className="text-sm text-neutral-400">
-            {isMyRequest ? 'Opponent declined your request.' : 'You declined the chat request.'}
-          </p>
-          <p className="text-xs text-neutral-600">Chat is disabled for this game.</p>
+          <div>
+            <h3 className="font-landing text-lg font-bold text-on-surface">Chat Request</h3>
+            <p className="mx-auto mt-2 max-w-xs font-landing text-sm leading-relaxed text-secondary-muted">
+              Your opponent would like to start a conversation.
+            </p>
+          </div>
+          <div className="flex w-full max-w-xs gap-3 pt-2">
+            <button
+              type="button"
+              onClick={declineChat}
+              className="flex-1 rounded-xl border border-black/10 bg-gameplay-control py-2.5 px-4 font-landing text-sm font-semibold text-on-surface transition-colors hover:bg-gameplay-elevated"
+            >
+              Decline
+            </button>
+            <button
+              type="button"
+              onClick={acceptChat}
+              className="flex-1 rounded-xl border border-black/10 bg-tertiary-container py-2.5 px-4 font-landing text-sm font-bold text-on-surface transition-colors hover:opacity-90"
+            >
+              Accept
+            </button>
+          </div>
         </div>
       );
     }
+
+    if (chatStatus === 'rejected') {
+      const isMyRequest = chatRequestedBy === playerColor;
+      return (
+        <div className="flex h-full flex-col items-center justify-center space-y-3 p-6 text-center">
+          <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-red-50 border border-red-200">
+            <i className="fas fa-comment-slash text-2xl text-red-400"></i>
+          </div>
+          <p className="font-landing text-sm text-secondary-muted">
+            {isMyRequest ? 'Opponent declined your request.' : 'You declined the chat request.'}
+          </p>
+          <p className="font-landing text-xs text-secondary-muted">Chat is disabled for this game.</p>
+        </div>
+      );
+    }
+
     return (
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
         {messages.map((msg, index) => {
           const own = isOwnMessage(msg.sender);
           return (
             <div
               key={index}
-              className={`flex flex-col ${own ? 'items-end' : 'items-start'} animate-fade-in-up`}
+              className={classnames(
+                'flex flex-col',
+                own ? 'items-end' : 'items-start'
+              )}
             >
               <div
                 className={classnames(
-                  'max-w-[85%] px-4 py-2.5 shadow-sm backdrop-blur-sm',
+                  'max-w-sm rounded-2xl px-4 py-2.5 shadow-sm border',
                   own
-                    ? 'bg-gradient-to-br from-primary to-primary-dark text-white rounded-2xl rounded-tr-sm'
-                    : 'bg-neutral-800/80 border border-white/5 text-neutral-100 rounded-2xl rounded-tl-sm'
+                    ? 'rounded-tr-sm border-tertiary-container/50 bg-tertiary-container/20 text-on-surface'
+                    : 'rounded-tl-sm border-black/10 bg-gameplay-elevated text-on-surface'
                 )}
               >
                 {!own && (
-                  <p className="text-[10px] text-primary-light/80 font-bold mb-0.5 tracking-wide uppercase">
+                  <p className="mb-0.5 font-landing text-xs font-bold uppercase tracking-wide text-tertiaryGold">
                     {msg.senderName}
                   </p>
                 )}
-                <p className="text-sm leading-relaxed break-words">{msg.content}</p>
+                <p className="font-landing text-sm leading-relaxed break-words">{msg.content}</p>
               </div>
-              <span className="text-[10px] text-neutral-500 mt-1 px-1 font-medium">
+              <span className="mt-1 px-1 font-landing text-xs font-medium text-secondary-muted">
                 {formatTime(msg.timestamp)}
               </span>
             </div>
@@ -185,15 +186,15 @@ const GameChat = () => {
     chatStatus !== 'rejected' && !(chatStatus === 'pending' && chatRequestedBy !== playerColor);
 
   return (
-    <div className="flex flex-col h-full bg-secondary">
-      <div className="flex-1 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-[0.02] bg-[url('/img/noise.png')] pointer-events-none"></div>
-        {renderContent()}
-      </div>
+    <div className="flex h-full min-h-0 flex-col bg-gameplay">
+      <div className="relative min-h-0 flex-1 overflow-hidden">{renderContent()}</div>
 
       {showInput && (
-        <form onSubmit={handleSubmit} className="p-3 bg-secondary border-t border-neutral-700">
-          <div className="relative group">
+        <form
+          onSubmit={handleSubmit}
+          className="border-t border-black/10 bg-gameplay-control p-3"
+        >
+          <div className="relative">
             <input
               ref={inputRef}
               type="text"
@@ -204,24 +205,24 @@ const GameChat = () => {
                 chatStatus === 'initial' ? 'Type to send request...' : 'Type a message...'
               }
               maxLength={200}
-              className="w-full bg-neutral-800 text-white text-sm rounded-lg pl-4 pr-12 py-3 focus:outline-none transition-colors placeholder-neutral-400"
+              className="w-full rounded-lg border border-black/10 bg-surface-container-lowest py-3 pl-4 pr-12 font-landing text-sm text-on-surface transition-colors placeholder:text-secondary-muted focus:outline-none focus:ring-2 focus:ring-tertiary-container/40"
             />
             <button
               type="submit"
               disabled={!inputValue.trim()}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white disabled:opacity-0 disabled:scale-75 transition-all duration-200"
+              className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-tertiary-container/15 text-tertiary-container transition-all duration-200 hover:bg-tertiary-container hover:text-on-surface disabled:scale-75 disabled:opacity-0"
             >
               <i className="fas fa-paper-plane text-xs"></i>
             </button>
           </div>
-          <div className="flex justify-between items-center mt-2 px-1">
-            <span className="text-[10px] text-neutral-500 flex items-center gap-1">
+          <div className="mt-2 flex items-center justify-between px-1">
+            <span className="flex items-center gap-1 font-landing text-xs text-secondary-muted">
               {chatStatus === 'active' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-600"></span>
               )}
-              {chatStatus === 'active' ? 'Live Chat' : 'Encrypted • Private'}
+              {chatStatus === 'active' ? 'Live Chat' : 'Private'}
             </span>
-            <span className="text-[10px] text-neutral-600">{inputValue.length}/200</span>
+            <span className="font-landing text-xs text-secondary-muted">{inputValue.length}/200</span>
           </div>
         </form>
       )}

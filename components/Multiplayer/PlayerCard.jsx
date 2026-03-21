@@ -1,44 +1,41 @@
-import { useQuery } from '@hooks';
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
+import { useQuery } from '@hooks';
 import Timer from './Timer';
 
 const PlayerCard = ({ onTimeOut }) => {
   const { data: me } = useQuery('/client/account');
   const { playerColor, activeGame, whiteTime, blackTime } = useMultiplayerContext();
 
-  // Get player's time based on their color
   const playerTime = playerColor === 'white' ? whiteTime : blackTime;
-
-  // Determine whose turn it is from FEN
   const currentTurn = activeGame?.fen?.split(' ')[1] === 'w' ? 'white' : 'black';
   const isPlayerTurn = currentTurn === playerColor;
-
-  // Check if time control is enabled (not unlimited)
   const hasTimeControl = activeGame?.timeControl?.initial > 0;
   const isGameActive = activeGame?.status === 'active' && !activeGame?.gameOver;
 
   return (
-    <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-      <div className="flex items-center gap-4">
-        <div className="bg-tertiary rounded">
+    <div className="flex w-full min-w-0 shrink-0 items-center justify-between gap-3 rounded-xl border border-black/10 bg-gameplay px-4 py-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="shrink-0 rounded-lg bg-gameplay-elevated p-0.5">
           {me?.image?.path ? (
             <img
               src={me.image.path}
-              className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
+              className="h-10 w-10 object-cover rounded-md lg:h-12 lg:w-12"
               alt="Your Avatar"
             />
           ) : (
-            <div className="lg:w-12 lg:h-12 w-10 h-10 flex items-center justify-center rounded-md bg-primary">
-              <span className="text-white font-bold text-xl">{me?.name?.charAt(0)}</span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-md lg:h-12 lg:w-12">
+              <span className="text-lg font-bold text-on-surface">{me?.name?.charAt(0)}</span>
             </div>
           )}
         </div>
-        <div className="flex flex-col">
-          <div className="flex gap-2 items-center">
-            <p className="text-white font-medium text-base">{me?.name}</p>
-            <p className="text-gray-300">({me?.elo || 1200})</p>
+        <div className="flex min-w-0 flex-col">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="truncate font-landing text-sm font-semibold text-on-surface">{me?.name}</p>
+            <p className="font-landing text-sm text-secondary-muted">({me?.elo || 1200})</p>
           </div>
-          <p className="text-gray-400 text-sm">{playerColor === 'white' ? 'White' : 'Black'}</p>
+          <p className="font-landing text-xs text-secondary-muted">
+            {playerColor === 'white' ? 'White' : 'Black'}
+          </p>
         </div>
       </div>
       {hasTimeControl && (

@@ -1,8 +1,8 @@
-import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
+import { createAvatar } from '@dicebear/core';
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
+import { useEffect, useState } from 'react';
 import Timer from './Timer';
-import { useState, useEffect } from 'react';
 
 const OpponentCard = ({ onTimeOut }) => {
   const {
@@ -15,10 +15,8 @@ const OpponentCard = ({ onTimeOut }) => {
     opponentDisconnectTime,
   } = useMultiplayerContext();
 
-  // Countdown state for disconnect timer
   const [disconnectCountdown, setDisconnectCountdown] = useState(null);
 
-  // Update countdown every second when opponent is disconnected
   useEffect(() => {
     if (!opponentDisconnected || !opponentDisconnectTime) {
       setDisconnectCountdown(null);
@@ -38,17 +36,10 @@ const OpponentCard = ({ onTimeOut }) => {
 
   if (!opponent) return null;
 
-  // Determine opponent's color (opposite of player's color)
   const opponentColor = playerColor === 'white' ? 'black' : 'white';
-
-  // Get opponent's time
   const opponentTime = opponentColor === 'white' ? whiteTime : blackTime;
-
-  // Determine whose turn it is from FEN
   const currentTurn = activeGame?.fen?.split(' ')[1] === 'w' ? 'white' : 'black';
   const isOpponentTurn = currentTurn === opponentColor;
-
-  // Check if time control is enabled (not unlimited)
   const hasTimeControl = activeGame?.timeControl?.initial > 0;
   const isGameActive = activeGame?.status === 'active' && !activeGame?.gameOver;
 
@@ -59,7 +50,7 @@ const OpponentCard = ({ onTimeOut }) => {
     const avatar = createAvatar(avataaars, {
       seed: opponent.name,
       size: 48,
-      backgroundColor: ['404040'],
+      backgroundColor: ['e6e8ea'],
     });
     return avatar.toDataUri();
   };
@@ -67,32 +58,34 @@ const OpponentCard = ({ onTimeOut }) => {
   const avatarSrc = getAvatarSrc();
 
   return (
-    <div className="flex items-center justify-between gap-4 lg:p-2 p-1 bg-secondary rounded-lg shadow-lg">
-      <div className="flex items-center gap-4">
-        <div className="bg-tertiary rounded relative">
+    <div className="flex w-full min-w-0 shrink-0 items-center justify-between gap-3 rounded-xl border border-black/10 bg-gameplay px-4 py-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div className="relative shrink-0 rounded-lg bg-gameplay-elevated p-0.5">
           <img
             src={avatarSrc}
-            className="lg:w-12 lg:h-12 w-10 h-10 object-cover rounded-md"
+            className="h-10 w-10 object-cover rounded-md lg:h-12 lg:w-12"
             alt="Opponent Avatar"
           />
           {opponentDisconnected && (
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-secondary flex items-center justify-center">
-              <i className="fas fa-wifi text-[8px] text-white"></i>
+            <div className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-gameplay bg-amber-500">
+              <i className="fas fa-wifi text-xs text-white"></i>
             </div>
           )}
         </div>
-        <div className="flex flex-col">
-          <div className="flex gap-2 items-center">
-            <p className="text-white font-medium text-base">{opponent.name}</p>
-            <p className="text-gray-300">({opponent.elo})</p>
+        <div className="flex min-w-0 flex-col">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="truncate font-landing text-sm font-semibold text-on-surface">{opponent.name}</p>
+            <p className="font-landing text-sm text-secondary-muted">({opponent.elo})</p>
             {opponentDisconnected && disconnectCountdown !== null && (
-              <span className="text-yellow-500 text-xs flex items-center gap-1 animate-pulse">
-                <i className="fas fa-clock text-[10px]"></i>
+              <span className="flex items-center gap-1 font-landing text-xs text-amber-700">
+                <i className="fas fa-clock text-xs"></i>
                 Disconnected ({disconnectCountdown}s)
               </span>
             )}
           </div>
-          <p className="text-gray-400 text-sm">{opponentColor === 'white' ? 'White' : 'Black'}</p>
+          <p className="font-landing text-xs text-secondary-muted">
+            {opponentColor === 'white' ? 'White' : 'Black'}
+          </p>
         </div>
       </div>
       {hasTimeControl && (

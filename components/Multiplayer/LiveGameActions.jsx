@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { Button } from '@components';
+import { useMultiplayerContext } from '@contexts/MultiplayerContext';
+import { useEffect, useState } from 'react';
 import DrawOfferCard from './DrawOfferCard';
 import ResignConfirmCard from './ResignConfirmCard';
 
@@ -8,7 +8,6 @@ const LiveGameActions = ({ onPrevMove, onNextMove }) => {
   const { setResignPending, offerDraw, drawOfferState, drawCooldown } = useMultiplayerContext();
   const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
-  // Update cooldown timer
   useEffect(() => {
     if (drawCooldown > Date.now()) {
       const updateTimer = () => {
@@ -16,67 +15,63 @@ const LiveGameActions = ({ onPrevMove, onNextMove }) => {
         setCooldownRemaining(remaining);
       };
 
-      updateTimer(); // Initial update
+      updateTimer();
       const interval = setInterval(updateTimer, 1000);
       return () => clearInterval(interval);
-    } else {
-      setCooldownRemaining(0);
     }
+    setCooldownRemaining(0);
   }, [drawCooldown]);
 
-  // Disable if offer in progress OR cooldown active
   const isCooldownActive = cooldownRemaining > 0;
   const canOfferDraw = drawOfferState === 'none' && !isCooldownActive;
 
   return (
-    <div className="flex flex-col bg-secondary p-4 border-t border-gray-700/50">
+    <div className="flex shrink-0 flex-col gap-3 border-t border-black/10 bg-gameplay p-4">
       <DrawOfferCard />
       <ResignConfirmCard />
       <div className="flex gap-3">
         <div className="flex flex-1 gap-2">
           <button
+            type="button"
             onClick={offerDraw}
             disabled={!canOfferDraw}
-            className={`flex-1 font-medium py-2.5 px-3 rounded-lg transition-all flex items-center justify-center gap-2 group border ${
+            className={
               canOfferDraw
-                ? 'bg-tertiary hover:bg-white/10 text-gray-200 border-transparent hover:border-white/10'
-                : 'bg-tertiary/50 text-gray-500 border-transparent cursor-not-allowed'
-            }`}
+                ? 'flex flex-1 items-center justify-center gap-2 rounded-lg border border-black/10 bg-gameplay-control py-2.5 px-3 font-landing text-sm font-semibold text-on-surface transition-colors hover:bg-gameplay-elevated'
+                : 'flex flex-1 cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-black/10 bg-gameplay py-2.5 px-3 font-landing text-sm font-semibold text-secondary-muted opacity-60'
+            }
             title={isCooldownActive ? `Wait ${cooldownRemaining}s` : 'Offer Draw'}
           >
             {isCooldownActive ? (
-              <span className="text-sm font-mono">{cooldownRemaining}s</span>
+              <span className="font-mono text-sm">{cooldownRemaining}s</span>
             ) : (
               <>
-                <i
-                  className={`fas fa-handshake ${
-                    canOfferDraw ? 'group-hover:scale-110' : ''
-                  } transition-transform`}
-                ></i>
-                <span className="text-sm truncate hidden sm:inline">Offer Draw</span>
-                <span className="text-sm sm:hidden">Draw</span>
+                <i className="fas fa-handshake"></i>
+                <span className="hidden truncate sm:inline">Offer Draw</span>
+                <span className="sm:hidden">Draw</span>
               </>
             )}
           </button>
           <button
+            type="button"
             onClick={() => setResignPending(true)}
-            className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium py-2.5 px-3 rounded-lg transition-all flex items-center justify-center gap-2 group border border-red-500/20 hover:border-red-500/30"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 py-2.5 px-3 font-landing text-sm font-semibold text-red-700 transition-colors hover:bg-red-100"
             title="Resign"
           >
-            <i className="fas fa-flag group-hover:scale-110 transition-transform"></i>
-            <span className="text-sm truncate hidden sm:inline">Resign</span>
-            <span className="text-sm sm:hidden">Resign</span>
+            <i className="fas fa-flag"></i>
+            <span className="hidden truncate sm:inline">Resign</span>
+            <span className="sm:hidden">Resign</span>
           </button>
         </div>
-        <div className="flex gap-1 pl-2 border-l border-gray-700">
+        <div className="flex gap-1 border-l border-black/10 pl-2">
           <Button
-            className="button tertiary text-lg h-full aspect-square flex items-center justify-center hover:bg-white/10 !rounded-lg transition-colors bg-tertiary w-12"
+            className="flex h-12 w-12 items-center justify-center rounded-lg border border-black/10 bg-gameplay-control text-lg text-on-surface transition-colors hover:bg-gameplay-elevated"
             onClick={onPrevMove}
           >
             <i className="fa-solid fa-chevron-left"></i>
           </Button>
           <Button
-            className="button tertiary text-lg h-full aspect-square flex items-center justify-center hover:bg-white/10 !rounded-lg transition-colors bg-tertiary w-12"
+            className="flex h-12 w-12 items-center justify-center rounded-lg border border-black/10 bg-gameplay-control text-lg text-on-surface transition-colors hover:bg-gameplay-elevated"
             onClick={onNextMove}
           >
             <i className="fa-solid fa-chevron-right"></i>

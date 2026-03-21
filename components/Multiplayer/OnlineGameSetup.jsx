@@ -1,6 +1,6 @@
 import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { useQuery } from '@hooks';
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NoSsr } from '@components';
 import { NextChessground } from 'next-chessground';
@@ -60,6 +60,14 @@ const TIME_CATEGORIES = [
 
 const DEFAULT_TIME_CONTROL = TIME_CATEGORIES[1].controls[0];
 
+const QUEUE_WAITING_TIPS = [
+  'Tip: lock in a first-move idea—you’ll need it the second the clock starts.',
+  'Blitz rewards pattern speed; one clean tactic often decides the game.',
+  'Rapid is a marathon—save your deepest think for the one critical moment.',
+  'Micro-break: look away from the screen for ten seconds. Eyes fresh, better moves.',
+  'Every titled player has stood in a queue like this—patience is part of prep.',
+];
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 const timeAgo = (dateStr) => {
@@ -92,6 +100,18 @@ const OnlineGameSetup = () => {
 
   const [selectedCategory, setSelectedCategory] = useState(1); // Blitz default
   const [selectedTimeControl, setSelectedTimeControl] = useState(DEFAULT_TIME_CONTROL);
+  const [queueTipIndex, setQueueTipIndex] = useState(0);
+
+  useEffect(() => {
+    if (!inQueue) {
+      setQueueTipIndex(0);
+      return undefined;
+    }
+    const id = setInterval(() => {
+      setQueueTipIndex((i) => (i + 1) % QUEUE_WAITING_TIPS.length);
+    }, 5200);
+    return () => clearInterval(id);
+  }, [inQueue]);
 
   // Pick a random bot once per mount
   const featuredBot = useMemo(() => {
@@ -170,9 +190,10 @@ const OnlineGameSetup = () => {
     setSelectedTimeControl(firstControl);
   };
 
-  const handlePillClick = (e, tc) => {
+  const handlePillClick = (e, categoryIndex, tc) => {
     e.stopPropagation();
     if (inQueue) return;
+    setSelectedCategory(categoryIndex);
     setSelectedTimeControl(tc);
   };
 
@@ -265,11 +286,14 @@ const OnlineGameSetup = () => {
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {cat.controls.map((tc) => {
-                      const isPillActive = selectedTimeControl?.label === tc.label && isSelected;
+                      const isPillActive =
+                        isSelected &&
+                        selectedTimeControl?.initial === tc.initial &&
+                        selectedTimeControl?.increment === tc.increment;
                       return (
                         <button
                           key={tc.label}
-                          onClick={(e) => handlePillClick(e, tc)}
+                          onClick={(e) => handlePillClick(e, idx, tc)}
                           disabled={inQueue}
                           className={`px-2.5 py-1 rounded-lg font-landing text-xs font-medium transition-all ${
                             isPillActive
@@ -475,40 +499,97 @@ const OnlineGameSetup = () => {
       <div className="flex flex-col gap-4">
 
         {/* Find Match CTA */}
-        <div className="bg-on-surface rounded-xl p-6">
+        <div className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-sm">
           {inQueue ? (
-            <div className="text-center">
-              <div className="w-12 h-12 border-4 border-tertiaryGold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              <p className="font-headline text-xl text-white mb-1">Searching...</p>
-              <p className="font-landing text-sm text-white/60 mb-1">
-                {TIME_CATEGORIES[selectedCategory]?.name} · {selectedTimeControl?.label}
+            <div
+              className="flex flex-col gap-4 text-left"
+              aria-busy="true"
+              aria-live="polite"
+              role="status"
+            >
+              <div className="flex gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-surface-container text-tertiaryGold ring-2 ring-tertiaryGold/25 transition-transform duration-300 hover:scale-105">
+                  <i className="fa-solid fa-chess-clock text-2xl" aria-hidden />
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <p className="flex flex-wrap items-center gap-2 font-headline text-xl text-on-surface">
+                    In the queue
+                    <span className="inline-flex items-end gap-1 pb-1" aria-hidden>
+                      <span className="h-2 w-2 rounded-full bg-tertiary-container animate-bounce" />
+                      <span className="h-2 w-2 rounded-full bg-tertiary-container animate-bounce delay-75" />
+                      <span className="h-2 w-2 rounded-full bg-tertiary-container animate-bounce delay-150" />
+                    </span>
+                  </p>
+                  <p className="mt-1 font-landing text-sm leading-relaxed text-secondary-muted">
+                    We’ll seat you when another player picks the same time control and a compatible
+                    rating.
+                  </p>
+                  {playersOnline > 0 && (
+                    <p className="mt-2 flex items-center gap-1.5 font-landing text-xs font-semibold text-tertiaryGold">
+                      <i className="fa-solid fa-earth-americas" aria-hidden />
+                      {playersOnline} player{playersOnline === 1 ? '' : 's'} online — hang tight
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-tertiaryGold/25 bg-tertiaryGold/8 px-4 py-3">
+                <p className="font-landing text-xs font-bold uppercase tracking-widest text-tertiaryGold">
+                  While you wait
+                </p>
+                <p
+                  key={queueTipIndex}
+                  className="mt-1.5 font-landing text-sm leading-relaxed text-on-surface animate-fade-in"
+                >
+                  {QUEUE_WAITING_TIPS[queueTipIndex]}
+                </p>
+              </div>
+
+              <ul className="divide-y divide-outline-variant/15 overflow-hidden rounded-xl border border-outline-variant/20">
+                <li className="flex items-center justify-between gap-4 bg-surface-container/40 px-4 py-3">
+                  <span className="font-landing text-sm text-secondary-muted">Time control</span>
+                  <span className="text-right font-landing text-sm font-semibold text-on-surface">
+                    {TIME_CATEGORIES[selectedCategory]?.name} · {selectedTimeControl?.label}
+                  </span>
+                </li>
+                <li className="flex items-center justify-between gap-4 bg-surface-container/40 px-4 py-3">
+                  <span className="font-landing text-sm text-secondary-muted">Your rating</span>
+                  <span className="text-right font-landing text-sm font-semibold text-on-surface">
+                    {me?.elo || 1200}
+                    <span className="font-normal text-secondary-muted"> · ±200 window</span>
+                  </span>
+                </li>
+              </ul>
+
+              <p className="font-landing text-xs text-secondary-muted">
+                You can keep browsing; the match will start automatically when paired.
               </p>
-              <p className="font-landing text-xs text-white/40 mb-5">
-                Matching ±200 ELO ({me?.elo || 1200})
-              </p>
+
               <button
+                type="button"
                 onClick={handleFindGame}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-landing font-bold py-3 rounded-xl transition-all"
+                className="w-full rounded-xl border-2 border-dashed border-outline-variant/40 py-3 font-landing text-sm font-semibold text-secondary-muted transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-700"
               >
-                Cancel Search
+                Leave queue
               </button>
             </div>
           ) : (
             <>
-              <p className="font-landing text-xs text-tertiaryGold font-bold uppercase tracking-widest mb-1">
+              <p className="mb-1 font-landing text-xs font-bold uppercase tracking-widest text-tertiaryGold">
                 {TIME_CATEGORIES[selectedCategory]?.name} · {selectedTimeControl?.label}
               </p>
-              <p className="font-headline text-2xl text-white mb-1">Find a Match</p>
-              <p className="font-landing text-xs text-white/50 mb-5">
+              <p className="mb-1 font-headline text-2xl text-on-surface">Find a match</p>
+              <p className="mb-5 font-landing text-xs text-secondary-muted">
                 Matching players within ±200 ELO of {me?.elo || 1200}
               </p>
               <button
+                type="button"
                 onClick={handleFindGame}
                 disabled={!isConnected}
-                className="w-full bg-tertiary-container hover:opacity-90 text-white font-landing font-bold py-3 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-tertiary-container py-3 font-landing font-bold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <i className="fa-regular fa-chess-knight" />
-                Find Match
+                Find match
               </button>
             </>
           )}

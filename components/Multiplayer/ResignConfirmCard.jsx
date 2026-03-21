@@ -6,27 +6,29 @@ const ResignConfirmCard = () => {
   if (!resignPending) return null;
 
   return (
-    <div className="flex flex-col bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-3 animate-fade-in shadow-lg shadow-red-900/10 backdrop-blur-sm">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
-          <i className="fas fa-flag text-red-400 text-sm"></i>
+    <div className="mb-3 flex animate-fade-in flex-col rounded-xl border border-red-200 bg-red-50 p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100">
+          <i className="fas fa-flag text-sm text-red-700"></i>
         </div>
         <div>
-          <p className="text-red-100 font-semibold text-sm">Resign Game?</p>
-          <p className="text-red-200/60 text-xs">This action cannot be undone</p>
+          <p className="font-landing text-sm font-semibold text-red-900">Resign Game?</p>
+          <p className="font-landing text-xs text-red-800">This action cannot be undone</p>
         </div>
       </div>
       <div className="flex gap-2">
         <button
+          type="button"
           onClick={confirmResign}
-          className="flex-1 bg-red-500/20 hover:bg-red-500/30 hover:scale-[1.02] border border-red-500/30 text-red-300 text-sm font-medium py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 active:scale-95"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-red-100 py-2 px-3 font-landing text-sm font-medium text-red-900 transition-colors hover:bg-red-200"
         >
           <i className="fas fa-check text-xs"></i>
           Yes, Resign
         </button>
         <button
+          type="button"
           onClick={cancelResign}
-          className="flex-1 bg-white/5 hover:bg-white/10 hover:scale-[1.02] border border-white/10 text-gray-300 text-sm font-medium py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 active:scale-95"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-black/10 bg-gameplay-control py-2 px-3 font-landing text-sm font-medium text-on-surface transition-colors hover:bg-gameplay-elevated"
         >
           <i className="fas fa-times text-xs"></i>
           Cancel

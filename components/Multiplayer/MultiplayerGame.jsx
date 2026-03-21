@@ -1,15 +1,20 @@
-import { useMultiplayerContext } from '@contexts/MultiplayerContext';
 import { PgnTree } from '@chess/components/PgnViewer';
 import { usePgnViewer } from '@chess/hooks';
+import { useMultiplayerContext } from '@contexts/MultiplayerContext';
+import { useElementWidth } from '@hooks';
 import { classnames } from '@lib';
 import { NextChessground } from 'next-chessground';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
+import GameChat from './GameChat';
+import GameOverModal from './GameOverModal';
 import LiveChessBoard from './LiveChessBoard';
+import LiveGameActions from './LiveGameActions';
 import OpponentCard from './OpponentCard';
 import PlayerCard from './PlayerCard';
-import LiveGameActions from './LiveGameActions';
-import GameOverModal from './GameOverModal';
-import GameChat from './GameChat';
+
+const tabButtonBase =
+  'flex flex-1 items-center justify-center gap-2 border-b-2 py-3 px-2 font-landing text-xs font-semibold transition-colors sm:text-sm';
 
 const MultiplayerGame = () => {
   const {
@@ -23,11 +28,11 @@ const MultiplayerGame = () => {
     chatStatus,
     chatRequestedBy,
   } = useMultiplayerContext();
-  const [activeTab, setActiveTab] = useState('moves'); // 'moves' | 'chat'
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState('moves');
+  const { ref: boardTrackRef, width: boardTrackWidth } = useElementWidth();
 
-  // Check if there's a pending chat request for us (opponent sent request)
   const hasPendingRequest = chatStatus === 'pending' && chatRequestedBy !== playerColor;
-  // Show badge if unread messages OR pending request
   const chatBadgeCount = hasPendingRequest ? 1 : activeTab !== 'chat' ? unreadChatCount : 0;
 
   const handleChatTabClick = () => {
@@ -42,12 +47,16 @@ const MultiplayerGame = () => {
 
   if (!activeGame || !opponent) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <p className="text-white text-xl">No active game</p>
+      <div className="flex min-h-0 flex-1 items-center justify-center p-6">
+        <div className="w-full max-w-md rounded-xl border border-black/10 bg-gameplay p-10 text-center">
+          <h2 className="font-landing text-lg font-semibold text-on-surface">No active game</h2>
+          <p className="mt-2 text-sm text-secondary-muted font-landing">
+            Join the lobby to start playing online.
+          </p>
           <button
-            onClick={reset}
-            className="mt-4 bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-2 rounded-lg"
+            type="button"
+            onClick={() => { reset(); router.replace('/client/play'); }}
+            className="mt-6 w-full rounded-lg border border-black/10 bg-gameplay-control py-3 text-sm font-semibold text-on-surface font-landing transition-colors hover:bg-gameplay-elevated"
           >
             Back to Lobby
           </button>
@@ -61,66 +70,83 @@ const MultiplayerGame = () => {
 
   return (
     <>
-      <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
-        <div className="md:col-span-3 max-w-chess-board h-min flex flex-col gap-2">
-          <OpponentCard />
-          <div className="relative">
-            <div className={classnames(isReviewMode && 'invisible')}>
-              <LiveChessBoard />
-            </div>
-            {isReviewMode && (
-              <div className="absolute inset-0">
-                <NextChessground
-                  fen={current.fen}
-                  lastMove={current?.from && current?.to ? [current.from, current.to] : null}
-                  orientation={playerColor}
-                  viewOnly={true}
-                />
-              </div>
+      <div className="bot-gameplay grid w-full h-full grid-cols-1 gap-4 overflow-hidden p-6 md:grid-cols-5 md:gap-6">
+        <div className="flex h-full min-h-0 flex-col overflow-hidden md:col-span-3">
+          <div
+            className={classnames(
+              'mx-auto flex max-w-full flex-1 min-h-0 flex-col gap-2',
+              boardTrackWidth > 0 ? '' : 'w-full'
             )}
+            style={boardTrackWidth > 0 ? { width: boardTrackWidth } : undefined}
+          >
+            <OpponentCard />
+            <div className="flex-1 min-h-0 flex items-center justify-center overflow-hidden w-full">
+              <div
+                ref={boardTrackRef}
+                className="bot-gameplay-board h-full aspect-square max-w-full relative overflow-hidden rounded-lg"
+              >
+                <div className={classnames('h-full', isReviewMode && 'invisible')}>
+                  <LiveChessBoard />
+                </div>
+                {isReviewMode && (
+                  <div className="absolute inset-0">
+                    <NextChessground
+                      fen={current.fen}
+                      lastMove={current?.from && current?.to ? [current.from, current.to] : null}
+                      orientation={playerColor}
+                      viewOnly={true}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+            <PlayerCard onTimeOut={() => reportTimeout()} />
           </div>
-          <PlayerCard onTimeOut={() => reportTimeout()} />
         </div>
-        <div className="md:col-span-2 flex rounded-lg overflow-hidden flex-col">
-          <div className="flex bg-secondary">
+
+        <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-black/10 bg-gameplay md:col-span-2">
+          <div className="flex shrink-0 border-b border-black/10 bg-gameplay-control">
             <button
+              type="button"
               onClick={() => setActiveTab('moves')}
               className={classnames(
-                'flex-1 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 relative',
-                activeTab === 'moves' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
+                tabButtonBase,
+                activeTab === 'moves'
+                  ? 'border-tertiary-container text-on-surface'
+                  : 'border-transparent text-secondary-muted hover:text-on-surface'
               )}
             >
-              <i className="fas fa-chess-knight"></i>
+              <i className="fas fa-chess-knight text-xs opacity-80"></i>
               Moves
-              {activeTab === 'moves' && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary shadow-[0_-2px_8px_rgba(var(--primary-rgb),0.5)]"></div>
-              )}
             </button>
             <button
+              type="button"
               onClick={handleChatTabClick}
               className={classnames(
-                'flex-1 py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2 relative',
-                activeTab === 'chat' ? 'text-white' : 'text-neutral-400 hover:text-neutral-200'
+                tabButtonBase,
+                'relative',
+                activeTab === 'chat'
+                  ? 'border-tertiary-container text-on-surface'
+                  : 'border-transparent text-secondary-muted hover:text-on-surface'
               )}
             >
-              <i className="fas fa-comments"></i>
+              <i className="fas fa-comments text-xs opacity-80"></i>
               Chat
               {chatBadgeCount > 0 && (
-                <span className="absolute top-2 right-4 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 animate-pulse">
+                <span className="absolute right-2 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-xs font-bold text-on-primary">
                   {chatBadgeCount > 9 ? '9+' : chatBadgeCount}
                 </span>
               )}
-              {activeTab === 'chat' && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary shadow-[0_-2px_8px_rgba(var(--primary-rgb),0.5)]"></div>
-              )}
             </button>
           </div>
+
           {activeTab === 'moves' ? (
-            <div className="flex flex-col h-full overflow-hidden bg-secondary">
-              <div className="relative flex flex-col flex-grow min-h-0">
-                <div className="flex flex-col flex-grow min-h-0">
-                  <div className="overflow-y-auto min-h-0 flex-grow">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-gameplay">
+              <div className="relative flex min-h-0 flex-1 flex-col">
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <div className="min-h-0 flex-1 overflow-y-auto">
                     <PgnTree
+                      chrome="gameplay"
                       tree={tree}
                       autoScroll={true}
                       current={current}
@@ -131,27 +157,35 @@ const MultiplayerGame = () => {
               </div>
             </div>
           ) : (
-            <GameChat />
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <GameChat />
+            </div>
           )}
-          {!isGameOver && <LiveGameActions onPrevMove={goPrevMoment} onNextMove={goNextMoment} />}
+
+          {!isGameOver && (
+            <LiveGameActions onPrevMove={goPrevMoment} onNextMove={goNextMoment} />
+          )}
           {isGameOver && (
-            <div className="flex flex-col bg-secondary gap-4 p-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-black/10 bg-gameplay-control p-4">
               <div className="grid grid-cols-4 gap-2">
                 <button
+                  type="button"
                   onClick={reset}
-                  className="col-span-2 bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+                  className="col-span-2 flex items-center justify-center gap-2 rounded-lg border border-black/10 bg-tertiary-container py-3 text-sm font-semibold text-on-surface font-landing transition-colors hover:opacity-90"
                 >
                   <i className="fas fa-chess"></i>
-                  <span className="text-sm">Find New Game</span>
+                  <span>Find New Game</span>
                 </button>
                 <button
-                  className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+                  type="button"
+                  className="rounded-lg border border-black/10 bg-gameplay-control py-3 text-lg text-on-surface transition-colors hover:bg-gameplay-elevated"
                   onClick={goPrevMoment}
                 >
                   <i className="fa-solid fa-chevron-left"></i>
                 </button>
                 <button
-                  className="button full tertiary border-0 text-lg w-full hover:text-neutral-300 transition-colors hover:bg-neutral-700"
+                  type="button"
+                  className="rounded-lg border border-black/10 bg-gameplay-control py-3 text-lg text-on-surface transition-colors hover:bg-gameplay-elevated"
                   onClick={goNextMoment}
                 >
                   <i className="fa-solid fa-chevron-right"></i>
