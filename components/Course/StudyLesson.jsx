@@ -1,0 +1,63 @@
+import { ChessProvider, PuzzleProvider } from '@chess/contexts';
+import { extractFen } from '@chess/functions';
+import { StudyLayoutProvider } from '@contexts/StudyLayoutContext';
+import { buildLayoutProps } from '@functions';
+import { useQuery } from '@hooks';
+import { useRouter } from 'next/router';
+import { useCallback, useMemo, useRef } from 'react';
+import StudyLessonResponsive from './StudyLessonResponsive';
+
+const StudyLesson = ({ id, chapterIndex = 0, isPreview }) => {
+  const endpoint = isPreview ? `/admin/studies` : `/client/studies`;
+  const { data, status, refetch } = useQuery(`${endpoint}/${id}`);
+
+  const router = useRouter();
+  const handleNextChapter = useCallback(() => {
+    const nextIndex = chapterIndex + 1;
+    if (data?.study?.chapters && nextIndex < data.study.chapters.length) {
+      router.replace(`${router.asPath.split('#')[0]}#${nextIndex}`, undefined, {
+        shallow: true,
+        scroll: false,
+      });
+    }
+  }, [chapterIndex, data?.study?.chapters, router]);
+
+  const activeChapter = data?.study?.chapters[chapterIndex] || {};
+  const { pgn, analysis } = activeChapter;
+  const persistedPrevVideoUrlRef = useRef(null);
+
+  const interactiveFen = useMemo(
+    () => (analysis === 'interactive' && pgn ? extractFen(pgn) : null),
+    [analysis, pgn]
+  );
+  const lessonResetKey = `${id}-${chapterIndex}`;
+
+  const layoutType = analysis || 'study';
+  const prevVideoUrl = persistedPrevVideoUrlRef.current;
+  persistedPrevVideoUrlRef.current = activeChapter?.video || null;
+  const layoutProps = buildLayoutProps({
+    data,
+    activeChapter,
+    chapterIndex,
+    layoutType,
+    handleNextChapter,
+    refetch,
+  });
+
+  return (
+    <ChessProvider fen={interactiveFen} resetKey={lessonResetKey}>
+      <PuzzleProvider resetKey={lessonResetKey}>
+        <StudyLayoutProvider>
+          <StudyLessonResponsive
+            prevVideoUrl={prevVideoUrl}
+            status={status}
+            layoutType={layoutType}
+            layoutProps={layoutProps}
+          />
+        </StudyLayoutProvider>
+      </PuzzleProvider>
+    </ChessProvider>
+  );
+};
+
+export default StudyLesson;

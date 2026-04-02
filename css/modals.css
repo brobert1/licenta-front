@@ -1,0 +1,65 @@
+.modal-content {
+  @apply bg-surface border border-border lg:p-6 p-1 rounded-2xl !important;
+}
+
+.modal-title {
+  @apply text-primary !important;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  @apply border-0 !important;
+}
+
+.btn-close {
+  @apply text-primary !important;
+}
+
+#position-selector-modal .modal-content {
+  @apply px-2 pt-0 pb-1 !important;
+}
+
+.scroll-touch {
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-content.modal-theme-light {
+  @apply bg-white text-primary !important;
+}
+
+.modal-theme-light .modal-title,
+.modal-theme-light .modal-header {
+  @apply border-tertiary text-primary !important;
+}
+
+.modal-theme-light .modal-body {
+  @apply text-primary !important;
+}
+
+.modal-theme-light .form-label {
+  @apply text-primary !important;
+}
+
+.modal-theme-light .input {
+  @apply bg-white border-tertiary text-primary placeholder:text-muted focus:ring-primary/20 focus:border-primary !important;
+}
+
+.modal-theme-light .form-help {
+  @apply text-muted !important;
+}
+
+.modal-theme-light .modal-close-icon,
+.modal-theme-light .modal-close-icon i {
+  @apply text-primary hover:text-primary/80 !important;
+}
+
+.modal-theme-light .modal-close-icon img {
+  filter: brightness(0);
+  opacity: 0.85;
+}
+
+/* Cancel is the only direct .button child of ActionFooter's outer row; confirm is inside .flex.items-center. Descendant `.flex .button:first-of-type` wrongly matched confirm too and overrode danger styles with !important. */
+.modal-theme-light .modal-footer > .flex > .button:first-of-type {
+  @apply border-tertiary bg-white text-primary hover:bg-tertiary/10 !important;
+}

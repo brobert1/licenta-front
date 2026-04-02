@@ -1,0 +1,86 @@
+.nav-tabs {
+  @apply flex space-x-2 border-none mb-3;
+}
+.nav-tabs .nav-link {
+  @apply px-3 py-2 text-white bg-gray-800 rounded-full transition-all duration-300 border-none;
+}
+.nav-tabs .nav-link:hover {
+  @apply bg-gray-700;
+}
+.nav-tabs .nav-link.active {
+  @apply bg-blue-500 text-white font-semibold;
+}
+
+/* ActionsMenu specific tabs styling */
+.actions-menu-tabs .nav-tabs {
+  @apply flex w-full mb-0;
+  gap: 0 !important;
+  margin: 0 !important;
+  border-bottom: 1px solid #d6d3d1;
+  background: transparent;
+}
+
+.actions-menu-tabs .nav-tabs > * {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.actions-menu-tabs .nav-item {
+  @apply flex-1 flex;
+  margin: 0 !important;
+}
+
+.actions-menu-tabs .nav-link {
+  @apply flex-1 text-center justify-center flex items-center gap-2 bg-transparent text-muted rounded-none px-4 py-3 transition-all duration-200;
+  margin: 0 !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+}
+
+.actions-menu-tabs .nav-link:hover {
+  @apply text-primary;
+  background: transparent !important;
+  border-bottom-color: #d6d3d1 !important;
+}
+
+.actions-menu-tabs .nav-link.active {
+  @apply text-accent font-medium;
+  background: transparent !important;
+  border-bottom-color: #e8685f !important;
+  color: #e8685f !important;
+}
+
+.actions-menu-tabs .nav-link i {
+  @apply opacity-100;
+  display: inline-block !important;
+  font-size: 1.25rem !important;
+}
+
+.actions-menu-tabs .nav-link.active i {
+  color: #e8685f !important;
+}
+
+.study-layout-tabs.nav-tabs {
+  @apply mb-1;
+}
+
+.study-layout-tabs.nav-tabs .nav-link {
+  @apply px-3 py-1.5 text-sm font-semibold text-primary bg-tertiary rounded-full border border-border transition-colors duration-200;
+  opacity: 1 !important;
+}
+
+.study-layout-tabs.nav-tabs .nav-link:hover {
+  @apply text-primary bg-secondary border-border;
+}
+
+.study-layout-tabs.nav-tabs .nav-link.active {
+  @apply text-white bg-accent border-accent;
+}
+
+.study-layout-panel > .tab-content {
+  @apply flex flex-1 min-h-0 overflow-hidden;
+}
+
+.study-layout-panel > .tab-content > .tab-pane.active {
+  @apply flex flex-1 min-h-0 flex-col overflow-hidden;
+}

@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'buttons.css';
+@import 'calendar.css';
+@import 'chess-annotations.css';
+@import 'components.css';
+@import 'fonts.css';
+@import 'forms.css';
+@import 'layout.css';
+@import 'loading.css';
+@import 'markdown.css';
+@import 'menu.css';
+@import 'modals.css';
+@import 'normalize.css';
+@import 'tabs.css';
+@import 'toast.css';
+@import 'typography.css';
+@import 'video-player.css';
+@import 'chess/styles.css';

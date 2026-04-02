@@ -1,0 +1,261 @@
+/** Layout utilities */
+
+.max-visitor {
+  @apply max-w-7xl mx-auto;
+}
+
+.max {
+  max-width: 1340px;
+  margin: 0 auto;
+}
+.z-100 {
+  z-index: 100;
+}
+
+/* Custom Scrollbar - Hidden */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* For IE and Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+/*
+.auth-card {
+  z-index: 50;
+  -moz-box-flex: 1;
+  -moz-box-flex: 1;
+ padding: 40px;
+  box-sizing: border-box;
+  max-width: 460px;
+  width: 100%;
+  display: flex;
+  -moz-box-pack: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 20px;
+}
+
+
+@media (max-width: 460px) {
+  .auth-card {
+    width: 100vw;
+    height: 100vh;
+    max-width: unset;
+    padding: 20px;
+  }
+}
+*/
+
+.card {
+  @apply flex w-full flex-col gap-4 bg-secondary p-4 shadow-sm lg:rounded-lg lg:p-6 !important;
+}
+
+.header {
+  @apply border-b pb-1.5 text-lg font-semibold text-white !important;
+}
+
+.prose-description {
+  @apply prose-sm font-heading text-white prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-0 prose-ol:list-decimal prose-ul:list-disc !important;
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1536px) {
+  .max-w-chess-board {
+    max-width: 560px !important;
+  }
+}
+
+.prose.no-indent ol {
+  list-style-position: inside;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.prose.no-indent ol > li {
+  display: list-item;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.prose.no-indent ol > li > * {
+  display: inline !important; /* This forces the list content to stay inline with the number */
+}
+
+.prose.tight-p p {
+  margin-top: 0 !important;
+}
+
+.icon-picker-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.icon-picker-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.icon-picker-scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 1);
+  border-radius: 9999px;
+}
+
+.icon-picker-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: black transparent;
+}
+
+[tabindex='0'] {
+  outline: none !important;
+}
+
+.hint-mode {
+  @apply -mt-[2.35rem] mb-2 md:mb-0;
+}
+.comment {
+  font-size: 0.75rem !important;
+  line-height: 1.7142857 !important;
+}
+@media (min-width: 1536px) {
+  .comment {
+    font-size: 0.875rem !important;
+    line-height: 1.7142857 !important;
+  }
+}
+
+/* Chess Component Overrides */
+#pgn-tree {
+  color: #1c1917 !important;
+}
+
+#pgn-comment.text-emerald-400,
+#pgn-comment.text-sky-400,
+#pgn-comment.text-lime-400,
+#pgn-comment.text-yellow-500,
+#pgn-comment.text-orange-500,
+#pgn-comment.text-red-700 {
+  color: inherit !important;
+}
+
+#pgn-comment:not(.text-emerald-400):not(.text-sky-400):not(.text-lime-400):not(
+    .text-yellow-500
+  ):not(.text-orange-500):not(.text-red-700) {
+  color: #1c1917 !important;
+}
+
+#pgn-move {
+  color: #1c1917 !important;
+}
+
+#pgn-move.inline-move-active {
+  color: #ffffff !important;
+}
+
+html,
+body {
+  background-color: #fafaf9;
+}
+
+#pgn-move:hover {
+  color: #ffffff !important;
+}
+
+#context-menu {
+  color: #1c1917 !important;
+}
+
+#context-menu .text-tertiary {
+  color: #1c1917 !important;
+}
+
+#annotation-group h4 {
+  color: #1c1917 !important;
+}
+
+#annotation-group button {
+  background-color: #fafaf9 !important;
+  border-color: #d6d3d1 !important;
+  color: #1c1917 !important;
+}
+
+#annotation-group button:hover {
+  background-color: #f5f5f4 !important;
+  border-color: #d6d3d1 !important;
+}
+
+#annotation-group button.bg-accent {
+  background-color: #cf2f7c !important;
+  border-color: #cf2f7c !important;
+  color: white !important;
+}
+
+/* AddCommentModal Component Overrides */
+#comment-modal textarea {
+  background-color: #e7e5e4 !important;
+  border-color: #d6d3d1 !important;
+  color: #1c1917 !important;
+}
+
+#comment-modal textarea:focus {
+  background-color: #e7e5e4 !important;
+  border-color: #e8685f !important;
+  color: #1c1917 !important;
+}
+
+#comment-modal textarea::placeholder {
+  color: #78716c !important;
+}
+
+#game-sheet-move {
+  color: white !important;
+}
+
+#engine-settings-menu {
+  background: #e7e5e4 !important;
+  border: 1px solid #e7e5e4 !important;
+}
+
+#engine-range-slider label {
+  color: #1c1917 !important;
+}
+
+#engine-range-slider span {
+  color: #1c1917 !important;
+}
+
+#engine-memory-slider label {
+  color: #1c1917 !important;
+}
+
+#engine-memory-slider span {
+  color: #1c1917 !important;
+}
+
+#engine-pv-row {
+  background: #e7e5e4 !important;
+  border: 1px solid #ffffff1a !important;
+}
+
+#engine-pv-row span {
+  color: #1c1917 !important;
+}
+
+#engine-pv-move:hover {
+  color: #e8685f !important;
+}
